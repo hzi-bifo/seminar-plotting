@@ -24,7 +24,8 @@ By the end of this session, you will be able to:
 
 If you're completely new to Python or need a refresher on the basics, **start with Step 0** before the main workshop:
 
-👉 **[`step00_python_basics.py`](scripts/step00_python_basics.py)** - A gentle introduction covering:
+👉 **[`step00.md`](step00.md)** - Read this first! (30-45 min)
+A comprehensive guide covering:
 - What libraries are and how to import them
 - Basic function calling syntax
 - Reading files with different delimiters (CSV, TSV)
@@ -32,10 +33,11 @@ If you're completely new to Python or need a refresher on the basics, **start wi
 - Basic data types and structures
 - Command line navigation
 - Practical exercises with pandas
+- Self-assessment questions
 
-**Run it:** `python first_day/scripts/step00_python_basics.py`
+**Optional Hands-On**: After reading, try [`step00_interactive.py`](scripts/step00_interactive.py) for practice exercises
 
-This script is self-paced and includes lots of explanations. You can revisit it anytime as a reference!
+This is self-paced and includes lots of examples. You can revisit it anytime as a reference!
 
 ## 🔧 Environment Setup
 
