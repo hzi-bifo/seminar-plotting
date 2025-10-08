@@ -1,0 +1,4 @@
+name,age,favorite_color,is_young
+Alice,25,blue,False
+Bob,30,green,False
+Charlie,22,red,True
