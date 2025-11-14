@@ -18,9 +18,10 @@ subset_path <- file.path('..', 'data', 'dataset1_subset.csv')
 long_path <- file.path('..', 'data', 'dataset1_subset_long.csv')
 pdf_path <- file.path('..', 'pdf', 'dataset1_heatmap_basic.pdf')
 target_group <- 'Control'  # change this to view other treatment groups
+na_color <- '#dcdcdc'
 ```
 
-## 2. Load, subset by treatment group, and convert to a matrix
+## 2. Load, subset by treatment group, and convert to matrices
 
 ```{r matrix}
 wide_df <- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
@@ -28,13 +29,17 @@ long_df <- read.csv(long_path, check.names = FALSE, stringsAsFactors = FALSE)
 sample_meta <- unique(long_df[, c('mouse_id', 'day', 'treatment_group')])
 sample_meta$sample_id <- paste(sample_meta$mouse_id, sample_meta$day, sep = '-')
 sample_cols <- setdiff(names(wide_df), c('Genome', 'snp_id', 'Position'))
+
+mat_all <- as.matrix(wide_df[, sample_cols])
+mode(mat_all) <- 'numeric'
+rownames(mat_all) <- paste(wide_df$Genome, wide_df$snp_id, sep = ' | ')
+colnames(mat_all) <- sample_cols
+
 keep_cols <- intersect(sample_cols, sample_meta$sample_id[sample_meta$treatment_group == target_group])
 if (!length(keep_cols)) {
   stop('No samples found for treatment group: ', target_group)
 }
-heatmap_matrix <- as.matrix(wide_df[, keep_cols])
-mode(heatmap_matrix) <- 'numeric'
-rownames(heatmap_matrix) <- paste(wide_df$Genome, wide_df$snp_id, sep = ' | ')
+heatmap_matrix <- mat_all[, keep_cols, drop = FALSE]
 colnames(heatmap_matrix) <- keep_cols
 ```
 
@@ -47,19 +52,102 @@ ht <- Heatmap(
   cluster_rows = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
-  show_column_names = TRUE
+  show_column_names = TRUE,
+  na_col = na_color
 )
 
 draw(ht)
 ```
 
-## 4. Optional: save to PDF
+## 4. Optional: compare two treatment groups side-by-side
+
+If you want to compare two treatment groups visually, filter the full matrix to
+those samples and split the columns by treatment. This keeps the code simple
+while showing how cohorts differ.
+
+```{r compare-groups, eval=FALSE}
+compare_groups <- c('Control', 'Ciprofloxacin')
+keep_compare <- sample_meta$sample_id[sample_meta$treatment_group %in% compare_groups]
+compare_mat <- mat_all[, keep_compare, drop = FALSE]
+group_factor <- factor(sample_meta$treatment_group[match(colnames(compare_mat), sample_meta$sample_id)],
+                       levels = compare_groups)
+Heatmap(compare_mat,
+        name = 'value',
+        column_split = group_factor,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = FALSE,
+        na_col = na_color) |>
+  draw()
+```
+
+## 5. Optional: save to PDF
 
 ```{r export, eval=FALSE}
 pdf(pdf_path, width = 10, height = 7)
 draw(ht)
 dev.off()
 cat('Saved basic heatmap to', pdf_path, '\n')
+```
+
+## 6. Try a few clustering methods
+
+Even though this notebook is meant to stay simple, it is still useful to peek at
+what happens when we let ComplexHeatmap cluster rows/columns. Below are three
+variants that only differ in the linkage method.
+
+```{r clustering-experiments, fig.width=9, fig.height=6}
+methods <- c('single', 'complete', 'average')
+for (m in methods) {
+  ht_clust <- Heatmap(
+    heatmap_matrix,
+    name = paste('value (', m, ')'),
+    cluster_rows = TRUE,
+    cluster_columns = TRUE,
+    clustering_method_rows = m,
+    clustering_method_columns = m,
+    show_row_names = FALSE,
+    show_column_names = TRUE,
+    na_col = na_color
+  )
+  grid::grid.newpage()
+  draw(ht_clust, main_heatmap = 1)
+}
+```
+
+## 7. Optional: inspect dendrograms directly
+
+Sometimes you just want to see the clustering tree without the heatmap. You can
+reuse the ordered matrix to build a dendrogram using base R functions:
+
+```{r dendrogram-only, fig.width=7, fig.height=4}
+row_dend <- as.dendrogram(hclust(dist(heatmap_matrix), method = 'complete'))
+col_dend <- as.dendrogram(hclust(dist(t(heatmap_matrix)), method = 'complete'))
+
+par(mfrow = c(1, 2))
+plot(row_dend, main = 'Row dendrogram', ylab = 'Height')
+plot(col_dend, main = 'Column dendrogram', ylab = 'Height')
+par(mfrow = c(1, 1))
+```
+
+## 8. Which SNPs vary the most?
+
+To focus on the most dynamic rows, compute the variance of each SNP and plot a
+small heatmap of the top 20. This helps students see where the biggest changes
+occur before moving to the advanced notebook.
+
+```{r top-variance, fig.width=9, fig.height=5}
+row_var <- apply(mat_all, 1, var, na.rm = TRUE)
+top_idx <- order(row_var, decreasing = TRUE)[seq_len(min(20, length(row_var)))]
+ht_top <- Heatmap(
+  mat_all[top_idx, , drop = FALSE],
+  name = 'value',
+  show_row_names = TRUE,
+  row_names_gp = grid::gpar(fontsize = 6),
+  show_column_names = FALSE,
+  na_col = na_color
+)
+draw(ht_top)
 ```
 
 Ready for more control? Open `03_heatmap_annotations.Rmd` to add ordering,
