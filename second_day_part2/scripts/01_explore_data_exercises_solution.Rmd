@@ -1,0 +1,80 @@
+---
+title: "Day 2 – 01 Explore Data (Exercises – Solutions)"
+author: "Seminar practice worksheet"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+Use this key after attempting `scripts/01_explore_data_exercises.Rmd`. The code
+chunks mirror the TODOs but include one possible solution for each task.
+
+## 1. Load and preview the dataset
+
+```{r ex1-sol}
+input_path <- file.path('..', 'data', 'dataset2_subset_long.csv')
+long_df <- read.csv(input_path, stringsAsFactors = FALSE, check.names = FALSE)
+cat('Rows:', nrow(long_df), '\\nColumns:', ncol(long_df), '\\n')
+head(long_df)
+```
+
+## 2. Enumerate genomes and SNPs
+
+```{r ex2-sol}
+unique(long_df$Genome)
+
+table(long_df$Genome)
+
+tapply(long_df$snp_id, long_df$Genome, function(x) length(unique(x)))
+```
+
+## 3. Summaries by genome
+
+```{r ex3-sol}
+sample_values <- long_df$value[1:10]
+summary(sample_values)
+
+aggregate(value ~ Genome, data = long_df, function(x) summary(x))
+```
+
+## 4. Focus on Turicimonas
+
+```{r ex4-sol}
+turicimonas_df <- long_df[long_df$Genome == 'Turicimonas_muris_YL45', ]
+cat('Rows for Turicimonas:', nrow(turicimonas_df), '\\n')
+head(turicimonas_df)
+
+table(turicimonas_df$mouse_id, turicimonas_df$day)
+```
+
+## 5. Visual checkpoints
+
+```{r ex5-sol, fig.width=6, fig.height=4}
+day_counts <- table(long_df$day)
+barplot(day_counts,
+        main = 'Samples per day',
+        xlab = 'Day',
+        ylab = 'Count of measurements')
+```
+
+```{r ex5b-sol, fig.width=6, fig.height=4}
+mouse_counts <- table(long_df$mouse_id)
+barplot(mouse_counts,
+        main = 'Samples per mouse',
+        xlab = 'Mouse ID',
+        ylab = 'Count of measurements',
+        las = 2)
+```
+
+## 6. Stretch idea (optional)
+
+```{r ex6-sol}
+day30 <- long_df[long_df$day == 30, ]
+medians_day30 <- tapply(day30$value, day30$Genome, median, na.rm = TRUE)
+medians_day30
+medians_day30[which.max(medians_day30)]
+```
+
+Feel free to compare your answers with these outputs, then proceed to
+`scripts/02_simple_heatmap.Rmd`.

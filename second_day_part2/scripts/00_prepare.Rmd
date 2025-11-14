@@ -1,0 +1,45 @@
+---
+title: "Day 2 – 00 Prepare Environment"
+author: "Seminar setup"
+output:
+  html_document:
+    toc: false
+---
+
+Use this short notebook (or just run the snippets below) before the workshop to
+ensure all required packages are installed. Keep it simple: install everything
+in one go, then load each package once to check that it works.
+
+```{r install, eval=FALSE}
+install.packages(c('ComplexHeatmap', 'circlize', 'tidyr', 'dplyr'))
+```
+
+```{r load, eval=FALSE}
+library(ComplexHeatmap)
+library(circlize)
+library(tidyr)
+library(dplyr)
+```
+
+After installing the R packages, confirm that Pandoc is present. RStudio ships
+with Pandoc; otherwise install it manually (e.g., `brew install pandoc` on
+macOS or download the installer from <https://pandoc.org/installing.html>). The
+Homebrew install places the binary in `/opt/homebrew/bin/pandoc`, which R picks
+up automatically.
+
+```{r check-pandoc}
+if (!rmarkdown::pandoc_available('1.12.3')) {
+  message('Pandoc 1.12.3+ not found. Install it before knitting the Rmd files.')
+} else {
+  message('Pandoc version detected: ', rmarkdown::pandoc_version())
+}
+```
+
+If you prefer a one-liner from the terminal, run:
+
+```
+R -e "pkgs <- c('ComplexHeatmap','circlize','tidyr','dplyr'); install.packages(setdiff(pkgs, rownames(installed.packages())))"
+```
+
+After installing, you can knit `second_day_part2/data/00_prepare_dataset.Rmd` to
+create the teaching datasets (if needed) and move on to the exploration scripts.

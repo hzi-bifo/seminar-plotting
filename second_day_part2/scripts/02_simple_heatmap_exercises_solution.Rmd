@@ -1,0 +1,143 @@
+---
+title: "Day 2 – 02 Simple Heatmap (Exercises – Solutions)"
+author: "Seminar practice worksheet"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+Below is one possible solution for the worksheet that builds the heatmap from
+`dataset2_subset.csv` / `dataset2_subset_long.csv` (three genomes). Feel free to
+compare this with your own approach.
+
+## 1. Load packages and define paths
+
+```{r setup}
+library(ComplexHeatmap)
+library(circlize)
+
+subset_path <- file.path('..', 'data', 'dataset2_subset.csv')
+long_path <- file.path('..', 'data', 'dataset2_subset_long.csv')
+pdf_path <- file.path('..', 'pdf', 'dataset2_heatmap.pdf')
+```
+
+## 2. Load/inspect the data
+
+```{r load}
+wide_df <- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
+long_df <- read.csv(long_path, check.names = FALSE, stringsAsFactors = FALSE)
+
+cat('Wide table dimensions:', nrow(wide_df), 'rows x', ncol(wide_df), 'columns\n')
+cat('Long table dimensions:', nrow(long_df), 'rows x', ncol(long_df), 'columns\n')
+
+head(wide_df[, c('Genome', 'snp_id', 'Position')])
+head(long_df)
+```
+
+## 3. Quick summaries
+
+```{r summaries}
+print(table(wide_df$Genome))
+
+mouse_day_table <- with(long_df, table(mouse_id, day))
+print(mouse_day_table)
+
+value_summary <- tapply(long_df$value, long_df$Genome, function(x) {
+  c(min = min(x, na.rm = TRUE),
+    median = median(x, na.rm = TRUE),
+    max = max(x, na.rm = TRUE))
+})
+value_summary <- do.call(rbind, value_summary)
+print(value_summary)
+```
+
+## 4. Build the heatmap matrix
+
+```{r matrix}
+sample_cols <- setdiff(names(wide_df), c('Genome', 'snp_id', 'Position'))
+heatmap_matrix <- as.matrix(wide_df[, sample_cols])
+mode(heatmap_matrix) <- 'numeric'
+rownames(heatmap_matrix) <- paste(wide_df$Genome, wide_df$snp_id, sep = ' | ')
+
+sample_meta <- data.frame(sample_id = sample_cols, stringsAsFactors = FALSE)
+split_ids <- strsplit(sample_meta$sample_id, '-', fixed = TRUE)
+sample_meta$mouse_id <- vapply(split_ids, function(x) x[[1]], character(1))
+sample_meta$day <- as.integer(vapply(split_ids, function(x) if (length(x) >= 2) x[[2]] else NA_character_, character(1)))
+
+order_idx <- order(sample_meta$mouse_id, sample_meta$day, sample_meta$sample_id)
+sample_meta <- sample_meta[order_idx, ]
+heatmap_matrix <- heatmap_matrix[, sample_meta$sample_id, drop = FALSE]
+```
+
+## 5. Colors and annotations
+
+```{r colors}
+min_val <- min(heatmap_matrix, na.rm = TRUE)
+max_val <- max(heatmap_matrix, na.rm = TRUE)
+if (!is.finite(min_val)) min_val <- 0
+if (!is.finite(max_val)) max_val <- 1
+if (abs(max_val - min_val) < .Machine$double.eps) {
+  max_val <- min_val + 1
+}
+mid_val <- (min_val + max_val) / 2
+color_fun <- circlize::colorRamp2(c(min_val, mid_val, max_val),
+                                  c('#0c2c84', '#f7fbff', '#b30000'))
+
+mouse_levels <- unique(sample_meta$mouse_id)
+mouse_colors <- setNames(grDevices::rainbow(length(mouse_levels)), mouse_levels)
+
+min_day <- min(sample_meta$day, na.rm = TRUE)
+max_day <- max(sample_meta$day, na.rm = TRUE)
+if (min_day == max_day) {
+  day_colors <- circlize::colorRamp2(c(min_day, min_day + 1), c('#fee8c8', '#e34a33'))
+} else {
+  day_colors <- circlize::colorRamp2(seq(min_day, max_day, length.out = 3),
+                                     c('#fee8c8', '#fdbb84', '#e34a33'))
+}
+
+col_annotation <- HeatmapAnnotation(
+  mouse = factor(sample_meta$mouse_id, levels = mouse_levels),
+  day = sample_meta$day,
+  col = list(mouse = mouse_colors, day = day_colors),
+  annotation_name_side = 'left'
+)
+```
+
+## 6. Draw and export the heatmap
+
+```{r draw, fig.width=10, fig.height=8}
+row_name_size <- max(5, min(8, 40 / log10(max(10, nrow(heatmap_matrix)))))
+col_name_size <- max(6, min(10, 80 / ncol(heatmap_matrix)))
+
+ht <- Heatmap(
+  heatmap_matrix,
+  name = 'value',
+  col = color_fun,
+  na_col = '#f0f0f0',
+  top_annotation = col_annotation,
+  column_split = factor(sample_meta$mouse_id, levels = mouse_levels),
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  column_title = 'Mouse x day samples',
+  row_title = 'Genome | SNP',
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_gp = grid::gpar(fontsize = row_name_size),
+  column_names_gp = grid::gpar(fontsize = col_name_size)
+)
+
+draw(ht, heatmap_legend_side = 'right', annotation_legend_side = 'right')
+
+pdf_height <- max(6, min(18, 0.2 * nrow(heatmap_matrix) + 4))
+pdf_width <- max(8, min(16, 0.2 * ncol(heatmap_matrix) + 6))
+
+dir.create(dirname(pdf_path), recursive = TRUE, showWarnings = FALSE)
+pdf(pdf_path, width = pdf_width, height = pdf_height)
+draw(ht, heatmap_legend_side = 'right', annotation_legend_side = 'right')
+dev.off()
+cat('Saved heatmap to', pdf_path, '\n')
+```
+
+For extra practice, try adding `row_split` by Genome or experiment with a
+different color palette.

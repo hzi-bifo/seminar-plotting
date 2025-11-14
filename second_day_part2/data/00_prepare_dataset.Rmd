@@ -1,0 +1,127 @@
+---
+title: "Day 2 – 00 Prepare Dataset"
+author: "Seminar plotting walk-through"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+This notebook converts the raw Day 2 file (`second_day_part2/data/dataset1.csv`)
+into the tidy CSVs used throughout the course:
+
+- `second_day_part2/data/dataset1_subset.csv` / `dataset1_subset_long.csv`: only
+  the two spotlight genomes (Akkermansia + Bacteroides).
+- `second_day_part2/data/dataset2_subset.csv` / `dataset2_subset_long.csv`: the
+  same table but with a third genome (Turicimonas) added for the exercises
+  track.
+
+Everything is written with base R so that you can explain each step to beginners.
+Run it from the repository root:
+
+```
+R -e "rmarkdown::render('second_day_part2/data/00_prepare_dataset.Rmd')"
+```
+
+## 1. Define input/output paths
+
+```{r paths}
+input_path <- 'dataset1.csv'
+subset_path <- 'dataset1_subset.csv'
+long_path <- 'dataset1_subset_long.csv'
+subset2_path <- 'dataset2_subset.csv'
+long2_path <- 'dataset2_subset_long.csv'
+```
+
+## 2. Load the raw CSV and inspect
+
+```{r load-raw}
+raw_df <- read.csv(
+  input_path,
+  check.names = FALSE,
+  stringsAsFactors = FALSE,
+  fileEncoding = 'UTF-8-BOM'
+)
+
+cat('Rows:', nrow(raw_df), '\\nColumns:', ncol(raw_df), '\\n')
+colnames(raw_df)
+head(raw_df[, 1:8])
+```
+
+Explain that every row is a SNP call with many sample columns (e.g., `1683-0`).
+
+## 3. Helper to build wide + long subsets
+
+```{r helper}
+build_subset <- function(genomes, wide_out, long_out) {
+  message('Preparing subset for genomes: ', paste(genomes, collapse = ', '))
+  subset_df <- raw_df[raw_df$Genome %in% genomes, , drop = FALSE]
+  if (nrow(subset_df) == 0) {
+    stop('No rows left after filtering for ', paste(genomes, collapse = ', '))
+  }
+
+  subset_df$snp_id <- paste(subset_df$Position,
+                            subset_df$Alternative,
+                            subset_df$Reference,
+                            sep = '-')
+
+  sample_cols <- setdiff(names(subset_df),
+                         c('Genome', 'snp_id', 'Position',
+                           'Alternative', 'Reference', 'Feature'))
+
+  wide_df <- subset_df[, c('Genome', 'snp_id', 'Position', sample_cols), drop = FALSE]
+  write.csv(wide_df, wide_out, row.names = FALSE)
+  message('Saved: ', wide_out)
+
+  long_parts <- list()
+  for (col in sample_cols) {
+    long_parts[[length(long_parts) + 1]] <- data.frame(
+      Genome = wide_df$Genome,
+      snp_id = wide_df$snp_id,
+      Position = wide_df$Position,
+      sample = col,
+      value = wide_df[[col]],
+      stringsAsFactors = FALSE
+    )
+  }
+
+  long_df <- do.call(rbind, long_parts)
+  split_ids <- strsplit(long_df$sample, '-', fixed = TRUE)
+  long_df$mouse_id <- vapply(split_ids, function(x) x[[1]], character(1))
+  long_df$day <- as.integer(vapply(split_ids,
+                                   function(x) if (length(x) >= 2) x[[2]] else NA_character_,
+                                   character(1)))
+  long_df$sample <- NULL
+
+  write.csv(long_df, long_out, row.names = FALSE)
+  message('Saved: ', long_out)
+
+  list(wide = wide_df, long = long_df)
+}
+```
+
+## 4. Dataset 1 – two spotlight genomes
+
+```{r dataset1}
+primary_genomes <- c('Akkermansia_muciniphila_YL44', 'Bacteroides_caecimuris_I48')
+dataset1 <- build_subset(primary_genomes, subset_path, long_path)
+head(dataset1$wide[, 1:5])
+head(dataset1$long)
+```
+
+## 5. Dataset 2 – add Turicimonas for exercises
+
+```{r dataset2}
+extended_genomes <- c('Akkermansia_muciniphila_YL44',
+                      'Bacteroides_caecimuris_I48',
+                      'Turicimonas_muris_YL45')
+dataset2 <- build_subset(extended_genomes, subset2_path, long2_path)
+head(dataset2$long)
+```
+
+With both CSV sets created, move on to
+`scripts/01_explore_data.Rmd` for the guided walkthrough, or try the exercises
+notebook (`scripts/01_explore_data_exercises.Rmd`, with
+`scripts/01_explore_data_exercises_solution.Rmd` as a key) that uses the
+three-genome dataset, and finally render `scripts/02_simple_heatmap.Rmd` for the
+visualization.

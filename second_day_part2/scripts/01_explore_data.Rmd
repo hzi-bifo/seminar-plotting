@@ -1,0 +1,208 @@
+---
+title: "Day 2 – 01 Explore Data"
+author: "Seminar plotting walk-through"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+We start the Day 2 session with the already prepared file
+`second_day_part2/data/dataset1_subset_long.csv`. This document simply shows how
+to open that file with base R commands and how to inspect what is inside before
+we move on to plotting. Run `second_day_part2/data/00_prepare_dataset.Rmd`
+first if you need to regenerate the CSV. Knit it from the repository root with:
+
+```
+R -e "rmarkdown::render('second_day_part2/scripts/01_explore_data.Rmd')"
+```
+
+## 1. Load the CSV
+
+```{r load-data}
+input_path <- file.path('..', 'data', 'dataset1_subset_long.csv')
+long_df <- read.csv(input_path, stringsAsFactors = FALSE, check.names = FALSE)
+
+cat('Rows:', nrow(long_df), '\\nColumns:', ncol(long_df), '\\n')
+```
+
+## 2. Look at column names and a small preview
+
+`colnames()` lists the headers exactly as they appear in the CSV and `head()`
+prints the first few rows. Encourage learners to read these outputs aloud so
+they begin to map column names to real-world meaning (genome name, SNP id,
+mouse ID, day, value, ...).
+
+```{r basics}
+colnames(long_df)
+head(long_df)
+```
+
+It can also help to peek at the SNP identifiers themselves to remind everyone
+what a typical label looks like:
+
+```{r show-snps}
+head(unique(long_df$snp_id), n = 5)
+```
+
+## 3. Which genomes are present?
+
+We often start by asking “Which genomes are represented here?”. `unique()`
+returns all distinct values, while `table()` counts how many rows belong to
+each genome.
+
+```{r genome-info}
+unique(long_df$Genome)
+
+table(long_df$Genome)
+```
+
+Explain to students that each row contains the `Genome`, the unique SNP id, the
+mouse ID, the day of sampling, and the measured value.
+
+## 4. How many SNPs per genome?
+
+Counting the unique SNP identifiers per genome shows how much information we
+keep for each organism. The helper `tapply(values, groups, FUN)` applies a
+function to each subset of `values` defined by `groups`. Here we give it the
+vector of SNP ids and ask it to count how many unique ids (`length(unique(x))`)
+exist inside each genome group.
+
+```{r snp-counts}
+snp_per_genome <- tapply(long_df$snp_id, long_df$Genome, function(x) length(unique(x)))
+snp_per_genome
+```
+
+## 5. How many measurements per genome and per mouse?
+
+`table()` can take multiple vectors. With `table(long_df$Genome,
+long_df$mouse_id)` we build a grid showing how many observations we have for
+each genome/mouse pair. Blank cells mean “zero measurements”.
+
+```{r genome-mouse-counts}
+table(long_df$Genome, long_df$mouse_id)
+```
+
+When reviewing the table, pick one cell (for example, row
+`Akkermansia_muciniphila_YL44`, column `1683`) and read it aloud so everyone
+hears “this mouse contributed N measurements for this genome”. Blank cells
+simply mean zero measurements for that combination.
+
+## 6. How many measurements per mouse and per day?
+
+```{r mouse-day}
+table(long_df$mouse_id)
+
+table(long_df$day)
+```
+
+For a combined view you can also build a two-way table. Again we use `table()`,
+this time with `mouse_id` on rows and `day` on columns. Reading across a row
+shows how many time points we have for a given mouse.
+
+```{r mouse-day-2way}
+table(long_df$mouse_id, long_df$day)
+```
+
+Ask the class to find the day with the fewest measurements and discuss why that
+might be. Reading across a row highlights how many time points each mouse has.
+
+## 7. What are the value ranges?
+
+Use `summary()` to describe the numeric column. Remind learners that this gives
+the minimum, 1st quartile, median, mean, 3rd quartile, and maximum.
+
+```{r value-summary}
+summary(long_df$value)
+```
+
+You can also break the summary down by genome to see whether their abundance
+profiles differ. The `aggregate()` function takes a *formula* of the form
+`response ~ group`. Here `value ~ Genome` means “take the `value` column and,
+for each level of `Genome`, run the supplied function”. We pass an anonymous
+function `function(x) summary(x)` so the result contains the same statistics as
+above but computed separately per genome.
+
+Encourage learners to read `value ~ Genome` out loud as “value by Genome”; the
+tilde (`~`) literally plays the role of the word “by”, and the column on the
+left must be numeric because we are calling `summary()` on it.
+
+If learners wonder what `function(x) summary(x)` even looks like, show a tiny
+example first:
+
+```{r function-example}
+sample_values <- long_df$value[1:10]
+summary(sample_values)
+```
+
+Explain that this miniature `summary()` output is exactly what
+`aggregate(value ~ Genome, ...)` will produce for each genome—the anonymous
+function simply receives the subset of values (`x`) for one genome at a time.
+
+```{r value-summary-by-genome}
+value_by_genome <- aggregate(value ~ Genome, data = long_df, function(x) summary(x))
+value_by_genome
+```
+
+## 8. Focus on a single genome (Akkermansia)
+
+Subsetting is a great way to answer specific questions. Below we keep only
+`Akkermansia_muciniphila_YL44` (using a logical comparison inside the square
+brackets) and inspect the resulting table. This demonstrates how to focus on
+one organism without altering the original data frame.
+
+Explain that `long_df$Genome == 'Akkermansia_muciniphila_YL44'` evaluates to a
+vector of TRUE/FALSE values—TRUE where the genome matches that text and FALSE
+everywhere else. When we place that logical vector inside `[...]`, R keeps only
+the TRUE rows.
+
+```{r akkermansia}
+akk_df <- long_df[long_df$Genome == 'Akkermansia_muciniphila_YL44', ]
+cat('Rows for Akkermansia:', nrow(akk_df), '\n')
+head(akk_df)
+
+# After subsetting we can still use `table()` to see how measurements are
+# distributed for this genome alone.
+table(akk_df$mouse_id, akk_df$day)
+```
+
+```{r equality-demo}
+head(long_df$Genome == 'Akkermansia_muciniphila_YL44')
+```
+
+Reading this out loud (“TRUE, TRUE, FALSE, …”) reinforces that the comparison
+creates a logical mask; only the TRUE rows survive when we subset with
+`[...]`.
+
+## 9. Visual cues (simple bar plots)
+
+Beginner audiences often appreciate a quick bar plot to see distribution over
+time and subjects. Base R makes this easy with `barplot()`.
+
+```{r barplot-day, fig.width=6, fig.height=4}
+day_counts <- table(long_df$day)
+barplot(day_counts,
+        main = 'Number of samples per day',
+        xlab = 'Day',
+        ylab = 'Count of measurements')
+```
+
+Highlight the tallest bar and ask why that day collected the most samples; this
+turns the chart into a discussion prompt rather than a passive picture.
+
+```{r barplot-mouse, fig.width=6, fig.height=4}
+mouse_counts <- table(long_df$mouse_id)
+barplot(mouse_counts,
+        main = 'Number of samples per mouse',
+        xlab = 'Mouse ID',
+        ylab = 'Count of measurements',
+        las = 2)
+```
+
+Thanks to `las = 2`, the mouse IDs are readable even if there are many of them.
+Invite learners to identify which mouse has the richest sampling and which one
+has the least.
+
+Having these quick checks documented makes it easy to reassure learners that we
+understand the input file before moving into the plotting notebook
+(`second_day_part2/scripts/02_simple_heatmap.Rmd`).
