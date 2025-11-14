@@ -72,26 +72,56 @@ the subset, and build a `table(mouse_id, day)` for that genome.
 *Hint:* inspect `head(long_df$Genome == 'Turicimonas_muris_YL45')` to see the
 TRUE/FALSE mask created by the comparison.
 
-## 5. Visual checkpoints
+## 5. Allele-frequency focus (Turicimonas vs all genomes)
 
-Goal: create simple bar plots showing how many measurements exist per day and
-per mouse.
+Goal: plot the allele-frequency (`value`) histogram for `Turicimonas_muris_YL45`, then for the entire dataset. Report `summary()` for both vectors and note whether Turicimonas shows more high-frequency SNPs.
 
 ```{r ex5, eval=FALSE}
-# TODO: day_counts <- table(long_df$day); barplot(day_counts,
-#       main = 'Samples per day', xlab = 'Day', ylab = 'Count')
-# TODO: mouse_counts <- table(long_df$mouse_id); barplot(mouse_counts,
-#       main = 'Samples per mouse', xlab = 'Mouse', ylab = 'Count', las = 2)
+# TODO: turicimonas_values <- long_df$value[long_df$Genome == 'Turicimonas_muris_YL45']
+# TODO: hist(turicimonas_values, breaks = 20, main = 'Turicimonas AF', xlab = 'value')
+# TODO: summary(turicimonas_values)
+# TODO: hist(long_df$value, breaks = 30, main = 'All genomes AF', xlab = 'value')
+# TODO: summary(long_df$value)
+# Question: Does Turicimonas concentrate at higher or lower allele frequencies compared to the mix?
 ```
 
-*Hint:* Discuss which day/mouse dominates the dataset and why.
+*Hint:* reuse the histogram idea from the guided notebook and jot down your interpretation.
 
-## 6. Stretch idea (optional)
+## 6. Missing values
+
+Goal: check whether the `value` column contains any `NA`s overall and per mouse/day combination.
+
+```{r ex6, eval=FALSE}
+# TODO: na_total <- sum(is.na(long_df$value))
+# TODO: na_by_mouse_day <- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
+# TODO: print both objects and interpret (all zeros means no missing data).
+```
+
+*Question:* If you do detect NA values, which genome(s) or treatment groups do
+they belong to? State explicitly whether Turicimonas introduces any missing
+allele frequencies.
+
+## 7. Treatment groups
+
+Goal: use the `treatment_group` column to understand how samples are distributed
+across treatments.
+
+```{r ex7, eval=FALSE}
+# TODO: list unique(long_df$treatment_group)
+# TODO: table(long_df$treatment_group)
+# TODO: table(long_df$mouse_id, long_df$treatment_group)
+# TODO: subset long_df for a specific day (e.g., day 30) and inspect treatment groups
+```
+
+*Hint:* use `table()` for quick counts and `unique()` to see combinations of
+mouse/day/group.
+
+## 8. Stretch idea (optional)
 
 Can you reuse these skills to answer: “Which genome has the highest median
 value on day 30?” Outline your approach below before coding it up.
 
-```{r ex6-notes, eval=FALSE}
+```{r ex8-notes, eval=FALSE}
 # Notes / pseudo-code:
 # 1. Filter long_df to day == 30
 # 2. Split by Genome and compute median(value)

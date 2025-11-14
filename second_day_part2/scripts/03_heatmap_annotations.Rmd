@@ -1,0 +1,137 @@
+---
+title: "Day 2 – 03 Heatmap + Annotations (Step by Step)"
+author: "Seminar plotting walk-through"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+This notebook incrementally builds on the basic heatmap from `02_simple_heatmap.Rmd`. Each step introduces one new detail so students can see how changes affect the final figure.
+
+We assume `second_day_part2/data/00_prepare_dataset.Rmd` has already produced the CSVs.
+
+## 1. Load packages and data
+
+```{r packages, message=FALSE, warning=FALSE}
+library(ComplexHeatmap)
+library(circlize)
+subset_path <- file.path('..', 'data', 'dataset1_subset.csv')
+wide_df <- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
+sample_cols <- setdiff(names(wide_df), c('Genome', 'snp_id', 'Position'))
+mat <- as.matrix(wide_df[, sample_cols])
+mode(mat) <- 'numeric'
+rownames(mat) <- paste(wide_df$Genome, wide_df$snp_id, sep = ' | ')
+```
+
+## 2. Step 1 – Plain heatmap (same as 02_simple_heatmap)
+
+```{r step1-plain, fig.width=9, fig.height=6}
+ht_plain <- Heatmap(
+  mat,
+  name = 'value',
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = TRUE
+)
+draw(ht_plain)
+```
+
+## 3. Step 2 – Reorder columns (mouse/day ordering)
+
+```{r step2-order, fig.width=9, fig.height=6}
+sample_meta <- data.frame(sample_id = sample_cols, stringsAsFactors = FALSE)
+split_ids <- strsplit(sample_meta$sample_id, '-', fixed = TRUE)
+sample_meta$mouse_id <- vapply(split_ids, `[[`, character(1), 1)
+sample_meta$day <- as.integer(vapply(split_ids, function(x) if (length(x) >= 2) x[[2]] else NA_character_, character(1)))
+order_idx <- order(sample_meta$mouse_id, sample_meta$day, sample_meta$sample_id)
+mat_ordered <- mat[, order_idx, drop = FALSE]
+ht_ordered <- Heatmap(
+  mat_ordered,
+  name = 'value',
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = TRUE
+)
+draw(ht_ordered)
+```
+
+## 4. Step 3 – Add row labels (Genome | SNP)
+
+```{r step3-rowlabels, fig.width=9, fig.height=6}
+ht_rows <- Heatmap(
+  mat_ordered,
+  name = 'value',
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_gp = grid::gpar(fontsize = 6)
+)
+draw(ht_rows)
+```
+
+## 5. Step 4 – Add simple color control
+
+```{r step4-colors, fig.width=9, fig.height=6}
+min_val <- min(mat_ordered, na.rm = TRUE)
+max_val <- max(mat_ordered, na.rm = TRUE)
+mid_val <- (min_val + max_val) / 2
+col_fun <- circlize::colorRamp2(c(min_val, mid_val, max_val), c('#0c2c84', '#f7fbff', '#b30000'))
+ht_colors <- Heatmap(
+  mat_ordered,
+  name = 'value',
+  col = col_fun,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_gp = grid::gpar(fontsize = 6)
+)
+draw(ht_colors)
+```
+
+## 6. Step 5 – Add column annotations (mouse ID, day)
+
+```{r step5-annotations, fig.width=10, fig.height=6}
+mouse_levels <- unique(sample_meta$mouse_id)
+mouse_colors <- setNames(grDevices::rainbow(length(mouse_levels)), mouse_levels)
+min_day <- min(sample_meta$day, na.rm = TRUE)
+max_day <- max(sample_meta$day, na.rm = TRUE)
+if (min_day == max_day) {
+  day_colors <- circlize::colorRamp2(c(min_day, min_day + 1), c('#fee8c8', '#e34a33'))
+} else {
+  day_colors <- circlize::colorRamp2(seq(min_day, max_day, length.out = 3), c('#fee8c8', '#fdbb84', '#e34a33'))
+}
+col_ann <- HeatmapAnnotation(
+  mouse = factor(sample_meta$mouse_id, levels = mouse_levels),
+  day = sample_meta$day,
+  col = list(mouse = mouse_colors, day = day_colors),
+  annotation_name_side = 'left'
+)
+ht_ann <- Heatmap(
+  mat_ordered,
+  name = 'value',
+  col = col_fun,
+  top_annotation = col_ann,
+  column_split = factor(sample_meta$mouse_id, levels = mouse_levels),
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = TRUE,
+  show_column_names = TRUE,
+  row_names_gp = grid::gpar(fontsize = 6)
+)
+draw(ht_ann, heatmap_legend_side = 'right', annotation_legend_side = 'right')
+```
+
+## 7. Step 6 – Export to PDF
+
+```{r export, eval=FALSE}
+pdf(file.path('..', 'pdf', '02_simple_heatmap_with_annotations.pdf'), width = 10, height = 7)
+draw(ht_ann, heatmap_legend_side = 'right', annotation_legend_side = 'right')
+dev.off()
+```
+
+You can extend this notebook further by experimenting with row splits, additional color control, or integrating external annotations. Compare this result with the minimalist `02_simple_heatmap.Rmd` to emphasize how each step adds clarity.

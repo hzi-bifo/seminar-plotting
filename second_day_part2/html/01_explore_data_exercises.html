@@ -411,19 +411,45 @@ only, show <code>head()</code> of the subset, and build a
 <code>head(long_df$Genome == &#39;Turicimonas_muris_YL45&#39;)</code> to see the
 TRUE/FALSE mask created by the comparison.</p>
 </div>
-<div id="visual-checkpoints" class="section level2">
-<h2>5. Visual checkpoints</h2>
-<p>Goal: create simple bar plots showing how many measurements exist per
-day and per mouse.</p>
-<pre class="r"><code># TODO: day_counts &lt;- table(long_df$day); barplot(day_counts,
-#       main = &#39;Samples per day&#39;, xlab = &#39;Day&#39;, ylab = &#39;Count&#39;)
-# TODO: mouse_counts &lt;- table(long_df$mouse_id); barplot(mouse_counts,
-#       main = &#39;Samples per mouse&#39;, xlab = &#39;Mouse&#39;, ylab = &#39;Count&#39;, las = 2)</code></pre>
-<p><em>Hint:</em> Discuss which day/mouse dominates the dataset and
-why.</p>
+<div id="allele-frequency-focus-turicimonas-vs-all-genomes" class="section level2">
+<h2>5. Allele-frequency focus (Turicimonas vs all genomes)</h2>
+<p>Goal: plot the allele-frequency (<code>value</code>) histogram for
+<code>Turicimonas_muris_YL45</code>, then for the entire dataset. Report
+<code>summary()</code> for both vectors and note whether Turicimonas
+shows more high-frequency SNPs.</p>
+<pre class="r"><code># TODO: turicimonas_values &lt;- long_df$value[long_df$Genome == &#39;Turicimonas_muris_YL45&#39;]
+# TODO: hist(turicimonas_values, breaks = 20, main = &#39;Turicimonas AF&#39;, xlab = &#39;value&#39;)
+# TODO: summary(turicimonas_values)
+# TODO: hist(long_df$value, breaks = 30, main = &#39;All genomes AF&#39;, xlab = &#39;value&#39;)
+# TODO: summary(long_df$value)
+# Question: Does Turicimonas concentrate at higher or lower allele frequencies compared to the mix?</code></pre>
+<p><em>Hint:</em> reuse the histogram idea from the guided notebook and
+jot down your interpretation.</p>
+</div>
+<div id="missing-values" class="section level2">
+<h2>6. Missing values</h2>
+<p>Goal: check whether the <code>value</code> column contains any
+<code>NA</code>s overall and per mouse/day combination.</p>
+<pre class="r"><code># TODO: na_total &lt;- sum(is.na(long_df$value))
+# TODO: na_by_mouse_day &lt;- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
+# TODO: print both objects and interpret (all zeros means no missing data).</code></pre>
+<p><em>Question:</em> If you do detect NA values, which genome(s) or
+treatment groups do they belong to? State explicitly whether Turicimonas
+introduces any missing allele frequencies.</p>
+</div>
+<div id="treatment-groups" class="section level2">
+<h2>7. Treatment groups</h2>
+<p>Goal: use the <code>treatment_group</code> column to understand how
+samples are distributed across treatments.</p>
+<pre class="r"><code># TODO: list unique(long_df$treatment_group)
+# TODO: table(long_df$treatment_group)
+# TODO: table(long_df$mouse_id, long_df$treatment_group)
+# TODO: subset long_df for a specific day (e.g., day 30) and inspect treatment groups</code></pre>
+<p><em>Hint:</em> use <code>table()</code> for quick counts and
+<code>unique()</code> to see combinations of mouse/day/group.</p>
 </div>
 <div id="stretch-idea-optional" class="section level2">
-<h2>6. Stretch idea (optional)</h2>
+<h2>8. Stretch idea (optional)</h2>
 <p>Can you reuse these skills to answer: “Which genome has the highest
 median value on day 30?” Outline your approach below before coding it
 up.</p>

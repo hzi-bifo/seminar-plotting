@@ -35,7 +35,17 @@ head(wide_df[, c('Genome', 'snp_id', 'Position')])
 head(long_df)
 ```
 
-## 3. Quick summaries
+## 3. Choose a treatment group subset
+
+```{r ex3-groups-sol}
+target_group <- 'Control'
+sample_meta <- unique(long_df[, c('mouse_id', 'day', 'treatment_group')])
+sample_meta$sample_id <- paste(sample_meta$mouse_id, sample_meta$day, sep = '-')
+keep_samples <- sample_meta$sample_id[sample_meta$treatment_group == target_group]
+wide_df <- wide_df[, c('Genome', 'snp_id', 'Position', keep_samples)]
+```
+
+## 4. Quick summaries
 
 ```{r summaries}
 print(table(wide_df$Genome))
@@ -52,7 +62,7 @@ value_summary <- do.call(rbind, value_summary)
 print(value_summary)
 ```
 
-## 4. Build the heatmap matrix
+## 5. Build the heatmap matrix
 
 ```{r matrix}
 sample_cols <- setdiff(names(wide_df), c('Genome', 'snp_id', 'Position'))
@@ -70,7 +80,7 @@ sample_meta <- sample_meta[order_idx, ]
 heatmap_matrix <- heatmap_matrix[, sample_meta$sample_id, drop = FALSE]
 ```
 
-## 5. Colors and annotations
+## 6. Colors and annotations
 
 ```{r colors}
 min_val <- min(heatmap_matrix, na.rm = TRUE)
@@ -104,7 +114,7 @@ col_annotation <- HeatmapAnnotation(
 )
 ```
 
-## 6. Draw and export the heatmap
+## 7. Draw and export the heatmap
 
 ```{r draw, fig.width=10, fig.height=8}
 row_name_size <- max(5, min(8, 40 / log10(max(10, nrow(heatmap_matrix)))))

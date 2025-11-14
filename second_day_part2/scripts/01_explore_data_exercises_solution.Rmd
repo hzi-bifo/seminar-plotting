@@ -48,28 +48,44 @@ head(turicimonas_df)
 table(turicimonas_df$mouse_id, turicimonas_df$day)
 ```
 
-## 5. Visual checkpoints
+## 5. Allele-frequency focus (Turicimonas vs all genomes)
 
 ```{r ex5-sol, fig.width=6, fig.height=4}
-day_counts <- table(long_df$day)
-barplot(day_counts,
-        main = 'Samples per day',
-        xlab = 'Day',
-        ylab = 'Count of measurements')
+turicimonas_values <- long_df$value[long_df$Genome == 'Turicimonas_muris_YL45']
+hist(turicimonas_values, breaks = 20, main = 'Turicimonas AF', xlab = 'value')
+summary(turicimonas_values)
 ```
 
 ```{r ex5b-sol, fig.width=6, fig.height=4}
-mouse_counts <- table(long_df$mouse_id)
-barplot(mouse_counts,
-        main = 'Samples per mouse',
-        xlab = 'Mouse ID',
-        ylab = 'Count of measurements',
-        las = 2)
+hist(long_df$value, breaks = 30, main = 'All genomes AF', xlab = 'value')
+summary(long_df$value)
 ```
 
-## 6. Stretch idea (optional)
+## 6. Missing values
 
-```{r ex6-sol}
+```{r ex6-na}
+na_total <- sum(is.na(long_df$value))
+na_total
+
+na_by_mouse_day <- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
+na_by_mouse_day
+```
+
+In this dataset the counts are all zero, so no genome (including Turicimonas)
+introduces missing allele-frequency entries.
+
+## 7. Treatment groups
+
+```{r ex7-groups}
+unique(long_df$treatment_group)
+table(long_df$treatment_group)
+table(long_df$mouse_id, long_df$treatment_group)
+long_df[long_df$day == 30, c('mouse_id','treatment_group')]
+```
+
+## 8. Stretch idea (optional)
+
+```{r ex8-sol}
 day30 <- long_df[long_df$day == 30, ]
 medians_day30 <- tapply(day30$value, day30$Genome, median, na.rm = TRUE)
 medians_day30

@@ -36,7 +36,22 @@ on your own.
 # TODO: print their dimensions and call head() on each
 ```
 
-## 3. Quick summaries
+## 3. Choose a treatment group subset
+
+Decide which `treatment_group` you want to display (e.g., Control vs
+Ciprofloxacin). Filter the columns of the wide matrix so only samples from that
+group remain. Hint: use the long table to map `mouse_id` + `day` to sample IDs
+like `1683-0` before subsetting the wide table.
+
+```{r ex3-groups, eval=FALSE}
+# TODO: target_group <- 'Control'
+# TODO: build sample_meta <- unique(long_df[, c('mouse_id','day','treatment_group')])
+# TODO: sample_meta$sample_id <- paste(...)
+# TODO: keep_samples <- sample_meta$sample_id[sample_meta$treatment_group == target_group]
+# TODO: subset the wide_df columns with keep_samples
+```
+
+## 4. Quick summaries
 
 - Count SNPs per genome using `table(wide_df$Genome)`.
 - Build `with(long_df, table(mouse_id, day))` for coverage.
@@ -46,7 +61,7 @@ on your own.
 # TODO: add commands described above
 ```
 
-## 4. Build the heatmap matrix
+## 5. Build the heatmap matrix
 
 ```{r ex4, eval=FALSE}
 # TODO: sample_cols <- setdiff(names(wide_df), c('Genome','snp_id','Position'))
@@ -59,7 +74,7 @@ on your own.
 *Hint:* reuse the ordering logic from the guided notebook (`order()` on
 `mouse_id`, `day`, `sample_id`).
 
-## 5. Colors and annotations
+## 6. Colors and annotations
 
 ```{r ex5, eval=FALSE}
 # TODO: compute min/mid/max for the matrix (na.rm = TRUE)
@@ -69,7 +84,7 @@ on your own.
 
 Challenge yourself to switch the palette (e.g., use `RColorBrewer::brewer.pal`).
 
-## 6. Draw and export the heatmap
+## 7. Draw and export the heatmap
 
 ```{r ex6, eval=FALSE}
 # TODO: construct Heatmap(...) object with top_annotation, column_split, etc.
@@ -77,7 +92,7 @@ Challenge yourself to switch the palette (e.g., use `RColorBrewer::brewer.pal`).
 # TODO: save to pdf_path (dir.create + pdf + draw + dev.off())
 ```
 
-## 7. Reflection prompts
+## 8. Reflection prompts
 
 1. Do you notice any new patterns when Turicimonas is included?
 2. How would you highlight just the Turicimonas rows (hint: `row_split`)?

@@ -73,21 +73,6 @@ snp_per_genome <- tapply(long_df$snp_id, long_df$Genome, function(x) length(uniq
 snp_per_genome
 ```
 
-## 5. How many measurements per genome and per mouse?
-
-`table()` can take multiple vectors. With `table(long_df$Genome,
-long_df$mouse_id)` we build a grid showing how many observations we have for
-each genome/mouse pair. Blank cells mean “zero measurements”.
-
-```{r genome-mouse-counts}
-table(long_df$Genome, long_df$mouse_id)
-```
-
-When reviewing the table, pick one cell (for example, row
-`Akkermansia_muciniphila_YL44`, column `1683`) and read it aloud so everyone
-hears “this mouse contributed N measurements for this genome”. Blank cells
-simply mean zero measurements for that combination.
-
 ## 6. How many measurements per mouse and per day?
 
 ```{r mouse-day}
@@ -104,47 +89,85 @@ shows how many time points we have for a given mouse.
 table(long_df$mouse_id, long_df$day)
 ```
 
-Ask the class to find the day with the fewest measurements and discuss why that
-might be. Reading across a row highlights how many time points each mouse has.
+Pick any cell and inspect those rows directly. For example, mouse 1683 on day 0
+has the following measurements (all SNPs for that mouse/day):
 
-## 7. What are the value ranges?
+```{r mouse-day-example}
+subset_example <- long_df[long_df$mouse_id == '1683' & long_df$day == 0, ]
+subset_example
+```
 
-Use `summary()` to describe the numeric column. Remind learners that this gives
-the minimum, 1st quartile, median, mean, 3rd quartile, and maximum.
+## 6. What do the allele-frequency values look like?
 
-```{r value-summary}
+Start by focusing on a single genome (Akkermansia) so the histogram is easy to
+interpret, then compare it against the combined dataset.
+
+```{r value-hist-akk}
+akk_values <- long_df$value[long_df$Genome == 'Akkermansia_muciniphila_YL44']
+hist(akk_values, breaks = 20, main = 'Akkermansia allele frequencies', xlab = 'value (allele frequency)')
+summary(akk_values)
+```
+
+Do the same for Bacteroides (the other genome in this dataset).
+
+```{r value-hist-bact}
+bacto_values <- long_df$value[long_df$Genome == 'Bacteroides_caecimuris_I48']
+hist(bacto_values, breaks = 20, main = 'Bacteroides allele frequencies', xlab = 'value (allele frequency)')
+summary(bacto_values)
+```
+
+Now look at the complete long table to see how the mixture of genomes changes the distribution.
+
+```{r value-hist}
+hist(long_df$value, breaks = 30, main = 'All genomes: allele-frequency histogram', xlab = 'value (allele frequency)')
 summary(long_df$value)
 ```
 
-You can also break the summary down by genome to see whether their abundance
-profiles differ. The `aggregate()` function takes a *formula* of the form
-`response ~ group`. Here `value ~ Genome` means “take the `value` column and,
-for each level of `Genome`, run the supplied function”. We pass an anonymous
-function `function(x) summary(x)` so the result contains the same statistics as
-above but computed separately per genome.
-
-Encourage learners to read `value ~ Genome` out loud as “value by Genome”; the
-tilde (`~`) literally plays the role of the word “by”, and the column on the
-left must be numeric because we are calling `summary()` on it.
-
-If learners wonder what `function(x) summary(x)` even looks like, show a tiny
-example first:
-
-```{r function-example}
-sample_values <- long_df$value[1:10]
-summary(sample_values)
-```
-
-Explain that this miniature `summary()` output is exactly what
-`aggregate(value ~ Genome, ...)` will produce for each genome—the anonymous
-function simply receives the subset of values (`x`) for one genome at a time.
+To compare genomes explicitly, break the summary down by genome using
+`aggregate(value ~ Genome, ...)`. Read `value ~ Genome` as “value grouped by
+Genome”. The column on the left must be numeric because we are calling
+`summary()` on it.
 
 ```{r value-summary-by-genome}
 value_by_genome <- aggregate(value ~ Genome, data = long_df, function(x) summary(x))
 value_by_genome
 ```
 
-## 8. Focus on a single genome (Akkermansia)
+## 7. How many missing values?
+
+Count how many `NA` values appear in `value` and, if any, locate them by mouse/day.
+
+```{r missing}
+na_total <- sum(is.na(long_df$value))
+na_total
+
+na_by_mouse_day <- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
+na_by_mouse_day
+```
+
+## 8. Treatment-group overview
+
+The long table now contains a `treatment_group` column. Start by listing the distinct labels and counting how many rows belong to each group.
+
+```{r group-counts}
+unique(long_df$treatment_group)
+table(long_df$treatment_group)
+```
+
+Which treatment groups appear for each mouse? Use a cross-tabulation to reinforce how mice were assigned.
+
+```{r group-by-mouse}
+table(long_df$mouse_id, long_df$treatment_group)
+```
+
+You can also inspect specific days. For example, day 30 only:
+
+```{r group-by-day}
+subset_day30 <- long_df[long_df$day == 30, c('mouse_id', 'treatment_group')]
+unique(subset_day30)
+```
+
+## 9. Focus on a single genome (Akkermansia)
 
 Subsetting is a great way to answer specific questions. Below we keep only
 `Akkermansia_muciniphila_YL44` (using a logical comparison inside the square
@@ -173,35 +196,6 @@ head(long_df$Genome == 'Akkermansia_muciniphila_YL44')
 Reading this out loud (“TRUE, TRUE, FALSE, …”) reinforces that the comparison
 creates a logical mask; only the TRUE rows survive when we subset with
 `[...]`.
-
-## 9. Visual cues (simple bar plots)
-
-Beginner audiences often appreciate a quick bar plot to see distribution over
-time and subjects. Base R makes this easy with `barplot()`.
-
-```{r barplot-day, fig.width=6, fig.height=4}
-day_counts <- table(long_df$day)
-barplot(day_counts,
-        main = 'Number of samples per day',
-        xlab = 'Day',
-        ylab = 'Count of measurements')
-```
-
-Highlight the tallest bar and ask why that day collected the most samples; this
-turns the chart into a discussion prompt rather than a passive picture.
-
-```{r barplot-mouse, fig.width=6, fig.height=4}
-mouse_counts <- table(long_df$mouse_id)
-barplot(mouse_counts,
-        main = 'Number of samples per mouse',
-        xlab = 'Mouse ID',
-        ylab = 'Count of measurements',
-        las = 2)
-```
-
-Thanks to `las = 2`, the mouse IDs are readable even if there are many of them.
-Invite learners to identify which mouse has the richest sampling and which one
-has the least.
 
 Having these quick checks documented makes it easy to reassure learners that we
 understand the input file before moving into the plotting notebook

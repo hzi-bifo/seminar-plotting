@@ -31,6 +31,7 @@ subset_path <- 'dataset1_subset.csv'
 long_path <- 'dataset1_subset_long.csv'
 subset2_path <- 'dataset2_subset.csv'
 long2_path <- 'dataset2_subset_long.csv'
+group_map_path <- 'mouse_group_mapping.csv'
 ```
 
 ## 2. Load the raw CSV and inspect
@@ -85,16 +86,32 @@ build_subset <- function(genomes, wide_out, long_out) {
     )
   }
 
-  long_df <- do.call(rbind, long_parts)
-  split_ids <- strsplit(long_df$sample, '-', fixed = TRUE)
-  long_df$mouse_id <- vapply(split_ids, function(x) x[[1]], character(1))
-  long_df$day <- as.integer(vapply(split_ids,
-                                   function(x) if (length(x) >= 2) x[[2]] else NA_character_,
-                                   character(1)))
-  long_df$sample <- NULL
+long_df <- do.call(rbind, long_parts)
+split_ids <- strsplit(long_df$sample, '-', fixed = TRUE)
+long_df$mouse_id <- vapply(split_ids, function(x) x[[1]], character(1))
+long_df$day <- as.integer(vapply(split_ids,
+                                 function(x) if (length(x) >= 2) x[[2]] else NA_character_,
+                                 character(1)))
+long_df$sample <- NULL
 
-  write.csv(long_df, long_out, row.names = FALSE)
-  message('Saved: ', long_out)
+# Attach treatment group information (if available)
+if (file.exists(group_map_path)) {
+  group_map <- read.csv(group_map_path, stringsAsFactors = FALSE, check.names = FALSE)
+  group_map$Mouse <- as.character(group_map$Mouse)
+  group_map$Day <- as.integer(group_map$Day)
+  long_df <- merge(
+    long_df,
+    group_map[, c('Mouse', 'Day', 'Group')],
+    by.x = c('mouse_id', 'day'),
+    by.y = c('Mouse', 'Day'),
+    all.x = TRUE
+  )
+  names(long_df)[names(long_df) == 'Group'] <- 'treatment_group'
+  long_df <- long_df[, c('Genome', 'snp_id', 'Position', 'value', 'mouse_id', 'day', 'treatment_group')]
+}
+
+write.csv(long_df, long_out, row.names = FALSE)
+message('Saved: ', long_out)
 
   list(wide = wide_df, long = long_df)
 }
