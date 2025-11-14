@@ -59,7 +59,36 @@ ht <- Heatmap(
 draw(ht)
 ```
 
-## 4. Optional: compare two treatment groups side-by-side
+## 4. Optional: highlight treatment and baseline/post status
+
+Before moving on, you can add a light-weight column annotation labeling each sample with its treatment group and whether it was collected at baseline (day 0) or post-antibiotic (day > 0).
+
+```{r column-annotation, fig.width=9, fig.height=6}
+sample_info <- sample_meta[sample_meta$sample_id %in% colnames(heatmap_matrix), ]
+sample_info <- sample_info[match(colnames(heatmap_matrix), sample_info$sample_id), ]
+sample_info$post_ab <- ifelse(sample_info$day == 0, 'baseline', 'post')
+
+col_ann <- HeatmapAnnotation(
+  treatment = sample_info$treatment_group,
+  status = sample_info$post_ab,
+  annotation_name_side = 'left'
+)
+
+ht_ann <- Heatmap(
+  heatmap_matrix,
+  name = 'value',
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = TRUE,
+  na_col = na_color,
+  top_annotation = col_ann
+)
+
+draw(ht_ann)
+```
+
+## 5. Optional: compare two treatment groups side-by-side
 
 If you want to compare two treatment groups visually, filter the full matrix to
 those samples and split the columns by treatment. This keeps the code simple
@@ -81,7 +110,7 @@ Heatmap(compare_mat,
   draw()
 ```
 
-## 5. Optional: save to PDF
+## 6. Optional: save to PDF
 
 ```{r export, eval=FALSE}
 pdf(pdf_path, width = 10, height = 7)
@@ -90,7 +119,7 @@ dev.off()
 cat('Saved basic heatmap to', pdf_path, '\n')
 ```
 
-## 6. Try a few clustering methods
+## 7. Try a few clustering methods
 
 Even though this notebook is meant to stay simple, it is still useful to peek at
 what happens when we let ComplexHeatmap cluster rows/columns. Below are three
@@ -115,7 +144,7 @@ for (m in methods) {
 }
 ```
 
-## 7. Optional: inspect dendrograms directly
+## 8. Optional: inspect dendrograms directly
 
 Sometimes you just want to see the clustering tree without the heatmap. You can
 reuse the ordered matrix to build a dendrogram using base R functions:
@@ -130,7 +159,7 @@ plot(col_dend, main = 'Column dendrogram', ylab = 'Height')
 par(mfrow = c(1, 1))
 ```
 
-## 8. Which SNPs vary the most?
+## 9. Which SNPs vary the most?
 
 To focus on the most dynamic rows, compute the variance of each SNP and plot a
 small heatmap of the top 20. This helps students see where the biggest changes
