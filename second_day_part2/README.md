@@ -6,6 +6,7 @@ The materials are organized so that we first prepare the R environment, optional
 
 - `dataset1_subset.csv` / `dataset1_subset_long.csv` — two spotlight genomes (Akkermansia + Bacteroides).
 - `dataset2_subset.csv` / `dataset2_subset_long.csv` — adds Turicimonas for extra practice/exercises.
+- `dataset3_subset.csv` / `dataset3_subset_long.csv` — contains all genomes from the raw publication table.
 
 ## Session Outline
 

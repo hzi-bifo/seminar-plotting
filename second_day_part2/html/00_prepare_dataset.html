@@ -365,6 +365,8 @@ long subsets</a></li>
 genomes</a></li>
 <li><a href="#dataset-2-add-turicimonas-for-exercises" id="toc-dataset-2-add-turicimonas-for-exercises">5. Dataset 2 – add
 Turicimonas for exercises</a></li>
+<li><a href="#dataset-3-include-all-genomes" id="toc-dataset-3-include-all-genomes">6. Dataset 3 – include all
+genomes</a></li>
 </ul>
 </div>
 
@@ -389,6 +391,8 @@ subset_path &lt;- &#39;dataset1_subset.csv&#39;
 long_path &lt;- &#39;dataset1_subset_long.csv&#39;
 subset2_path &lt;- &#39;dataset2_subset.csv&#39;
 long2_path &lt;- &#39;dataset2_subset_long.csv&#39;
+subset3_path &lt;- &#39;dataset3_subset.csv&#39;
+long3_path &lt;- &#39;dataset3_subset_long.csv&#39;
 group_map_path &lt;- &#39;mouse_group_mapping.csv&#39;</code></pre>
 </div>
 <div id="load-the-raw-csv-and-inspect" class="section level2">
@@ -547,6 +551,29 @@ dataset2 &lt;- build_subset(extended_genomes, subset2_path, long2_path)</code></
 <pre><code>## Saved: dataset2_subset.csv</code></pre>
 <pre><code>## Saved: dataset2_subset_long.csv</code></pre>
 <pre class="r"><code>head(dataset2$long)</code></pre>
+<pre><code>##                         Genome      snp_id Position    value mouse_id day
+## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000     1683   0
+## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587     1683   0
+## 3 Akkermansia_muciniphila_YL44  355328-A-T   355328 0.138182     1683   0
+## 4 Akkermansia_muciniphila_YL44  356291-C-A   356291 0.000000     1683   0
+## 5 Akkermansia_muciniphila_YL44 2351445-C-T  2351445 0.000000     1683   0
+## 6   Bacteroides_caecimuris_I48 1601848-T-C  1601848 0.041609     1683   0
+##   treatment_group
+## 1         Control
+## 2         Control
+## 3         Control
+## 4         Control
+## 5         Control
+## 6         Control</code></pre>
+</div>
+<div id="dataset-3-include-all-genomes" class="section level2">
+<h2>6. Dataset 3 – include all genomes</h2>
+<pre class="r"><code>all_genomes &lt;- unique(raw_df$Genome)
+dataset3 &lt;- build_subset(all_genomes, subset3_path, long3_path)</code></pre>
+<pre><code>## Preparing subset for genomes: Akkermansia_muciniphila_YL44, Bacteroides_caecimuris_I48, Blautia_coccoides_YL58, Clostridium_innocuum_I46, Enterocloster_clostridioformis_YL32, Turicimonas_muris_YL45</code></pre>
+<pre><code>## Saved: dataset3_subset.csv</code></pre>
+<pre><code>## Saved: dataset3_subset_long.csv</code></pre>
+<pre class="r"><code>head(dataset3$long)</code></pre>
 <pre><code>##                         Genome      snp_id Position    value mouse_id day
 ## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000     1683   0
 ## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587     1683   0

@@ -31,6 +31,8 @@ subset_path <- 'dataset1_subset.csv'
 long_path <- 'dataset1_subset_long.csv'
 subset2_path <- 'dataset2_subset.csv'
 long2_path <- 'dataset2_subset_long.csv'
+subset3_path <- 'dataset3_subset.csv'
+long3_path <- 'dataset3_subset_long.csv'
 group_map_path <- 'mouse_group_mapping.csv'
 ```
 
@@ -134,6 +136,14 @@ extended_genomes <- c('Akkermansia_muciniphila_YL44',
                       'Turicimonas_muris_YL45')
 dataset2 <- build_subset(extended_genomes, subset2_path, long2_path)
 head(dataset2$long)
+```
+
+## 6. Dataset 3 – include all genomes
+
+```{r dataset3}
+all_genomes <- unique(raw_df$Genome)
+dataset3 <- build_subset(all_genomes, subset3_path, long3_path)
+head(dataset3$long)
 ```
 
 With both CSV sets created, move on to
