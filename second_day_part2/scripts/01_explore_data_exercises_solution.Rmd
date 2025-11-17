@@ -83,7 +83,7 @@ table(long_df$mouse_id, long_df$treatment_group)
 long_df[long_df$day == 30, c('mouse_id','treatment_group')]
 ```
 
-## 8. Stretch idea (optional)
+## 8. Stretch idea
 
 ```{r ex8-sol}
 day30 <- long_df[long_df$day == 30, ]

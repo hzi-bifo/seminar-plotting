@@ -14,6 +14,8 @@ before moving on to the fully annotated version in `03_heatmap_annotations.Rmd`.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(ComplexHeatmap)
+library(circlize)
+library(viridisLite)
 subset_path <- file.path('..', 'data', 'dataset1_subset.csv')
 long_path <- file.path('..', 'data', 'dataset1_subset_long.csv')
 pdf_path <- file.path('..', 'pdf', 'dataset1_heatmap_basic.pdf')
@@ -43,12 +45,25 @@ heatmap_matrix <- mat_all[, keep_cols, drop = FALSE]
 colnames(heatmap_matrix) <- keep_cols
 ```
 
-## 3. Draw the simplest possible heatmap
+## 3. Choose a data-aware color scale
+
+Allele frequencies naturally lie between 0 and 1. Using a diverging palette with an assumed midpoint (e.g., 0.5) suggests there is a special reference level, which is misleading for these measurements. Instead, derive a sequential palette from the observed range so color intensity increases smoothly with the allele frequency.
+
+```{r color-scale}
+value_range <- range(heatmap_matrix, na.rm = TRUE)
+color_breaks <- seq(value_range[1], value_range[2], length.out = 5)
+color_fun <- circlize::colorRamp2(color_breaks, viridisLite::viridis(5))
+```
+
+Feel free to swap in other sequential palettes (e.g., `RColorBrewer`) as long as the hues progress monotonically with the data.
+
+## 4. Draw the simplest possible heatmap
 
 ```{r draw, fig.width=9, fig.height=6}
 ht <- Heatmap(
   heatmap_matrix,
   name = 'value',
+  col = color_fun,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
@@ -59,7 +74,7 @@ ht <- Heatmap(
 draw(ht)
 ```
 
-## 4. Optional: highlight treatment and baseline/post status
+## 5. Optional: highlight treatment and baseline/post status
 
 Before moving on, you can add a light-weight column annotation labeling each sample with its treatment group and whether it was collected at baseline (day 0) or post-antibiotic (day > 0).
 
@@ -77,6 +92,7 @@ col_ann <- HeatmapAnnotation(
 ht_ann <- Heatmap(
   heatmap_matrix,
   name = 'value',
+  col = color_fun,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
@@ -88,7 +104,7 @@ ht_ann <- Heatmap(
 draw(ht_ann)
 ```
 
-## 5. Optional: compare two treatment groups side-by-side
+## 6. Optional: compare two treatment groups side-by-side
 
 If you want to compare two treatment groups visually, filter the full matrix to
 those samples and split the columns by treatment. This keeps the code simple
@@ -102,6 +118,7 @@ group_factor <- factor(sample_meta$treatment_group[match(colnames(compare_mat), 
                        levels = compare_groups)
 Heatmap(compare_mat,
         name = 'value',
+        col = color_fun,
         column_split = group_factor,
         cluster_rows = FALSE,
         cluster_columns = FALSE,
@@ -110,7 +127,7 @@ Heatmap(compare_mat,
   draw()
 ```
 
-## 6. Optional: save to PDF
+## 7. Optional: save to PDF
 
 ```{r export, eval=FALSE}
 pdf(pdf_path, width = 10, height = 7)
@@ -119,7 +136,7 @@ dev.off()
 cat('Saved basic heatmap to', pdf_path, '\n')
 ```
 
-## 7. Try a few clustering methods
+## 8. Try a few clustering methods
 
 Even though this notebook is meant to stay simple, it is still useful to peek at
 what happens when we let ComplexHeatmap cluster rows/columns. Below are three
@@ -131,6 +148,7 @@ for (m in methods) {
   ht_clust <- Heatmap(
     heatmap_matrix,
     name = paste('value (', m, ')'),
+    col = color_fun,
     cluster_rows = TRUE,
     cluster_columns = TRUE,
     clustering_method_rows = m,
@@ -144,7 +162,7 @@ for (m in methods) {
 }
 ```
 
-## 8. Optional: inspect dendrograms directly
+## 9. Optional: inspect dendrograms directly
 
 Sometimes you just want to see the clustering tree without the heatmap. You can
 reuse the ordered matrix to build a dendrogram using base R functions:
@@ -159,7 +177,7 @@ plot(col_dend, main = 'Column dendrogram', ylab = 'Height')
 par(mfrow = c(1, 1))
 ```
 
-## 9. Which SNPs vary the most?
+## 10. Which SNPs vary the most?
 
 To focus on the most dynamic rows, compute the variance of each SNP and plot a
 small heatmap of the top 20. This helps students see where the biggest changes
@@ -171,6 +189,7 @@ top_idx <- order(row_var, decreasing = TRUE)[seq_len(min(20, length(row_var)))]
 ht_top <- Heatmap(
   mat_all[top_idx, , drop = FALSE],
   name = 'value',
+  col = color_fun,
   show_row_names = TRUE,
   row_names_gp = grid::gpar(fontsize = 6),
   show_column_names = FALSE,

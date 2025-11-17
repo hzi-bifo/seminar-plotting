@@ -354,12 +354,13 @@ display: none;
 
 <p>title: “Day 2 – 01 Explore Data (Exercises)” author: “Seminar
 practice worksheet” output: html_document: toc: true toc_depth: 2 —</p>
-<p>This self-paced worksheet mirrors the guided exploration but uses
-<code>second_day_part2/data/dataset2_subset_long.csv</code>, which
-contains three genomes (Akkermansia, Bacteroides, Turicimonas). Students
-should type their own code into the chunks below. Hints are provided in
-the text; the code blocks are left with <code># TODO</code>
-comments.</p>
+<p>This exercise notebook follows the same steps as the guided
+exploration while letting you practice independently. It works on
+<code>second_day_part2/data/dataset2_subset_long.csv</code>, the
+three-genome version of the dataset (Akkermansia, Bacteroides,
+Turicimonas). Type your own code into the chunks below; the prompts
+explain what to do and the code blocks are left with <code># TODO</code>
+comments so you can fill them in.</p>
 <blockquote>
 <p><strong>Tip:</strong> Run
 <code>second_day_part2/00_prepare.Rmd</code> once to install packages,
@@ -370,6 +371,13 @@ you need to regenerate the three-genome dataset.</p>
 <h2>1. Load and preview the dataset</h2>
 <p>Goal: use <code>read.csv()</code> to load the file, then report the
 number of rows/columns and display the first few entries.</p>
+<p>Think of this as your “sanity check” step. Confirm that the CSV path
+you expect actually exists, that the delimiter was read correctly (no
+shifted columns), and that the headers align with the guided
+walkthrough. Printing the first couple of lines also helps you spot
+accidental factor conversion or hidden
+<code>stringsAsFactors = TRUE</code> issues before they propagate into
+later tasks.</p>
 <pre class="r"><code># TODO: load dataset2_subset_long.csv into an object named long_df
 # TODO: print nrow(long_df) and ncol(long_df)
 # TODO: call head(long_df)</code></pre>
@@ -381,6 +389,12 @@ untouched.</p>
 <h2>2. Enumerate genomes and SNPs</h2>
 <p>Goal: list all genomes present, count how many rows each contributes,
 and count unique SNP identifiers per genome.</p>
+<p>These counts will anchor your interpretation later. If one genome
+contributes far more rows, its patterns will dominate simple histograms.
+Likewise, the SNP totals tell you whether a genome appears sparse
+because it has fewer markers or because of experimental filtering.
+Capture both the raw row counts and the unique SNP counts so you can
+mention them when presenting results.</p>
 <pre class="r"><code># TODO: unique() to list genomes
 # TODO: table() to count rows per genome
 # TODO: tapply() + length(unique()) to count SNPs per genome</code></pre>
@@ -394,6 +408,11 @@ genome (min/median/mean, etc.) using
 <code>aggregate(value ~ Genome, ...)</code>. Also, show a quick
 <code>summary()</code> of the first few values to illustrate what the
 anonymous function does.</p>
+<p>Interpreting a heatmap gets easier when you already know the numeric
+range per genome. Use this section to capture descriptive stats you can
+reuse in slides or discussion. Consider storing the aggregated summaries
+in an object (e.g., <code>genome_summary</code>) so you can sort by
+median or compare genomes later without rerunning the aggregation.</p>
 <pre class="r"><code># TODO: sample_values &lt;- long_df$value[1:10]; summary(sample_values)
 # TODO: aggregate(value ~ Genome, data = long_df, function(x) summary(x))</code></pre>
 <p><em>Hint:</em> read <code>value ~ Genome</code> as “value grouped by
@@ -404,6 +423,11 @@ Genome”. The column to the left of <code>~</code> must be numeric.</p>
 <p>Goal: subset the data frame to <code>Turicimonas_muris_YL45</code>
 only, show <code>head()</code> of the subset, and build a
 <code>table(mouse_id, day)</code> for that genome.</p>
+<p>Turicimonas is the new genome compared with the two-genome
+walkthrough, so spend time understanding its footprint. After filtering,
+look at which mice and days have observations—do they align with the
+treatment timeline? You can also inspect a few <code>snp_id</code>s to
+see if they cluster by chromosome or appear randomly distributed.</p>
 <pre class="r"><code># TODO: turicimonas_df &lt;- long_df[long_df$Genome == &#39;Turicimonas_muris_YL45&#39;, ]
 # TODO: head(turicimonas_df)
 # TODO: table(turicimonas_df$mouse_id, turicimonas_df$day)</code></pre>
@@ -417,6 +441,11 @@ TRUE/FALSE mask created by the comparison.</p>
 <code>Turicimonas_muris_YL45</code>, then for the entire dataset. Report
 <code>summary()</code> for both vectors and note whether Turicimonas
 shows more high-frequency SNPs.</p>
+<p>Go beyond the simple plot: compare medians, interquartile ranges, and
+extreme values. If distributions look different, jot down a short
+interpretation such as “Turicimonas peaks near 0.4 whereas Akkermansia
+spans 0–1 evenly.” These observations will justify why adding a third
+genome matters in the downstream heatmap exercise.</p>
 <pre class="r"><code># TODO: turicimonas_values &lt;- long_df$value[long_df$Genome == &#39;Turicimonas_muris_YL45&#39;]
 # TODO: hist(turicimonas_values, breaks = 20, main = &#39;Turicimonas AF&#39;, xlab = &#39;value&#39;)
 # TODO: summary(turicimonas_values)
@@ -430,6 +459,12 @@ jot down your interpretation.</p>
 <h2>6. Missing values</h2>
 <p>Goal: check whether the <code>value</code> column contains any
 <code>NA</code>s overall and per mouse/day combination.</p>
+<p>Missing entries often indicate gaps in the sequencing schedule or
+quality filters that failed. Calculating <code>na_total</code> tells you
+whether the dataset is complete, while the <code>tapply()</code> step
+pinpoints exactly which mouse/day pairs are affected. If you do find
+<code>NA</code>s, note them explicitly so you can exclude or impute them
+consistently later.</p>
 <pre class="r"><code># TODO: na_total &lt;- sum(is.na(long_df$value))
 # TODO: na_by_mouse_day &lt;- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
 # TODO: print both objects and interpret (all zeros means no missing data).</code></pre>
@@ -441,6 +476,12 @@ introduces any missing allele frequencies.</p>
 <h2>7. Treatment groups</h2>
 <p>Goal: use the <code>treatment_group</code> column to understand how
 samples are distributed across treatments.</p>
+<p>Understanding group balance helps when you later draw stratified
+plots. Capture the total number of measurements per treatment, how many
+mice belong to each group, and whether every day has representation for
+each treatment. You can also look for edge cases (e.g., a mouse
+switching treatments) and document them here before they confuse you
+during plotting.</p>
 <pre class="r"><code># TODO: list unique(long_df$treatment_group)
 # TODO: table(long_df$treatment_group)
 # TODO: table(long_df$mouse_id, long_df$treatment_group)
@@ -448,11 +489,15 @@ samples are distributed across treatments.</p>
 <p><em>Hint:</em> use <code>table()</code> for quick counts and
 <code>unique()</code> to see combinations of mouse/day/group.</p>
 </div>
-<div id="stretch-idea-optional" class="section level2">
-<h2>8. Stretch idea (optional)</h2>
-<p>Can you reuse these skills to answer: “Which genome has the highest
-median value on day 30?” Outline your approach below before coding it
-up.</p>
+<div id="stretch-idea" class="section level2">
+<h2>8. Stretch idea</h2>
+<p>Push yourself to answer: “Which genome has the highest median value
+on day 30?” Outline your approach below before coding it up.</p>
+<p>Treat this like a mini-analysis write-up: define the filter criteria,
+jot down which helper functions you will reuse (<code>tapply</code>,
+<code>aggregate</code>, or <code>dplyr</code>), and decide how you will
+report ties. If you have extra time, repeat for another day or compare
+medians vs means to see whether outliers influence your conclusion.</p>
 <pre class="r"><code># Notes / pseudo-code:
 # 1. Filter long_df to day == 30
 # 2. Split by Genome and compute median(value)

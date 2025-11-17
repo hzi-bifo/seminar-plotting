@@ -12,7 +12,7 @@
 <meta name="author" content="Seminar practice worksheet" />
 
 
-<title>Day 2 – 02 Simple Heatmap (Exercises)</title>
+<title>Day 2 – 04 Full Heatmap (Exercises)</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,223 +349,226 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 2 – 02 Simple Heatmap (Exercises)</h1>
+<h1 class="title toc-ignore">Day 2 – 04 Full Heatmap (Exercises)</h1>
 <h4 class="author">Seminar practice worksheet</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#load-packages-and-define-paths" id="toc-load-packages-and-define-paths">1. Load packages and define
-paths</a></li>
-<li><a href="#loadinspect-the-data" id="toc-loadinspect-the-data">2.
-Load/inspect the data</a></li>
-<li><a href="#choose-a-treatment-group-subset" id="toc-choose-a-treatment-group-subset">3. Choose a treatment group
-subset</a></li>
-<li><a href="#quick-summaries" id="toc-quick-summaries">4. Quick
-summaries</a></li>
-<li><a href="#build-the-heatmap-matrix" id="toc-build-the-heatmap-matrix">5. Build the heatmap matrix</a></li>
-<li><a href="#colors-and-annotations" id="toc-colors-and-annotations">6.
-Colors and annotations</a></li>
-<li><a href="#draw-and-export-the-heatmap" id="toc-draw-and-export-the-heatmap">7. Draw and export the
-heatmap</a></li>
-<li><a href="#reflection-prompts" id="toc-reflection-prompts">8.
-Reflection prompts</a></li>
+<li><a href="#packages-paths-helper-settings" id="toc-packages-paths-helper-settings">1. Packages, paths, helper
+settings</a></li>
+<li><a href="#load-data-and-report-missingness" id="toc-load-data-and-report-missingness">2. Load data and report
+missingness</a></li>
+<li><a href="#build-the-numeric-matrix" id="toc-build-the-numeric-matrix">3. Build the numeric matrix</a></li>
+<li><a href="#baseline-heatmap-and-color-experiments" id="toc-baseline-heatmap-and-color-experiments">4. Baseline heatmap and
+color experiments</a></li>
+<li><a href="#column-annotations-and-ordering" id="toc-column-annotations-and-ordering">5. Column annotations and
+ordering</a></li>
+<li><a href="#annotation-enhancements-column-splits-and-readable-row-titles" id="toc-annotation-enhancements-column-splits-and-readable-row-titles">6.
+Annotation enhancements, column splits, and readable row titles</a></li>
+<li><a href="#row-filtering-via-variance" id="toc-row-filtering-via-variance">7. Row filtering via
+variance</a></li>
+<li><a href="#final-polish-and-pdf-export" id="toc-final-polish-and-pdf-export">8. Final polish and PDF
+export</a></li>
+<li><a href="#notes-and-extensions" id="toc-notes-and-extensions">9.
+Notes and extensions</a></li>
 </ul>
 </div>
 
-<p>This worksheet mirrors the guided heatmap build but uses the
-three-genome dataset
-(<code>second_day_part2/data/dataset2_subset_long.csv</code>). Work
-through the prompts, typing your own code where <code># TODO</code>
-markers appear. The goal is to recreate the full pipeline: load data,
-explore it briefly, build the <code>ComplexHeatmap</code>, and save the
-PDF.</p>
+<p>This practice notebook guides you through rebuilding the “all
+genomes” heatmap (<code>dataset3_subset*.csv</code>). Compared with
+earlier exercises, you now juggle a larger matrix, multiple annotation
+layers, and custom ordering. Follow the prompts, fill in each
+<code># TODO</code>, and keep notes on the design decisions you
+make.</p>
 <blockquote>
-<p><strong>Tip:</strong> Ensure packages from
-<code>00_prepare.Rmd</code> are installed, and regenerate the dataset
-via <code>data/00_prepare_dataset.Rmd</code> if needed. A worked key
-lives in
-<code>scripts/02_simple_heatmap_exercises_solution.Rmd</code>—check it
-only after trying on your own.</p>
+<p><strong>Tip:</strong> Run <code>scripts/00_prepare.Rmd</code> first
+so <code>ComplexHeatmap</code>, <code>circlize</code>, and helper
+packages are ready. If the dataset is missing, regenerate it via
+<code>data/00_prepare_dataset.Rmd</code>.</p>
 </blockquote>
-<div id="load-packages-and-define-paths" class="section level2">
-<h2>1. Load packages and define paths</h2>
-<p>Before you touch the data, bring the visualization libraries into
-scope and set up deterministic file paths. Reusing the same directory
-layout as the guided walkthrough avoids surprises when you wire this
-script into <code>render_all.sh</code>. In this chunk you should:</p>
-<ul>
-<li>Call <code>library(ComplexHeatmap)</code> and
-<code>library(circlize)</code> (add <code>viridisLite</code> or
-<code>RColorBrewer</code> if you plan to experiment with palettes).</li>
-<li>Build absolute paths for the wide, long, and PDF outputs using
-<code>file.path()</code> so the notebook works no matter which directory
-you knit from.</li>
-<li>Store the PDF name (<code>dataset2_heatmap.pdf</code> or similar)
-under <code>pdf_path</code>—you will reference it again during
-export.</li>
-</ul>
-<pre class="r"><code># TODO: library(ComplexHeatmap); library(circlize)
-# TODO: subset_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset2_subset.csv&#39;)
-#       long_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset2_subset_long.csv&#39;)
-#       pdf_path &lt;- file.path(&#39;..&#39;,&#39;pdf&#39;,&#39;dataset2_heatmap.pdf&#39;)</code></pre>
-<p><em>Question:</em> Why do we still need both the wide and long
-versions?</p>
+<div id="packages-paths-helper-settings" class="section level2">
+<h2>1. Packages, paths, helper settings</h2>
+<p>Set yourself up for success by loading packages, pointing to the
+dataset files, and defining constants you will re-use (e.g., the NA
+color and PDF output path). Add any palettes you plan to try so they are
+available later.</p>
+<pre class="r"><code># TODO: library(ComplexHeatmap); library(circlize); library(viridisLite)
+# TODO: subset_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset.csv&#39;)
+#       long_path   &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset_long.csv&#39;)
+#       pdf_path    &lt;- file.path(&#39;..&#39;,&#39;pdf&#39;,&#39;04_full_heatmap_exercise.pdf&#39;)
+# TODO: na_color &lt;- &#39;#dcdcdc&#39;
+# TODO: set.seed(...) if you plan to shuffle or sample</code></pre>
+<p><em>Reflection:</em> Why do we keep both the wide and long versions
+even though the heatmap consumes only the wide table?</p>
 </div>
-<div id="loadinspect-the-data" class="section level2">
-<h2>2. Load/inspect the data</h2>
-<p>Create <code>wide_df</code>/<code>long_df</code> with
-<code>read.csv(..., stringsAsFactors = FALSE)</code> and immediately
-sanity-check them:</p>
-<ul>
-<li>Print <code>dim(wide_df)</code> and <code>dim(long_df)</code> to
-ensure they match expectations.</li>
-<li>Use <code>head()</code> (or <code>dplyr::glimpse()</code>) so you
-know which columns exist before writing subset logic.</li>
-<li>If you regenerated the datasets recently, make sure the timestamp or
-SNP counts align with your notes so the rest of the exercise is
-reproducible.</li>
-</ul>
-<pre class="r"><code># TODO: read the CSVs into wide_df and long_df (stringsAsFactors = FALSE)
-# TODO: print their dimensions and call head() on each</code></pre>
+<div id="load-data-and-report-missingness" class="section level2">
+<h2>2. Load data and report missingness</h2>
+<p>Read both tables, print their dimensions, and log the total number of
+NA values in the <code>value</code> column. If NAs are present, produce
+a matrix (mouse vs day) that shows where they occur so you can make
+informed filtering choices later.</p>
+<pre class="r"><code># TODO: wide_df &lt;- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
+# TODO: long_df &lt;- read.csv(long_path, check.names = FALSE, stringsAsFactors = FALSE)
+# TODO: cat(&#39;Wide rows x cols:&#39;, nrow(wide_df), ncol(wide_df), &#39;\n&#39;)
+# TODO: cat(&#39;Long rows x cols:&#39;, nrow(long_df), ncol(long_df), &#39;\n&#39;)
+# TODO: na_total &lt;- sum(is.na(long_df$value))
+# TODO: if (na_total &gt; 0) { build tapply(...) to locate them }</code></pre>
+<p><em>Question:</em> Does the larger dataset introduce NA clusters
+concentrated in a single mouse/treatment?</p>
 </div>
-<div id="choose-a-treatment-group-subset" class="section level2">
-<h2>3. Choose a treatment group subset</h2>
-<p>Decide which <code>treatment_group</code> you want to display (e.g.,
-Control vs Ciprofloxacin). Filter the columns of the wide matrix so only
-samples from that group remain. Hint: use the long table to map
-<code>mouse_id</code> + <code>day</code> to sample IDs like
-<code>1683-0</code> before subsetting the wide table.</p>
-<p>This step mimics the decision-making you would do for a figure
-panel:</p>
-<ol style="list-style-type: decimal">
-<li>Inspect <code>unique(long_df$treatment_group)</code> to remind
-yourself of the valid options.</li>
-<li>Build a tidy metadata table with one row per sample
-(<code>mouse_id</code>, <code>day</code>, <code>treatment_group</code>,
-and a combined <code>sample_id</code>).</li>
-<li>Use that metadata to pick the relevant columns from the wide table;
-this ensures your heatmap only contains the cohort you plan to
-discuss.</li>
-<li>Keep the metadata tibble handy—you will reuse the ordering columns
-later.</li>
-</ol>
-<pre class="r"><code># TODO: target_group &lt;- &#39;Control&#39;
-# TODO: build sample_meta &lt;- unique(long_df[, c(&#39;mouse_id&#39;,&#39;day&#39;,&#39;treatment_group&#39;)])
-# TODO: sample_meta$sample_id &lt;- paste(...)
-# TODO: keep_samples &lt;- sample_meta$sample_id[sample_meta$treatment_group == target_group]
-# TODO: subset the wide_df columns with keep_samples</code></pre>
-</div>
-<div id="quick-summaries" class="section level2">
-<h2>4. Quick summaries</h2>
-<p>Checkpoint statistics help you spot typos early. Record at least the
-following numbers before moving on:</p>
-<ul>
-<li>Count SNPs per genome using <code>table(wide_df$Genome)</code> so
-you know which genomes dominate the matrix.</li>
-<li>Build <code>with(long_df, table(mouse_id, day))</code> to verify
-every mouse/day pair is present (missing rows usually mean a filtering
-bug).</li>
-<li>Use
-<code>tapply(long_df$value, long_df$Genome, FUN = summary)</code> or
-custom <code>min/median/max</code> calls to understand the numeric
-range—this will inform your color palette.</li>
-<li>Optional: store these summaries in variables and print short
-interpretations (e.g., “Turicimonas has the fewest SNPs but the widest
-spread of values”).</li>
-</ul>
-<pre class="r"><code># TODO: add commands described above</code></pre>
-</div>
-<div id="build-the-heatmap-matrix" class="section level2">
-<h2>5. Build the heatmap matrix</h2>
-<p>Transform the wide data frame into a numeric matrix ready for
-ComplexHeatmap:</p>
-<ul>
-<li>Drop the genome metadata columns so you only keep sample
-measurements.</li>
-<li>Convert the remaining data to a matrix and coerce to numeric (in
-case CSV import left character columns).</li>
-<li>Create informative row names such as <code>Genome | snp_id</code> to
-make debugging easier if you temporarily enable
-<code>show_row_names = TRUE</code>.</li>
-<li>Reconstruct <code>sample_meta</code> (or reuse the earlier version)
-directly from the column names, split into
-<code>mouse_id</code>/<code>day</code>, and define an ordering via
-<code>order(mouse_id, day)</code> so columns follow the experimental
-timeline.</li>
-<li>Apply that order to both <code>heatmap_matrix</code> and the
-metadata so everything stays synchronized.</li>
-</ul>
+<div id="build-the-numeric-matrix" class="section level2">
+<h2>3. Build the numeric matrix</h2>
+<p>Construct the heatmap matrix using the sample columns, ensuring you
+keep row labels informative for debugging. Reuse or rebuild a
+<code>sample_meta</code> data frame that captures <code>mouse_id</code>,
+<code>day</code>, <code>treatment_group</code>, and
+<code>sample_id</code>. This metadata will power your annotations and
+ordering.</p>
 <pre class="r"><code># TODO: sample_cols &lt;- setdiff(names(wide_df), c(&#39;Genome&#39;,&#39;snp_id&#39;,&#39;Position&#39;))
-# TODO: heatmap_matrix &lt;- as.matrix(wide_df[, sample_cols]); mode(heatmap_matrix) &lt;- &#39;numeric&#39;
-# TODO: rownames &lt;- paste(wide_df$Genome, wide_df$snp_id, sep = &#39; | &#39;)
-# TODO: create sample_meta with mouse_id/day parsed from column names
-# TODO: order columns by mouse/day and reorder heatmap_matrix accordingly</code></pre>
-<p><em>Hint:</em> reuse the ordering logic from the guided notebook
-(<code>order()</code> on <code>mouse_id</code>, <code>day</code>,
-<code>sample_id</code>).</p>
+# TODO: mat &lt;- as.matrix(wide_df[, sample_cols]); mode(mat) &lt;- &#39;numeric&#39;
+# TODO: rownames(mat) &lt;- paste(wide_df$Genome, wide_df$snp_id, sep = &#39; | &#39;)
+# TODO: sample_meta &lt;- unique(long_df[, c(&#39;mouse_id&#39;,&#39;day&#39;,&#39;treatment_group&#39;)])
+# TODO: sample_meta$sample_id &lt;- paste(sample_meta$mouse_id, sample_meta$day, sep=&#39;-&#39;)
+# TODO: sample_meta &lt;- sample_meta[match(colnames(mat), sample_meta$sample_id), ]</code></pre>
+<p><em>Check:</em> Use
+<code>stopifnot(identical(colnames(mat), sample_meta$sample_id))</code>
+to catch mismatches early.</p>
 </div>
-<div id="colors-and-annotations" class="section level2">
-<h2>6. Colors and annotations</h2>
-<p>With the matrix ordered, design the visual cues that explain it:</p>
+<div id="baseline-heatmap-and-color-experiments" class="section level2">
+<h2>4. Baseline heatmap and color experiments</h2>
+<p>Start with a minimal <code>Heatmap</code> (no clustering, no
+annotations) so you can verify the matrix orientation. Next, experiment
+with at least two color palettes by constructing separate
+<code>colorRamp2</code> functions. Document which palette you prefer and
+why (contrast, perceptual ordering, etc.).</p>
+<pre class="r"><code># TODO: mins &lt;- min(mat, na.rm = TRUE); maxs &lt;- max(mat, na.rm = TRUE); mids &lt;- (mins+maxs)/2
+# TODO: palette_a &lt;- circlize::colorRamp2(c(mins, mids, maxs), c(&#39;#0c2c84&#39;,&#39;#f7fbff&#39;,&#39;#b30000&#39;))
+# TODO: palette_b &lt;- circlize::colorRamp2(c(mins, mids, maxs), viridisLite::viridis(3))
+# TODO: Heatmap(mat, name=&#39;value&#39;, col=palette_a, na_col = na_color)
+# TODO: Heatmap(mat, name=&#39;value&#39;, col=palette_b, na_col = na_color)</code></pre>
+<p><em>Reflection:</em> Which palette makes low values easiest to
+distinguish once annotations are added?</p>
+</div>
+<div id="column-annotations-and-ordering" class="section level2">
+<h2>5. Column annotations and ordering</h2>
+<p>Build annotations that explain treatment group and
+baseline/post-antibiotic status. Then define an ordering (e.g., order by
+<code>mouse_id</code>, then <code>day</code>) and apply it consistently
+to both the matrix and the annotation object. Draw the heatmap again to
+confirm columns appear in the intended sequence.</p>
+<pre class="r"><code># TODO: sample_meta$post_ab &lt;- ifelse(sample_meta$day == 0, &#39;baseline&#39;, &#39;post&#39;)
+# TODO: col_ann &lt;- HeatmapAnnotation(
+#         treatment = sample_meta$treatment_group,
+#         status = sample_meta$post_ab,
+#         annotation_name_side = &#39;left&#39;
+#       )
+# TODO: order_idx &lt;- order(sample_meta$mouse_id, sample_meta$day)
+# TODO: mat_ordered &lt;- mat[, order_idx]
+# TODO: col_ann_ordered &lt;- col_ann[order_idx]
+# TODO: Heatmap(mat_ordered, name=&#39;value&#39;, top_annotation = col_ann_ordered,
+#               cluster_rows = FALSE, cluster_columns = FALSE, na_col = na_color)</code></pre>
+<p><em>Check:</em> Are replicates or treatment switches now easier to
+spot?</p>
+</div>
+<div id="annotation-enhancements-column-splits-and-readable-row-titles" class="section level2">
+<h2>6. Annotation enhancements, column splits, and readable row
+titles</h2>
+<p>Recreate the richer annotation stack from
+<code>03_heatmap_annotations.Rmd</code>, but now apply it to the full
+dataset. Ideas to try:</p>
 <ul>
-<li>Derive <code>mins</code>, <code>mids</code>, and <code>maxs</code>
-(or quantiles) using <code>range()</code> so the color scale reflects
-the actual data spread.</li>
-<li>Build a palette via <code>circlize::colorRamp2()</code>—try both a
-diverging scheme and a sequential scheme to see which communicates the
-values better.</li>
-<li>Craft column annotations: treatment group, day/baseline status, or
-mouse ID. Store them in a <code>HeatmapAnnotation</code> so you can
-reuse the object across plot iterations.</li>
-<li>If you prefer explicit daylight vs post-treatment shading, add
-<code>annotation_legend_param</code> entries with descriptive
-titles.</li>
+<li>Encode <code>treatment_group</code> with a named color vector so the
+legend matches your slide deck.</li>
+<li>Add a continuous day gradient using <code>anno_simple()</code> so
+viewers can track the time axis directly in the annotation bar.</li>
+<li>Overlay mouse IDs (rotated text or a thin color strip) to highlight
+replicate structure.</li>
+<li>Optionally, split rows by genome (<code>row_split</code>) to mimic
+the multi-panel layout from the guided notebook, and either shorten
+those labels or shrink the font so they do not overlap in the PDF.</li>
+<li>Add a <code>column_split</code> (e.g., by treatment group) so the
+plot is chunked into digestible vertical blocks in addition to the
+chronological ordering.</li>
 </ul>
-<pre class="r"><code># TODO: compute min/mid/max for the matrix (na.rm = TRUE)
-# TODO: color_fun &lt;- circlize::colorRamp2(...)
-# TODO: build mouse/day annotation via HeatmapAnnotation()</code></pre>
-<p>Challenge yourself to switch the palette (e.g., use
-<code>RColorBrewer::brewer.pal</code>).</p>
+<pre class="r"><code># TODO: treatment_cols &lt;- c(...); status_cols &lt;- c(...)
+# TODO: day_col_fun &lt;- circlize::colorRamp2(range(sample_meta$day), c(&#39;#f7fbff&#39;,&#39;#084594&#39;))
+# TODO: col_ann_rich &lt;- HeatmapAnnotation(
+#         treatment = anno_simple(sample_meta$treatment_group, col = treatment_cols),
+#         status    = anno_simple(sample_meta$post_ab, col = status_cols),
+#         day       = anno_simple(sample_meta$day, col = day_col_fun),
+#         mouse     = anno_text(sample_meta$mouse_id, rot = 90, gp = grid::gpar(fontsize = 6)),
+#         annotation_name_side = &#39;left&#39;
+#       )
+# TODO: col_ann_rich &lt;- col_ann_rich[order_idx]
+# TODO: column_split &lt;- factor(sample_meta$treatment_group[order_idx], levels = treatment_levels)
+# TODO: row_split &lt;- factor(wide_df$Genome, levels = unique(wide_df$Genome))
+# TODO: row_titles &lt;- gsub(&#39;_.*&#39;, &#39;&#39;, levels(row_split)) # or set fontsize via row_title_gp
+# TODO: Heatmap(mat_ordered, name=&#39;value&#39;, col = palette_a, top_annotation = col_ann_rich,
+#               cluster_rows = TRUE, row_split = row_split, column_split = column_split,
+#               na_col = na_color, show_row_names = FALSE, show_column_names = FALSE,
+#               row_title = row_titles, row_title_gp = grid::gpar(fontsize = 9))</code></pre>
+<p><em>Reflection:</em> Which annotation layer (treatment colors, day
+gradient, mouse IDs) helped the most when interpreting the plot? Keep
+notes for your presentation.</p>
 </div>
-<div id="draw-and-export-the-heatmap" class="section level2">
-<h2>7. Draw and export the heatmap</h2>
-<p>Bring everything together in a final plot:</p>
-<ol style="list-style-type: decimal">
-<li>Instantiate <code>Heatmap()</code> with your matrix,
-<code>col = color_fun</code>, ordering, and <code>top_annotation</code>.
-Consider toggling <code>column_split</code>, <code>column_title</code>,
-or <code>column_names_rot</code> if it helps readability.</li>
-<li>Call <code>draw(ht)</code> in the notebook to confirm the appearance
-before exporting.</li>
-<li>Save a PDF by wrapping
-<code>pdf(pdf_path, width = 10, height = 6)</code> /
-<code>dev.off()</code> around <code>draw(ht)</code> (or use
-<code>ComplexHeatmap::draw()</code> followed by
-<code>ComplexHeatmap::save_pdf()</code> if you prefer).</li>
-<li>Print a message stating where the file landed so future-you knows it
-worked.</li>
-</ol>
-<pre class="r"><code># TODO: construct Heatmap(...) object with top_annotation, column_split, etc.
-# TODO: draw() it in the notebook
-# TODO: save to pdf_path (dir.create + pdf + draw + dev.off())</code></pre>
+<div id="row-filtering-via-variance" class="section level2">
+<h2>7. Row filtering via variance</h2>
+<p>Large matrices can hide structure. Compute per-row variance, keep the
+top 100 rows (or another threshold), and draw a diagnostic heatmap to
+see whether the higher-variance SNPs highlight patterns that were
+previously buried. Remember to reapply the column ordering and
+annotations.</p>
+<pre class="r"><code># TODO: row_var &lt;- apply(mat, 1, var, na.rm = TRUE)
+# TODO: keep_idx &lt;- order(row_var, decreasing = TRUE)[seq_len(min(100, nrow(mat)))]
+# TODO: mat_topvar &lt;- mat[keep_idx, order_idx]
+# TODO: Heatmap(mat_topvar, name=&#39;value&#39;, top_annotation = col_ann_rich,
+#               cluster_rows = TRUE, cluster_columns = FALSE, column_split = column_split,
+#               na_col = na_color, row_split = row_split[keep_idx], show_row_names = FALSE,
+#               row_title_gp = grid::gpar(fontsize = 9))</code></pre>
+<p><em>Reflection:</em> Does variance filtering change the biological
+story you would tell?</p>
 </div>
-<div id="reflection-prompts" class="section level2">
-<h2>8. Reflection prompts</h2>
-<ol style="list-style-type: decimal">
-<li>Do you notice any new patterns when Turicimonas is included?</li>
-<li>How would you highlight just the Turicimonas rows (hint:
-<code>row_split</code>)?</li>
-<li>What additional annotation (e.g., day as a gradient) could help the
-reader?</li>
-</ol>
-<p>Document your answers below—future iterations of this course often
-borrow the best observations or styling tweaks, so write clearly enough
-that a teammate could reproduce your reasoning.</p>
-<pre class="r"><code># TODO: jot down observations or extra code experiments</code></pre>
-<p>Once you have a working script, compare with the solution notebook
-and proceed back to the main workflow.</p>
+<div id="final-polish-and-pdf-export" class="section level2">
+<h2>8. Final polish and PDF export</h2>
+<p>Combine your favorite palette, annotations, column order, and a row
+clustering strategy into a final heatmap. Add a column title and tweak
+legend names if needed. Export the final figure to <code>pdf_path</code>
+so it can be shared outside the notebook.</p>
+<pre class="r"><code># TODO: ht_final &lt;- Heatmap(
+#         mat_ordered,
+#         name = &#39;value&#39;,
+#         col = palette_a,
+#         top_annotation = col_ann_rich,
+#         cluster_rows = TRUE,
+#         cluster_columns = FALSE,
+#         column_split = column_split,
+#         show_row_names = FALSE,
+#         show_column_names = FALSE,
+#         na_col = na_color,
+#         row_split = row_split,
+#         row_title = row_titles,
+#         row_title_gp = grid::gpar(fontsize = 9),
+#         column_title = &#39;All genomes (dataset3)&#39;
+#       )
+# TODO: draw(ht_final)
+# TODO: pdf(pdf_path, width = 11, height = 7); draw(ht_final); dev.off();
+#       cat(&#39;Saved heatmap to&#39;, pdf_path, &#39;\n&#39;)</code></pre>
+<p><em>Question:</em> Which design choices would you highlight if you
+presented this plot in lab meeting (ordering rationale, annotation
+selection, etc.)?</p>
+</div>
+<div id="notes-and-extensions" class="section level2">
+<h2>9. Notes and extensions</h2>
+<p>Use this space to capture observations, alternative palettes, or next
+steps (e.g., adding row annotations, trying <code>row_split</code>,
+exporting PNGs).</p>
+<pre class="r"><code># TODO: jot down thoughts, ideas, or additional code experiments</code></pre>
+<p>Once you’re happy with the exercise output, compare it against the
+solution notebook
+(<code>scripts/04_full_heatmap_exercises_solution.Rmd</code>) to fill
+any gaps.</p>
 </div>
 
 

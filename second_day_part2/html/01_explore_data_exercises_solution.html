@@ -371,8 +371,8 @@ Allele-frequency focus (Turicimonas vs all genomes)</a></li>
 values</a></li>
 <li><a href="#treatment-groups" id="toc-treatment-groups">7. Treatment
 groups</a></li>
-<li><a href="#stretch-idea-optional" id="toc-stretch-idea-optional">8.
-Stretch idea (optional)</a></li>
+<li><a href="#stretch-idea" id="toc-stretch-idea">8. Stretch
+idea</a></li>
 </ul>
 </div>
 
@@ -701,8 +701,8 @@ Turicimonas) introduces missing allele-frequency entries.</p>
 ## 2543     1699      Vancomycin
 ## 2544     1699      Vancomycin</code></pre>
 </div>
-<div id="stretch-idea-optional" class="section level2">
-<h2>8. Stretch idea (optional)</h2>
+<div id="stretch-idea" class="section level2">
+<h2>8. Stretch idea</h2>
 <pre class="r"><code>day30 &lt;- long_df[long_df$day == 30, ]
 medians_day30 &lt;- tapply(day30$value, day30$Genome, median, na.rm = TRUE)
 medians_day30</code></pre>
