@@ -1,0 +1,282 @@
+---
+title: "Introduction to R"
+output: html_document
+date: "2025-11-19"
+---
+# R Coding Basics
+Prior jumping into PCAs, lets first explore some fundamentals in R....
+
+### Understanding R Code
+R is similar to python but a bit different. Lets review how creating variables work and how R might be different than what we used yesterday in python. First lets begin by creating a variable and trying basic arithmetic with the numeric variable. The format to do so is:
+
+```
+variable <- "info" # This is the basic style for setting up a variable in R.
+```
+**Note that we use "<-" to define a variable rather than the "=" that we used in python**
+
+We can then also run basic arithmetic with defined characters as we see here:
+
+```{r}
+# Use <- (preferred in R) or = for assignment
+x <- 5
+y <- 10
+z <- x + y   # arithmetic works directly
+print(z)     # output: 15
+```
+
+```{r}
+# Division works similarly, using the normal symbol for division
+y / x
+```
+
+```{r}
+# And now multiplication, using the asterisk for division:
+x * y
+```
+
+However, its also important to know vectors which are similar to lists in python. To create a vector we follow this general format:
+
+```
+vector <- c("item1", "item2", "item3")
+```
+
+There are some important differences though between vectors and lists in R and python:
+
+|Concept              | R Vector                              | Python List |
+|---------------------|---------------------------------------|-------------|
+|Ordered              | Y                                     | Y           |
+|Homogeneous          | Y (all elements must be the same type)| N (can mix types: [1, "hello", "world"])|
+|Indexing             | Starts at 1                           | Starts at 0|
+|Accessing Elements   | vector[1] = gives first element       | vector[0] = gives first element|
+|Combine elements     | c(1,2,3)                              | [1,2,3]|
+
+So you can see that there are some differences between vectors and python.
+
+```{r}
+# Vectors are also created with "<-" and serve a similar function to lists in python
+numbers <- c(1, 2, 3, 4, 5)
+names <- c("Alice", "Bob", "Charlie")
+
+# Now lets look at the two vectors we created:
+numbers
+names
+```
+
+However, as with python its very important to know what type of variable you are working with. Some arthimetic can only be done on numerical variables, like the PCA we will be doing later. To check variable types we use `class` as shown below:
+
+```{r}
+# Check variable type
+class(numbers)   # "numeric"
+class(names)     # "character"
+```
+
+Factors are also very useful information types and are a special type of vector used for categorical data.
+
+Examples of categorical data:
+
+* Species: "Adelie", "Gentoo", "Chinstrap"
+* Levels of education: "Highschool", "BSc", "MSc", "PhD"
+* Yes/No
+* Low/Medium/High
+
+So while factors look like character vectors, they are stored internally as integers, with labels attached.
+
+```{r}
+# Creating an example vector:
+vector_example <- c("Adelie", "Gentoo", "Chinstrap")
+
+# Creating an example factor:
+factors_example <- factor(c("Adelie", "Gentoo", "Chinstrap")) # note the use of the factor function to make the vector categorical
+
+cat("Vector Example")
+vector_example
+cat ("\nFactor Example")
+factors_example
+```
+
+Internally, the factor is stored as integer codes:
+
+1 = Adelie
+2 = Gentoo
+3 = Chinstrap
+
+But shown as labels, or levels
+
+Factors can also be ordered which is helpful for oridinal values, and can't necessarily be done with character vectors.
+
+```{r}
+# We use the ordered function and define the order
+factors_example_ordered <- ordered(factors_example, levels = c("Adelie", "Chinstrap", "Gentoo"))
+factors_example_ordered
+
+# Lets see if the order of the characters is correct:
+factors_example_ordered[1] < factors_example_ordered[2]   # TRUE
+```
+
+Overall Features and Vectors are different but each with their own importance:
+
+|Feature     | Character Vector | Factor                                    |
+|------------|------------------|-------------------------------------------|
+| Ordered    | Yes              | Yes (if ordered)                          |
+|Stores Text?| Yes              | labels only - internally they are integers|
+|Has Levels  |No                | Yes                                       |
+
+#### Summary
+
+* Vectors are general containers for numbers, characters, etc.
+* Factors are special vectors for categorical data, with predefined levels.
+* Internally, factors store integers, not characters.
+
+### Data exploration basics
+
+Lets explore some basic commands that let us look at data and data structures.
+
+1.   Create a dataframe - first we need something to be able to inspect
+
+```{r}
+# Create a simple data frame
+data <- data.frame( # The data.frame function will be used to create a dataframe, contained within are the columns
+  Name = names, # First column we're creating and it comes from the previously established names vector, so you can see that we can create a dataframe out of vectors
+  Age = c(23, 29, 35), # Next we create ages for each of the names, remember that vectors are ordered so Alice is 23, Bob is 29 etc.
+  Score = c(85, 90, 78) # Now we assign a score for each name as well
+)
+```
+
+2.   Now lets look at the first few rows of our dataframe, which covers all rows
+
+```{r}
+# Look at the first few rows using the head function, like in python
+# Note that the default head function gives us the first five rows, but we can specify how many rows we want to see using the `n = ` parameter
+head(data, n = 2)
+```
+
+And now the last few rows of our dataframe...
+
+```{r}
+tail(data)
+```
+
+And we can get a more in depth look at how big our dataframe is using the `dim()` function.
+
+```{r}
+dim(data)
+```
+
+And of course we can get column names with the `names()` or `colnames` function.
+
+```{r}
+names(data)
+colnames(data)
+```
+
+3.   Lets create a summary of the dataframe that summarizes statistics for each column. This function calculates the minimum, 1st quartile, median, meand, 3rd quartile and maximum of each column. With this we can get an idea of the distribution of values within each column.
+
+```{r}
+# Summary statistics for each column
+summary(data)
+```
+
+4.   We can also get the structure of the dataframe using `str()` which functions similarly to the `df.info()` in python. We get the character types of each column and the values.
+
+```{r}
+# Structure (like df.info() in pandas)
+str(data)
+```
+
+5.   Finally lets look at accessing specific columns of the dataframe. This can be helpful if we want to run an analysis or something just on that column alone, or create a separate vector of that column.
+
+```{r}
+# Access columns by name, so here we take only the Age column in the dataframe
+data$Age
+
+# Now we can also assign the column as its own vector
+age_vector <- data$Age
+age_vector
+```
+
+#### Calling in an external dataframe:
+
+Now what if I have an external .csv file that I would like to read into R as a variable? We can use the `read.csv` function.
+
+Do note that there are also other parameters to this function as well which we can take a look at.
+
+```{r}
+# Reading in dataframes with read.csv which is like pandas.read_csv in python:
+df <- read.csv("path/to/file.csv")
+```
+
+### Calling in specific libraries
+Beyond what is available in base R, we can call in specific libraries that might offer additional functions for creating visuals or running analyses or even for basic data manipulation. Some of the key packages that are used in R are `dplyr` (for easier data manipulation) and `ggplot2` (for data visualizations). Remember `matplotlib` in python? `ggplot` is similar to this.
+
+```{r}
+# Install (if not already installed)
+# install.packages("dplyr")
+
+# Load a library, in this case we'll look at dpylr which is used for data manipulation
+library(dplyr)
+```
+
+```{r}
+# Explore what’s in the library
+# Shows all exported functions and datasets
+help(package = "dplyr")
+```
+
+```{r}
+# Or search within the library
+?filter         # open help page for the function 'filter'
+example(filter) # shows usage examples
+```
+
+#### Basic `dplyr` functions
+
+Now lets try a few basic functions with `dplyr`.
+
+```{r}
+# Use a few dplyr functions
+data_adjusted <- data %>%
+  filter(Age > 25) %>% # So it filters the dataframe by those that are above a specific age
+  mutate(Score_Adjusted = Score + 5) # Now adds 5 to the scores of each of those rows and makes it a separated column
+
+# Here is the newly adjusted dataframe using dpylr:
+cat("Adjusted Dataframe: ") # `cat` function allows use to print
+head(data_adjusted)
+
+cat("\nOld dataframe: ")
+head(data)
+```
+
+```{r}
+# Removing NA values from a dataframe with dplyr
+data_na_removed <- data %>%
+  na.omit()
+
+head(data)
+```
+
+```{r}
+# Using dplyr to also select a few columns from the dataframe:
+data_select <- data %>% select(Name, Age)
+# you can also add the parameter `starts_with("character")` to select columns containing
+# a specific string.
+
+head(data_select)
+```
+
+### Differences between R and Python:
+
+R vs Python — Key Differences
+
+ |Difference | R | Python|
+ |-----------|--------------------------------------------------|-------------|
+ |Syntax     | Uses `<-` for assignment                         | Uses `=` for assignment|
+ |Indexing   | Starts at 1                                      | Starts at 0|
+ |Data Types | has vectors and factors                          | has lists and arrays|
+ |Libraries  | Focuses on statistics (tidyverse, ggplot2, dpylr)| Broader (pandas, numpy, scikit-learn, matplotlib)|
+ |Workflow   | Designed more for data analysis                  | Multipurpose|
+
+**Quick Tip: Use** `?function_name` **or** `help(function_name)` **to explore any function.**
+
+
+
+

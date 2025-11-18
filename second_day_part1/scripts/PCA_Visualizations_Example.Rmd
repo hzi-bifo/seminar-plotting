@@ -1,0 +1,195 @@
+---
+title: "PCA_Visualization_Examples"
+output: html_document
+date: "2025-11-19"
+---
+
+# PCA Visualizations
+
+### Calling in the appropriate libraries:
+
+```{r}
+#install.packages("palmerpenguins")
+#install.packages("dplyr")
+#install.packages("ggplot2")
+#install.packages("ggfortify")
+
+# Calling in the necessary packages that will be used moving forward
+library(palmerpenguins) # how to look up libraries
+library(dplyr)
+library(ggplot2)
+library(ggfortify)
+```
+
+### Running the PCA (run this prior to continuing)
+
+```{r}
+peng <- penguins %>%
+  na.omit() %>% # Here we omit the rows that contain NAs or missing information
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) # This line here uses `dpylr` to manipulate the dataframe and keep only numerical columns
+
+peng_na_removed <- penguins %>% # Yes, this is technically redundant as above, but we want a separate dataframe for the metadata that will be used in plotting
+  na.omit()
+
+head(peng) # Using the head function we can view the first few rows of the newly created dataframe
+
+# Running the PCA with the built in `prcomp` function:
+pca_result <- prcomp(peng, scale = TRUE, center = TRUE)
+
+print("Summary: ")
+summary(pca_result)
+```
+
+### 6. Scree Plot
+The scree plot is used for the to display the eigenvalues of the principal components, it helps determine how many components to retain by identifying the "elbow" point where the eigenvalues start to level off. 
+
+Note that here we have to put together a small dataframe of the PCs and their variance prior to visualizing it with ggplot plot. This is done with the code like this:
+
+```
+# Put results into a data frame for ggplot
+scree_df <- data.frame(
+  PC = 1:length(pca_result_variance), # Here we create a column the length of the variance we define
+  Variance = pca_result_variance  # Here is the actual variance values
+)
+```
+
+```{r}
+# 6. Scree plot
+
+#calculate total variance explained by each principal component
+pca_result_variance <- pca_result$sdev^2 / sum(pca_result$sdev^2)
+cat("Total Variance of each PC:")
+pca_result_variance
+
+# Put results into a data frame for ggplot
+scree_df <- data.frame(
+  PC = 1:length(pca_result_variance),
+  Variance = pca_result_variance
+)
+
+ggplot(scree_df, aes(x = PC, y = Variance)) +
+  geom_line() +
+  geom_point() +
+  ylim(0, 1) +
+  xlab("Principal Component") +
+  ylab("Variance Explained") +
+  ggtitle("Scree Plot") +
+  theme_minimal()
+```
+
+### Examples of poor scree plots
+
+Here are some examples of poor scree plots and that are difficult to interpret and thus without meaning. Pay attention to these things as you begin to make your own scree plots.
+
+```{r}
+# Bad Scree Plot - No labels
+ggplot(scree_df, aes(x = PC, y = Variance)) +
+  geom_line() +
+  geom_point()
+```
+
+**What’s bad here:**
+
+* No axis labels or title, we don’t know what we’re looking at
+* Hard to tell how much variance is explained
+
+```{r}
+cumulative_var <- cumsum(pca_result_variance)
+cumulative_df <- data.frame(
+  PC = 1:length(cumulative_var),
+  CumulativeVariance = cumulative_var
+)
+
+ggplot(cumulative_df, aes(x = PC, y = CumulativeVariance)) +
+  geom_col()       # bars visually imply "individual" contribution
+```
+
+**What’s bad here:**
+
+* Bars imply each PC explains that much variance (false)
+
+### 7. Biplot
+
+Here we create the biplot for the PCA using `biplot` for convenience. The biplot lets you see both sides of PCA at once:
+
+- how samples relate to each other (scores)
+- how variables contribute to those relationships (loadings)
+
+```{r}
+# To make a basic biplot we use the `biplot` base function in R.
+
+biplot(pca_result)
+
+# Note that there are other parameters that we can add to this function to changes the output.
+```
+
+We can also use `ggplot2` or `autoplot` to plot a biplot, and by using ggplot we can easily manipulate the look of the plot, like adding color based on species etc. But note that it requires some manipulation with the results to set up a dataframe that will be used as input.
+
+Autoplot is a function in the ggplot2 package that automatically generates plots for various data types with minimal user input, while ggplot is a more general plotting system that allows for detailed customization and flexibility in creating visualizations. Essentially, autoplot simplifies the plotting process by providing default settings, whereas ggplot offers extensive control over every aspect of the plot.
+
+#### Using Autoplot
+
+ **Note that we use the original penguins data without the NA values NOT the PCA scores**
+
+ * autoplot() works like this:
+   * You pass it a prcomp object (pca_result)
+   * It automatically calculates the PCA scores (pca_result$x)
+ * It uses the data = argument only to:
+   * join back metadata (e.g., species)
+   * color the points
+   * label, group, or facet the results
+   
+```{r}
+# Use the autoplot function ggplot
+autoplot(pca_result, data = peng_na_removed, colour = 'species',
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size = 3)
+```
+
+### How to Interpret a PCA Biplot
+
+#### 1. Look at the points
+
+* Points represent penguins.
+* Points clustered together → similar measurements
+* Points from different species grouping separately → PCA is capturing species differences
+* More spread-out clusters → larger variation within species
+
+#### 2. Look at the arrows (loadings)
+
+* Long arrows = variables that contribute strongly to PC1 or PC2
+* Short arrows = weaker contribution
+* The direction of the arrow shows the direction in PC space where that variable increases.
+
+**Example:**
+
+If flipper_length_mm arrow points mostly right → Penguins on the right side of the plot have longer flippers.
+
+#### 3. Angle between arrows matters
+
+* Small angle between arrows → variables are positively correlated
+* Angle ~ 90° → uncorrelated
+* Angle ~180° (opposite directions) → negatively correlated
+
+#### 4. Interpretation of a penguin's position
+
+* If a penguin lies in the same direction as an arrow,
+that penguin has higher values of that variable.
+
+**Example:**
+
+Points in the direction of the body_mass_g arrow = heavier penguins.
+
+### Examples of poor Biplots
+
+Here are some examples of poor biplots and that are difficult to interpret and thus without meaning. Pay attention to these things as you begin to make your own biplots.
+
+```{r}
+autoplot(pca_result, data = peng_na_removed, colour = 'species',
+         loadings = TRUE, loadings.label = TRUE, loadings.label.size = 6)
+```
+
+**What’s bad here:**
+
+* Text overlaps everywhere — labels are too large.
+* Axes might not be scaled correctly (without standardization).
+* It’s visually overwhelming — can’t distinguish points or interpret loadings.

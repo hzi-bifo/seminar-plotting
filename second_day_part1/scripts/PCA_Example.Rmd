@@ -1,0 +1,323 @@
+---
+title: "PCA_example"
+output: html_document
+date: "2025-11-19"
+---
+
+# PCA Class Example
+
+## Using the Penguin Dataset as an example
+
+### Loading in Required Data Sets
+
+Remember from yesterday how we loaded specific packages and libraries that will be used for analysis. Here we load the dataset "palmer penguins" and will use the package `dplyr` for data manipulation, `ggplot` and `ggfortify` for visualizations. Both of these are common packages used for data manipulation and visualization in R, so feel free to become more familiar with the use of these packages.
+
+```{r}
+# Install and load necessary packages, simply uncomment (by removing the "#" from the line) the line to install the package
+
+install.packages("palmerpenguins")
+#install.packages("dplyr")
+
+# Calling in the necessary packages that will be used moving forward
+library(palmerpenguins) # how to look up libraries
+library(dplyr)
+```
+
+Next begins the actual PCA analysis, it is first broken down into manual computation steps and then we use `prcomp` which is a function that does all these individual steps in one.
+
+### 1. Data Inspection and Selecting Numberic Variables
+
+Here we will remove NA values and select columns that are numberic (bill length, bill depth, flipper length and body mass) as these variable types can be run in the PCA. We cannot use factoral variables within the PCA such as "species" or "island". But first let us inspect the penguin dataset using the `head` function.
+
+#### Initial Inspection of the Penguin dataset
+
+```{r}
+# Here we just look at the initial six lines of the penguin dataset using the `head()` function.
+# You can also show additional lines of the dataset using the 'n = ' ... parameter as seen in the comment next to the code
+# The datatypes of each column are given below the column name where:
+  # <fct> = factor (A categorical variable with defined levels (e.g., species, island, sex))
+  # <dbl> = double (A numeric variable stored as a double-precision floating-point number (used for continuous numbers like bill length))
+  # <int> = integer (Whole numbers (e.g., year, flipper_len, body_mass if stored as integers))
+
+head(penguins) # head(penguins, n = 10 )
+```
+
+Note that there are some NA values throughout the dataset and they can be dropped using the `dplyr` package as follows:
+
+```{r}
+peng_na_removed <- penguins %>%
+  na.omit()
+
+head(peng_na_removed)
+```
+
+#### Next we select numeric values only
+
+Keep in mind that PCAs can only be performed on numerical data, so we need to remove the categorical information such as species, island, sex and year from the penguin datset to make our input data that will be used later on.
+
+```{r}
+# 1. Select numeric variables and remove NAs
+
+peng <- penguins %>%
+  na.omit() %>% # Here we omit the rows that contain NAs or missing information
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) # This line here uses `dpylr` to manipulate the dataframe and keep only numerical columns
+
+head(peng) # Using the head function we can view the first few rows of the newly created dataframe
+```
+
+### 2. Centering the Data
+
+Here we center the data as discussed and scale the columns to get the data that will be used in the PCA. Remember that centering the data is important because we need to adjust each column to have a mean of approximately 0. The scaling will also allow us to compare columns that may have different units such as flipper length in millimeters (mm) and body mass in grams (g). Both the scaling and the centering can be done in one line with the `scale` function and the two additional arguments: `center = TRUE` and `scale = TRUE` as seen in this line below.
+
+```
+df <- scale(numerical_data, center = TRUE, scale = TRUE)
+```
+There are of course other arguments that can also be used with this command, but these two are the most important for now.
+
+```{r}
+# 2. Center the data (subtract mean)
+
+peng_centered <- scale(peng, center = TRUE, scale = TRUE) # We can easily scale the data using the `scale` function
+
+# Check that means are approximately 0:
+cat("Columns Means: ")
+colMeans(peng_centered) # `colMeans` is the function to output the column mean values, so we can see each column and their respective mean
+cat("\n")
+
+cat("Newly centered dataframe: ")
+head(peng_centered) # Visualize the newly centered dataframe once again using the head command
+```
+
+### 3. Setting Up the Covariance Matrix
+From the centered and scaled data we can create a covariance matrix, the backbone of the PCA. The covariance matrix summarizes how all the variable co-vary and will act as a map of the relationships between the variables.
+
+To be able to do this we use the function `cov` on the centered dataset which will automatically calculate the variance between the variables as seen below:
+
+```
+df <- cov(centered_df)
+```
+
+Do keep in mind that there are other arguments that can be used here with the `cov` function. For instance, you can select which test is used to calculate the covariance:
+
+```
+cov(x) # This is the default which is "pearson"
+cov(x, method = "pearson")
+cov(x, method = "kendall")
+cov(x, method = "spearman")
+```
+And the test can be run on two specific variables as well rather than the entirety of the dataset, though in our use case we need it run on the whole dataset for each column. But we can see an example of running it on two variables below:
+
+```
+cov(variable1, variable2, method = "pearson")
+```
+
+```{r}
+# 3. Covariance matrix (on centered data)
+
+cov_matrix <- cov(peng_centered) # without specifying a method parameter "pearson" is automatically used as it is the default of the function
+cov_matrix
+```
+
+### 4. Computing the Eigenvalues and Eigenvectors
+Using the covariance matrix we will calculate the eigen values and vectors using the R function `eigen`.
+
+This function takes the covariance matrix you computed earlier and extracts:
+
+* Eigenvalues → numbers telling you how much variance each principal component captures
+* Eigenvectors → direction of each principal component (the “axes” themselves)
+
+**Helpful analogy:**
+
+Think of PCA as spinning a cloud of points in space to find the orientation where the spread is largest.
+
+* Eigenvectors = the directions of those “spins”
+* Eigenvalues = how much spread there is along each direction
+
+```{r}
+# 4. Compute eigenvalues and eigenvectors of covariance matrix
+
+eig <- eigen(cov_matrix)
+
+# Keeping table labels
+rownames(eig$vectors) <- rownames(cov_matrix)
+colnames(eig$vectors) <- paste0("PC", seq_len(ncol(eig$vectors)))
+
+eig
+```
+
+Now lets see the actual eigen values and vectors results:
+
+#### Eigen Values
+
+**What eigenvalues mean:**
+
+* Each eigenvalue corresponds to one principal component.
+* A large eigenvalue means that PC captures a lot of variance
+* A small eigenvalue means it captures very little
+
+**Why do we look at them?**
+
+* They tell us how many components we should keep
+* They form the basis of the scree plot
+
+#### Eigen Vectors
+
+**What eigenvectors mean:**
+
+Each eigenvector:
+* Is a vector of weights (one per original variable)
+* Defines how the original variables combine to form a principal component
+* These are also called loadings.
+
+**Example (idea):**
+
+If PC1 = 0.7·bill_length + 0.6·bill_depth − 0.2·body_mass
+it means:
+
+* PC1 increases when bill_length and bill_depth increase
+* PC1 decreases slightly when body_mass increases
+* Eigenvectors tell us what each PC actually means.
+
+```{r}
+cat("Eigen Values: ")
+eig$values     # variance explained by each PC
+cat("\nEigen Vectors: ")
+eig$vectors    # loadings (direction vectors)
+```
+
+Finally, lets look at the variance explained by each PC (specifically as percentages).
+
+How do we do this?
+1. Take each eigenvalue
+2. Divide it by the sum of all eigenvalues
+
+Why?
+
+Because PCA decomposes the total variance into pieces (PC1, PC2, PC3…)
+
+The fraction tells us how much of the total variance each PC contains
+
+**Example:**
+
+If PC1 = 2.4 and total variance = 4,
+
+PC1 explains 2.4 / 4 = 0.60 → 60% of the variance
+
+```{r}
+# Variance explained (percent)
+var_explained <- eig$values / sum(eig$values) # Taking the eigen values and dividing them by the sum
+
+cat("Variance explained by PC: ")
+round(var_explained * 100, 2) # Here we get the percentages and round them to two decimal places using the round() function
+```
+
+### 5. Comparing the Manual Results to `prcomp` Results
+Now that the values and loadings have been computed manually we will use the R function `prcomp` to calculate the same values and compare between the two.
+
+**Notice that the signs may be different but the directionality of the axes are irrelevant**
+
+```{r}
+# 5. Compare to built-in PCA (same results)
+
+# Running the PCA with the built in `prcomp` function:
+pca_result <- prcomp(peng, scale = TRUE, center = TRUE)
+
+print("Summary: ")
+summary(pca_result)
+```
+
+Next we want to identify and view the eigen vectors and values. To do so we look at the `rotation` values, and then take the standard deviation squared of each PC to get the eigen values.
+
+`pca_result$rotation` — Loadings (Eigenvectors)
+
+**What it contains:** a matrix whose columns are the principal component directions in the original variable space.
+* Each column = a principal component (PC1, PC2, …).
+* Each row = the weight (loading) of one original variable for that PC.
+
+**How to read it:** A large positive loading means that variable contributes strongly (positively) to that PC. Sign is arbitrary (± flip is okay).
+
+`pca_result$sdev^2` — Why square sdev to get eigenvalues?
+
+pca_result$sdev stores the standard deviation of each principal component (i.e., the spread of the dataset along that PC).
+
+**Variance = (standard deviation)^2**
+
+So pca_result$sdev^2 gives the variance explained by each PC — mathematically the eigenvalues of the covariance (or correlation) matrix.`
+
+```{r}
+# Identifying Eigen Values and Vectors
+print("Loadings (Eigen Vectors): ")
+pca_result$rotation   # loadings (eigen vectors)
+print("Eigen Values: ")
+pca_result$sdev^2 # eigen values
+```
+
+### Common Pitfalls in Running a PCA
+
+Now when we run a PCA there are some common pitfalls, or errors, that are often made. We're going to walk through some of the common mistakes that we see running a PCA.
+
+#### 1. Forgetting to scale the data
+
+**Why this is bad**
+
+If variables have different units (e.g., bill_length in mm, body_mass in g), variables with large numeric ranges dominate the PCA, even if they are not the biologically strongest signal.
+
+```{r}
+# Forgetting to scale the data when the units are different among the different columns
+pca_wrong <- prcomp(peng, center = TRUE, scale = FALSE)
+
+cat("Incorrect Results - Forgetting to Scale:")
+summary(pca_wrong)
+```
+
+And now the correct results:
+
+```{r}
+# Correct results (as we saw above):
+pca_correct <- prcomp(peng, center = TRUE, scale = TRUE)
+
+cat("Correct Results:")
+summary(pca_correct)
+```
+
+#### 2. Including categorical variables without converting them properly
+**Why this is bad**
+
+PCA only works on numeric matrices. If you accidentally include a factor, R silently converts it to numbers (1, 2, 3), producing meaningless PCs.
+
+```{r}
+# Running a PCA with the column "species" included:
+subset_df <- penguins[, c("species", "bill_length_mm", "bill_depth_mm")]
+pca_wrong2<- prcomp(subset_df, scale = TRUE, center = TRUE)
+```
+
+#### 3. Forgetting to handle missing values
+**Why this is bad**
+
+prcomp() will throw and error if any NA are present.
+
+```{r}
+prcomp(penguins[, 3:6], scale = TRUE)
+```
+
+#### 4. Overinterpreting PCs (a big beginner trap!)
+**Why this is bad**
+
+Beginners often assume:
+* PC1 = “size”
+* PC2 = “shape”
+* A PC with a strong positive loading for x “means x is increasing over time”
+* Or worse: PCs represent causal processes
+
+**But PCA is purely geometric.**
+
+PC1 is simply the direction of maximum variance, not a biological mechanism.
+
+```{r}
+pca_result$rotation
+```
+
+You might see this and say: “PC1 is defined by bill_length and flipper_length, so those traits cause penguin diversification.”
+
+**No - PC1 just captures the axis where values vary most.**
+

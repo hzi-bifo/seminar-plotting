@@ -1,0 +1,278 @@
+---
+title: "task_2_results"
+output: html_document
+date: "2025-11-19"
+---
+
+# Task 2
+
+## PCA Group Work
+
+Utilizing the dataset from the paper (https://doi.org/10.1016/j.chom.2023.05.013), you will work in small groups to run a PCA and create a scree plot / biplot to visualize the results. We will start by looking specifically at the day 9 abundance values, and where the most variance is and then do the day 9 differences in abundancies. 
+
+### Information on the data being used for this analysis
+
+**Understanding the data:**
+  
+  * Metadata / categorical columns:
+  * Mouse replicate
+  * Mouse
+  * timepoint after AB application
+  * Day
+  * Group
+
+ **Quantitative measurements:**
+  
+  * Raw abundances: KB1, YL2, etc.
+  * Log-transformed values: log10 KB1, log10 YL2, etc.
+
+PCA only works on numeric data, so we’ll focus on the numeric columns (either the raw counts or the log-transformed ones — usually log-transformed is better for microbiome or abundance data to reduce skew).
+
+# Loading the necessary libraries:
+
+For this task you will need the following libraries: dpylr, ggplot2, and ggfortify.
+Go ahead and load them in below with the command `library`.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggfortify)
+```
+
+# 1. Preparing and Exploring the Data
+
+We'll first begin by preparing the dataset and start with some basic exploration, what does the data look like? Are there missing values?
+
+### 1.1 - Calling in the data
+
+Call in the data using the `read.csv()` function that we saw earlier. The path will be different for each person but should look something like this: 
+
+```
+df <- read.csv("/second_day_part1/data/mmc2.csv", stringsAsFactors = FALSE)
+```
+Now try it below and explore the first five lines of the dataframe with `head`:
+
+```{r}
+df <- read.csv("/seminar-plotting/second_day_part1/data/mmc2.csv", stringsAsFactors = FALSE)
+head(df)
+```
+
+What are the dimensions of the dataframe we just created? Use `str` or `dim`.
+
+```{r}
+str(df)
+```
+
+### 1.2 - Cleaning and Preparing the data
+
+Remove NA values and then take only the log 10 values with the mouse and day metadata. We use the log10 abundance values in this case.
+
+Remember we first use `dplyr` to remove the NA values and then we can select for the specific columns we want using `select`. We want to keep the following columns:
+
+* Mouse
+* Group
+* Day
+
+We can combine these two in one line so that:
+
+```
+df_log <- df %>% 
+  na.omit() %>%
+  select(Mouse, Group, Day, starts_with("log10")) # This selects all columns that starts with a particular string
+```
+
+Now try it on the mouse data and visualize the first few lines:
+
+```{r}
+df_log <- df %>% 
+  na.omit() %>%
+  select(Mouse, Group, Day, starts_with("log10"))
+
+head(df_log)
+```
+
+Now what are the dimensions?
+
+```{r}
+dim(df_log)
+```
+
+Next, lets filter by abundance values for Day 9 only as this will be the input to the PCA. For us to do that we'll do use `dplyr` once again but with the `filter` function as seen here:
+
+```
+day9 <- df_log %>% 
+  filter(Day == 9)
+```
+
+Go ahead and try this filtering process below:
+
+```{r}
+day9 <- df_log %>% 
+  filter(Day == 9)
+head(day9)
+dim(day9)
+```
+
+Can you think of a way that we could've combined these past two steps with dplyr? Rather than creating the df_log variable we could've created the day9 dataframe in one go. See if you can try to do this:
+
+```{r}
+day9 <- df %>% 
+  na.omit() %>%
+  select(Mouse, Group, Day, starts_with("log10")) %>% 
+  filter(Day == 9)
+head(day9)
+dim(day9)
+```
+
+### 1.3 - Setting Up the Dataframe for the PCA
+
+We've created the main dataframe for day9 abundancies with some metadata also included. However, note that a PCA can only use numerical values so let's go ahead and create a numerical values dataframe using the `dplyr select()` function.
+
+```
+day9_abundancies <- day9_abundancies %>% 
+  select(starts_with("log10"))
+```
+
+Go ahead and select for columns with numerical values and then see how the dimensions have changed:
+
+```{r}
+day9_abundancies <- day9 %>% 
+  select(starts_with("log10"))
+head(day9_abundancies)
+```
+
+# 2. Running the PCA
+
+We discussed multiple packages that runa PCAs. Some include `prcomp` and `PCA`. We have set up the data in the previous steps but have not centered the data. Remember that this can be done as arguments so that:
+
+```
+pca_day9 <- prcomp(day9_abundancies, center = TRUE, scale = FALSE)
+```
+Go ahead and try this out with the package of your choosing.
+
+```{r}
+pca_day9 <- prcomp(day9_abundancies, center = TRUE, scale = FALSE)
+pca_day9
+```
+What abundancies had the greatest variation in PC1?
+
+Next, what happens if you scale the data?
+
+```{r}
+pca_day9_scaled <- prcomp(day9_abundancies, center = TRUE, scale = TRUE)
+pca_day9_scaled
+```
+
+You can see that the results are different, but in our case it is NOT necessary to scale the data as we are already using the log transformed results.
+
+# 3. Scree Plot
+
+Now lets create a scree plot to see the variance explained by each PC. First we'll need to get the eigen values and the variance which will be used in the plot and then we create a dataframe with the PC's and the eigen values. We can do that with:
+
+```
+eigen_values <- pca_day9$sdev^2
+variance <- eigen_values / sum(eigen_values)
+
+scree_df <- data.frame(
+  PC = 1:length(variance),
+  Variance = variance
+)
+```
+
+Next, we can use ggplot to create the scree plot like what we saw earlier. So that:
+
+```
+ggplot(scree_df, aes(x = PC, y = Variance)) +
+  geom_line() +
+  geom_point() +
+  ylim(0, 1) +
+  xlab("Principal Component") +
+  ylab("Variance Explained") +
+  ggtitle("Scree Plot") +
+  theme_minimal()
+```
+
+Go ahead and try this (Feel free to play around with the ggplot visualization): 
+
+```{r}
+eigen_values <- pca_day9$sdev^2
+variance <- eigen_values / sum(eigen_values)
+
+scree_df <- data.frame(
+  PC = 1:length(variance),
+  Variance = variance)
+
+ggplot(scree_df, aes(x = PC, y = Variance)) +
+  geom_line() +
+  geom_point() +
+  ylim(0, 1) +
+  xlab("Principal Component") +
+  ylab("Variance Explained") +
+  ggtitle("Scree Plot") +
+  theme_minimal()
+```
+
+# 4. Biplot
+
+Finally, lets create a biplot to visualize the variance. Don't forget that we created a metadata dataframe earlier that still contained the Mouse, its group and the day. We can use that metadata to color the plot based on the mouse's group. 
+
+We can use the `autoplot` function that we've seen today, such that:
+
+```
+autoplot(pca_day9,
+         data = day9,
+         colour = "Group",
+         loadings = TRUE,
+         loadings.label = TRUE,
+         loadings.label.size = 3)
+```
+
+Lets try this here:
+
+```{r}
+autoplot(pca_day9,
+         data = day9,
+         colour = "Group",
+         loadings = TRUE,
+         loadings.label = TRUE,
+         loadings.label.size = 3)
+```
+
+But this is a bit difficult to read, so why don't we try to clean it up a bit? We see that the labels are all pushed close together making them unreadable and that the arrows might be easier to discern in a lighter color. 
+
+We can adapt the plot by adding the following parameters:
+
+```
+autoplot(pca_result_delta,
+         data = day9,
+         colour = 'Group',
+         loadings = TRUE,
+         loadings.label = TRUE,   # Add loadings labels
+         loadings.label.size = 3, # Adjust label size for readability
+         loadings.colour = "black", # Make the loadings labels black for better contrast
+         loadings.label.repel = TRUE, # Use repelling labels to avoid overlaps
+         size = 4,                # Adjust the size of the points
+         alpha = 0.7)
+```
+We change the loadings color with `loadings.colour` and then we also add the argument `loadings.label.repel` which will reduce the labels and move them so that they no longer overlap. Try implementing something like this to see how it changes the plot. 
+
+```{r}
+autoplot(pca_day9,
+         data = day9,
+         colour = 'Group',
+         loadings = TRUE,
+         loadings.label = TRUE,   # Add loadings labels
+         loadings.label.size = 3, # Adjust label size for readability
+         loadings.colour = "black", # Make the loadings labels black for better contrast
+         loadings.label.repel = TRUE, # Use repelling labels to avoid overlaps
+         size = 4,                # Adjust the size of the points
+         alpha = 0.7) +          # Adjust transparency to make points more distinguishable
+    labs(title = "PCA Biplot with Day 9 Abundances",
+       x = paste("PC1 (", round(53.6, 1), "%)", sep = ""),
+       y = paste("PC2 (", round(21.7, 1), "%)", sep = ""))
+```
+
+Now based on this, what information can you gleem from the results?
+
+
+
