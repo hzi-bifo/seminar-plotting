@@ -1,0 +1,187 @@
+---
+title: "Day 2 – Bonus Heatmap Customization (Solution)"
+author: "Seminar reference solution"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+This key demonstrates one way to complete the bonus exercise combining
+decorations, legends, and a multi-heatmap layout for the dataset3 tables.
+
+## 1. Setup and metadata
+
+```{r bonus-sol-setup}
+suppressPackageStartupMessages({
+  library(ComplexHeatmap)
+  library(circlize)
+  library(viridisLite)
+  library(grid)
+})
+
+subset_path <- file.path('..', 'data', 'dataset3_subset.csv')
+long_path   <- file.path('..', 'data', 'dataset3_subset_long.csv')
+wide_df <- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
+long_df <- read.csv(long_path, check.names = FALSE, stringsAsFactors = FALSE)
+
+long_df$sample_id <- paste(long_df$mouse_id, long_df$day, sep = '-')
+sample_meta <- unique(long_df[, c('sample_id', 'mouse_id', 'day', 'treatment_group')])
+sample_meta$day <- as.integer(sample_meta$day)
+
+# Compare two treatment groups for this exercise
+target_groups <- c('Control', 'Ciprofloxacin')
+sample_meta <- sample_meta[sample_meta$treatment_group %in% target_groups, ]
+order_idx <- order(sample_meta$treatment_group, sample_meta$mouse_id, sample_meta$day)
+sample_meta <- sample_meta[order_idx, ]
+row.names(sample_meta) <- NULL
+```
+
+## 2. Matrix, row variance, and palette
+
+```{r bonus-sol-matrix}
+sample_cols <- sample_meta$sample_id
+wide_subset <- wide_df[, c('Genome', 'snp_id', 'Position', sample_cols)]
+heatmap_matrix <- as.matrix(wide_subset[, sample_cols])
+mode(heatmap_matrix) <- 'numeric'
+rownames(heatmap_matrix) <- paste(wide_subset$Genome, wide_subset$snp_id, sep = ' | ')
+row_genome <- wide_subset$Genome
+row_var <- apply(heatmap_matrix, 1, var, na.rm = TRUE)
+
+value_range <- range(heatmap_matrix, na.rm = TRUE)
+color_fun <- circlize::colorRamp2(
+  seq(value_range[1], value_range[2], length.out = 5),
+  viridisLite::viridis(5)
+)
+```
+
+## 3. Annotation summaries
+
+```{r bonus-sol-annotation-summary}
+print(table(sample_meta$treatment_group))
+print(table(sample_meta$treatment_group, sample_meta$day))
+head(sample_meta)
+```
+
+## 4. Column and row annotations
+
+```{r bonus-sol-annotations}
+treatment_colors <- setNames(c('#1b9e77', '#d95f02'), target_groups)
+day_seq <- seq(min(sample_meta$day), max(sample_meta$day), length.out = 5)
+day_colors <- circlize::colorRamp2(day_seq, viridisLite::viridis(5))
+
+col_ann <- HeatmapAnnotation(
+  treatment = factor(sample_meta$treatment_group, levels = target_groups),
+  day = sample_meta$day,
+  col = list(treatment = treatment_colors, day = day_colors),
+  annotation_name_side = 'left'
+)
+
+genome_levels <- unique(row_genome)
+genome_colors <- setNames(grDevices::rainbow(length(genome_levels)), genome_levels)
+row_ann <- rowAnnotation(
+  genome = factor(row_genome, levels = genome_levels),
+  col = list(genome = genome_colors),
+  annotation_name_side = 'top'
+)
+
+preview_mat <- matrix(0, nrow = 1, ncol = ncol(heatmap_matrix))
+preview_ht <- Heatmap(
+  preview_mat,
+  col = c('0' = '#ffffff'),
+  top_annotation = col_ann,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_heatmap_legend = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_title = 'Annotation preview'
+)
+
+draw(preview_ht, annotation_legend_side = 'right')
+
+row_preview <- Heatmap(
+  matrix(0, nrow = nrow(heatmap_matrix), ncol = 1),
+  col = c('0' = '#ffffff'),
+  right_annotation = row_ann,
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  show_heatmap_legend = FALSE,
+  column_title = 'Row annotation preview'
+)
+
+draw(row_preview, heatmap_legend_side = 'right', annotation_legend_side = 'right')
+```
+
+## 5. Heatmap for high-variance rows
+
+```{r bonus-sol-decoration, fig.width=10, fig.height=7}
+high_var_cut <- quantile(row_var, 0.9, na.rm = TRUE)
+highlight_rows <- which(row_var >= high_var_cut)
+
+main_ht <- Heatmap(
+  heatmap_matrix,
+  name = 'bonus_heatmap',
+  col = color_fun,
+  top_annotation = col_ann,
+  right_annotation = row_ann,
+  column_split = factor(sample_meta$treatment_group, levels = target_groups),
+  cluster_rows = FALSE,
+  cluster_columns = FALSE,
+  show_row_names = FALSE,
+  column_title = 'Control vs Ciprofloxacin',
+  heatmap_legend_param = list(title = 'Allele frequency'),
+  na_col = '#f0f0f0'
+)
+```
+
+## 6. Companion heatmap, custom legend, and draw call
+
+```{r bonus-sol-heatmap-list, fig.width=11, fig.height=7}
+control_cols <- sample_meta$sample_id[sample_meta$treatment_group == target_groups[1]]
+treated_cols <- sample_meta$sample_id[sample_meta$treatment_group == target_groups[2]]
+control_mean <- rowMeans(heatmap_matrix[, control_cols, drop = FALSE], na.rm = TRUE)
+treated_mean <- rowMeans(heatmap_matrix[, treated_cols, drop = FALSE], na.rm = TRUE)
+mean_delta <- treated_mean - control_mean
+
+delta_ht <- Heatmap(
+  mean_delta,
+  name = 'Δ mean',
+  width = unit(1.2, 'cm'),
+  col = circlize::colorRamp2(
+    c(min(mean_delta, na.rm = TRUE), 0, max(mean_delta, na.rm = TRUE)),
+    c('#4575b4', '#f7f7f7', '#d73027')
+  ),
+  show_row_names = FALSE,
+  cluster_rows = FALSE,
+  heatmap_legend_param = list(title = 'Mean difference'),
+  column_title = 'Cipro - Control'
+)
+
+combo <- main_ht + delta_ht
+highlight_legend <- Legend(
+  title = 'Highlight',
+  labels = 'Row variance ≥ 90th pct',
+  legend_gp = gpar(fill = '#ffe0b2', col = '#ff9500', lwd = 1.2)
+)
+combo <- draw(
+  combo,
+  heatmap_legend_side = 'right',
+  annotation_legend_side = 'right',
+  heatmap_legend_list = list(highlight_legend)
+)
+```
+
+## 7. Notes
+
+```{r bonus-sol-notes}
+cat('Highlighted rows:', length(highlight_rows), '\n')
+cat('Top genomes in highlight:\n')
+print(sort(table(row_genome[highlight_rows]), decreasing = TRUE))
+```
+
+The decoration makes it obvious that the most variable SNPs mostly belong to the
+Akkermansia genome in this subset, and the companion Δ-mean heatmap shows where
+Ciprofloxacin drives allele-frequency changes relative to Control.

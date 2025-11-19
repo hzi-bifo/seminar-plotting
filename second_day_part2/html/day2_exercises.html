@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Seminar plotting walk-through" />
+<meta name="author" content="Seminar practice worksheets" />
 
 
-<title>Day 2 – 00 Prepare Dataset</title>
+<title>Day 2 – Exercises</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,254 +349,801 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 2 – 00 Prepare Dataset</h1>
-<h4 class="author">Seminar plotting walk-through</h4>
+<h1 class="title toc-ignore">Day 2 – Exercises</h1>
+<h4 class="author">Seminar practice worksheets</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#define-inputoutput-paths" id="toc-define-inputoutput-paths">1. Define input/output paths</a></li>
-<li><a href="#load-the-raw-csv-and-inspect" id="toc-load-the-raw-csv-and-inspect">2. Load the raw CSV and
-inspect</a></li>
-<li><a href="#helper-to-build-wide-long-subsets" id="toc-helper-to-build-wide-long-subsets">3. Helper to build wide +
-long subsets</a></li>
-<li><a href="#dataset-1-two-spotlight-genomes" id="toc-dataset-1-two-spotlight-genomes">4. Dataset 1 – two spotlight
-genomes</a></li>
-<li><a href="#dataset-2-add-turicimonas-for-exercises" id="toc-dataset-2-add-turicimonas-for-exercises">5. Dataset 2 – add
-Turicimonas for exercises</a></li>
-<li><a href="#dataset-3-include-all-genomes" id="toc-dataset-3-include-all-genomes">6. Dataset 3 – include all
-genomes</a></li>
-</ul>
-</div>
-
-<p>This notebook converts the raw Day 2 file
-(<code>second_day_part2/data/dataset1.csv</code>) into the tidy CSVs
-used throughout the course:</p>
+<li><a href="#exercise-explore-data" id="toc-exercise-explore-data">Exercise – Explore Data</a>
 <ul>
-<li><code>second_day_part2/data/dataset1_subset.csv</code> /
-<code>dataset1_subset_long.csv</code>: only the two spotlight genomes
-(Akkermansia + Bacteroides).</li>
-<li><code>second_day_part2/data/dataset2_subset.csv</code> /
-<code>dataset2_subset_long.csv</code>: the same table but with a third
-genome (Turicimonas) added for the exercises track.</li>
+<li><a href="#load-and-preview-the-dataset" id="toc-load-and-preview-the-dataset">1. Load and preview the
+dataset</a></li>
+<li><a href="#enumerate-genomes-and-snps" id="toc-enumerate-genomes-and-snps">2. Enumerate genomes and
+SNPs</a></li>
+<li><a href="#summaries-by-genome" id="toc-summaries-by-genome">3.
+Summaries by genome</a></li>
+<li><a href="#focus-on-turicimonas" id="toc-focus-on-turicimonas">4.
+Focus on Turicimonas</a></li>
+<li><a href="#allele-frequency-focus-turicimonas-vs-all-genomes" id="toc-allele-frequency-focus-turicimonas-vs-all-genomes">5.
+Allele-frequency focus (Turicimonas vs all genomes)</a></li>
+<li><a href="#missing-values" id="toc-missing-values">6. Missing
+values</a></li>
+<li><a href="#treatment-groups" id="toc-treatment-groups">7. Treatment
+groups</a></li>
+<li><a href="#stretch-idea" id="toc-stretch-idea">8. Stretch
+idea</a></li>
+</ul></li>
+<li><a href="#exercise-simple-heatmap" id="toc-exercise-simple-heatmap">Exercise – Simple Heatmap</a>
+<ul>
+<li><a href="#load-packages-and-define-paths" id="toc-load-packages-and-define-paths">1. Load packages and define
+paths</a></li>
+<li><a href="#loadinspect-the-data" id="toc-loadinspect-the-data">2.
+Load/inspect the data</a></li>
+<li><a href="#choose-a-treatment-group-subset" id="toc-choose-a-treatment-group-subset">3. Choose a treatment group
+subset</a></li>
+<li><a href="#quick-summaries" id="toc-quick-summaries">4. Quick
+summaries</a></li>
+<li><a href="#build-the-heatmap-matrix" id="toc-build-the-heatmap-matrix">5. Build the heatmap matrix</a></li>
+<li><a href="#colors-and-annotations" id="toc-colors-and-annotations">6.
+Colors and annotations</a></li>
+<li><a href="#draw-and-export-the-heatmap" id="toc-draw-and-export-the-heatmap">7. Draw and export the
+heatmap</a></li>
+<li><a href="#reflection-prompts" id="toc-reflection-prompts">8.
+Reflection prompts</a></li>
+</ul></li>
+<li><a href="#exercise-full-heatmap" id="toc-exercise-full-heatmap">Exercise – Full Heatmap</a>
+<ul>
+<li><a href="#packages-paths-helper-settings" id="toc-packages-paths-helper-settings">1. Packages, paths, helper
+settings</a></li>
+<li><a href="#load-data-and-report-missingness" id="toc-load-data-and-report-missingness">2. Load data and report
+missingness</a></li>
+<li><a href="#build-the-numeric-matrix" id="toc-build-the-numeric-matrix">3. Build the numeric matrix</a></li>
+<li><a href="#baseline-heatmap-and-color-experiments" id="toc-baseline-heatmap-and-color-experiments">4. Baseline heatmap and
+color experiments</a></li>
+<li><a href="#column-annotations-and-ordering" id="toc-column-annotations-and-ordering">5. Column annotations and
+ordering</a></li>
+<li><a href="#annotation-enhancements-column-splits-and-readable-row-titles" id="toc-annotation-enhancements-column-splits-and-readable-row-titles">6.
+Annotation enhancements, column splits, and readable row titles</a></li>
+<li><a href="#row-filtering-via-variance" id="toc-row-filtering-via-variance">7. Row filtering via
+variance</a></li>
+<li><a href="#final-polish-and-pdf-export" id="toc-final-polish-and-pdf-export">8. Final polish and PDF
+export</a></li>
+<li><a href="#notes-and-extensions" id="toc-notes-and-extensions">9.
+Notes and extensions</a></li>
+</ul></li>
+<li><a href="#bonus-heatmap-customization" id="toc-bonus-heatmap-customization">Bonus – Heatmap Customization</a>
+<ul>
+<li><a href="#setup-and-pick-two-treatment-groups" id="toc-setup-and-pick-two-treatment-groups">1. Setup and pick two
+treatment groups</a></li>
+<li><a href="#build-the-base-matrix-and-ordering" id="toc-build-the-base-matrix-and-ordering">2. Build the base matrix and
+ordering</a></li>
+<li><a href="#explore-annotation-friendly-summaries" id="toc-explore-annotation-friendly-summaries">3. Explore
+annotation-friendly summaries</a></li>
+<li><a href="#columnrow-annotations" id="toc-columnrow-annotations">4.
+Column/row annotations</a></li>
+<li><a href="#highlight-high-variance-rows-with-decorations" id="toc-highlight-high-variance-rows-with-decorations">5. Highlight
+high-variance rows with decorations</a></li>
+<li><a href="#add-a-companion-heatmap-and-custom-legends" id="toc-add-a-companion-heatmap-and-custom-legends">6. Add a companion
+heatmap and custom legends</a></li>
+<li><a href="#reflection" id="toc-reflection">7. Reflection</a></li>
+</ul></li>
 </ul>
-<p>Everything is written with base R so that you can explain each step
-to beginners. Run it from the repository root:</p>
-<pre><code>R -e &quot;rmarkdown::render(&#39;second_day_part2/data/00_prepare_dataset.Rmd&#39;)&quot;</code></pre>
-<div id="define-inputoutput-paths" class="section level2">
-<h2>1. Define input/output paths</h2>
-<pre class="r"><code>input_path &lt;- &#39;dataset1.csv&#39;
-subset_path &lt;- &#39;dataset1_subset.csv&#39;
-long_path &lt;- &#39;dataset1_subset_long.csv&#39;
-subset2_path &lt;- &#39;dataset2_subset.csv&#39;
-long2_path &lt;- &#39;dataset2_subset_long.csv&#39;
-subset3_path &lt;- &#39;dataset3_subset.csv&#39;
-long3_path &lt;- &#39;dataset3_subset_long.csv&#39;
-group_map_path &lt;- &#39;mouse_group_mapping.csv&#39;</code></pre>
 </div>
-<div id="load-the-raw-csv-and-inspect" class="section level2">
-<h2>2. Load the raw CSV and inspect</h2>
-<pre class="r"><code>raw_df &lt;- read.csv(
-  input_path,
-  check.names = FALSE,
-  stringsAsFactors = FALSE,
-  fileEncoding = &#39;UTF-8-BOM&#39;
-)
 
-cat(&#39;Rows:&#39;, nrow(raw_df), &#39;\\nColumns:&#39;, ncol(raw_df), &#39;\\n&#39;)</code></pre>
-<pre><code>## Rows: 71 \nColumns: 69 \n</code></pre>
-<pre class="r"><code>colnames(raw_df)</code></pre>
-<pre><code>##  [1] &quot;Genome&quot;      &quot;Position&quot;    &quot;Alternative&quot; &quot;Reference&quot;   &quot;Feature&quot;    
-##  [6] &quot;1683-0&quot;      &quot;1683-4&quot;      &quot;1683-9&quot;      &quot;1683-14&quot;     &quot;1683-18&quot;    
-## [11] &quot;1683-23&quot;     &quot;1683-30&quot;     &quot;1683-37&quot;     &quot;1683-44&quot;     &quot;1683-49&quot;    
-## [16] &quot;1683-53&quot;     &quot;1683-58&quot;     &quot;1683-63&quot;     &quot;1683-67&quot;     &quot;1683-72&quot;    
-## [21] &quot;1683-79&quot;     &quot;1688-0&quot;      &quot;1688-4&quot;      &quot;1688-9&quot;      &quot;1688-14&quot;    
-## [26] &quot;1688-18&quot;     &quot;1688-23&quot;     &quot;1688-30&quot;     &quot;1688-37&quot;     &quot;1688-44&quot;    
-## [31] &quot;1688-49&quot;     &quot;1688-53&quot;     &quot;1688-58&quot;     &quot;1688-63&quot;     &quot;1688-67&quot;    
-## [36] &quot;1688-72&quot;     &quot;1688-79&quot;     &quot;1692-0&quot;      &quot;1692-4&quot;      &quot;1692-9&quot;     
-## [41] &quot;1692-14&quot;     &quot;1692-18&quot;     &quot;1692-23&quot;     &quot;1692-30&quot;     &quot;1692-37&quot;    
-## [46] &quot;1692-44&quot;     &quot;1692-49&quot;     &quot;1692-53&quot;     &quot;1692-58&quot;     &quot;1692-63&quot;    
-## [51] &quot;1692-67&quot;     &quot;1692-72&quot;     &quot;1692-79&quot;     &quot;1699-0&quot;      &quot;1699-4&quot;     
-## [56] &quot;1699-9&quot;      &quot;1699-14&quot;     &quot;1699-18&quot;     &quot;1699-23&quot;     &quot;1699-30&quot;    
-## [61] &quot;1699-37&quot;     &quot;1699-44&quot;     &quot;1699-49&quot;     &quot;1699-53&quot;     &quot;1699-58&quot;    
-## [66] &quot;1699-63&quot;     &quot;1699-67&quot;     &quot;1699-72&quot;     &quot;1699-79&quot;</code></pre>
-<pre class="r"><code>head(raw_df[, 1:8])</code></pre>
-<pre><code>##                         Genome Position Alternative Reference
-## 1 Akkermansia_muciniphila_YL44   239840           C         G
-## 2 Akkermansia_muciniphila_YL44   241793           A         G
-## 3 Akkermansia_muciniphila_YL44   355328           A         T
-## 4 Akkermansia_muciniphila_YL44   356291           C         A
-## 5 Akkermansia_muciniphila_YL44  2351445           C         T
-## 6   Bacteroides_caecimuris_I48  1601848           T         C
-##                                                            Feature   1683-0
-## 1 autotransporter-associated beta strand repeat-containing protein 0.000000
-## 2 autotransporter-associated beta strand repeat-containing protein 0.049587
-## 3                                                   protein kinase 0.138182
-## 4                                                   protein kinase 0.000000
-## 5                 protein phosphatase 2C domain-containing protein 0.000000
-## 6                                          TonB-dependent receptor 0.041609
-##     1683-4   1683-9
-## 1 0.000000 0.000000
-## 2 0.031414 0.076271
-## 3 0.132275 0.138211
-## 4 0.000000 0.000000
-## 5 0.000000 0.000000
-## 6 0.000000 0.038251</code></pre>
-<p>Explain that every row is a SNP call with many sample columns (e.g.,
-<code>1683-0</code>).</p>
+<p>All Day 2 exercises collected in one place, including the optional
+bonus customization challenge inspired by the ComplexHeatmap book.</p>
+<hr />
+<div id="exercise-explore-data" class="section level1">
+<h1>Exercise – Explore Data</h1>
+<p>This exercise notebook follows the same steps as the guided
+exploration while letting you practice independently. It works on
+<code>second_day_part2/data/dataset2_subset_long.csv</code>, the
+three-genome version of the dataset (Akkermansia, Bacteroides,
+Turicimonas). Type your own code into the chunks below; the prompts
+explain what to do and the code blocks are left with <code># TODO</code>
+comments so you can fill them in.</p>
+<blockquote>
+<p><strong>Tip:</strong> Run
+<code>second_day_part2/00_prepare.Rmd</code> once to install packages,
+and <code>second_day_part2/data/00_prepare_dataset.Rmd</code> only if
+you need to regenerate the three-genome dataset.</p>
+</blockquote>
+<div id="load-and-preview-the-dataset" class="section level2">
+<h2>1. Load and preview the dataset</h2>
+<p>Goal: use <code>read.csv()</code> to load the file, then report the
+number of rows/columns and display the first few entries.</p>
+<p>Think of this as your “sanity check” step. Confirm that the CSV path
+you expect actually exists, that the delimiter was read correctly (no
+shifted columns), and that the headers align with the guided
+walkthrough. Printing the first couple of lines also helps you spot
+accidental factor conversion or hidden
+<code>stringsAsFactors = TRUE</code> issues before they propagate into
+later tasks.</p>
+<pre class="r"><code># TODO: load dataset2_subset_long.csv into an object named long_df
+# TODO: print nrow(long_df) and ncol(long_df)
+# TODO: call head(long_df)</code></pre>
+<p><em>Hint:</em> remember to set <code>stringsAsFactors = FALSE</code>
+and <code>check.names = FALSE</code> so the column headers stay
+untouched.</p>
 </div>
-<div id="helper-to-build-wide-long-subsets" class="section level2">
-<h2>3. Helper to build wide + long subsets</h2>
-<pre class="r"><code>build_subset &lt;- function(genomes, wide_out, long_out) {
-  message(&#39;Preparing subset for genomes: &#39;, paste(genomes, collapse = &#39;, &#39;))
-  subset_df &lt;- raw_df[raw_df$Genome %in% genomes, , drop = FALSE]
-  if (nrow(subset_df) == 0) {
-    stop(&#39;No rows left after filtering for &#39;, paste(genomes, collapse = &#39;, &#39;))
-  }
-
-  subset_df$snp_id &lt;- paste(subset_df$Position,
-                            subset_df$Alternative,
-                            subset_df$Reference,
-                            sep = &#39;-&#39;)
-
-  sample_cols &lt;- setdiff(names(subset_df),
-                         c(&#39;Genome&#39;, &#39;snp_id&#39;, &#39;Position&#39;,
-                           &#39;Alternative&#39;, &#39;Reference&#39;, &#39;Feature&#39;))
-
-  wide_df &lt;- subset_df[, c(&#39;Genome&#39;, &#39;snp_id&#39;, &#39;Position&#39;, sample_cols), drop = FALSE]
-  write.csv(wide_df, wide_out, row.names = FALSE)
-  message(&#39;Saved: &#39;, wide_out)
-
-  long_parts &lt;- list()
-  for (col in sample_cols) {
-    long_parts[[length(long_parts) + 1]] &lt;- data.frame(
-      Genome = wide_df$Genome,
-      snp_id = wide_df$snp_id,
-      Position = wide_df$Position,
-      sample = col,
-      value = wide_df[[col]],
-      stringsAsFactors = FALSE
-    )
-  }
-
-long_df &lt;- do.call(rbind, long_parts)
-split_ids &lt;- strsplit(long_df$sample, &#39;-&#39;, fixed = TRUE)
-long_df$mouse_id &lt;- vapply(split_ids, function(x) x[[1]], character(1))
-long_df$day &lt;- as.integer(vapply(split_ids,
-                                 function(x) if (length(x) &gt;= 2) x[[2]] else NA_character_,
-                                 character(1)))
-long_df$sample &lt;- NULL
-
-# Attach treatment group information (if available)
-if (file.exists(group_map_path)) {
-  group_map &lt;- read.csv(group_map_path, stringsAsFactors = FALSE, check.names = FALSE)
-  group_map$Mouse &lt;- as.character(group_map$Mouse)
-  group_map$Day &lt;- as.integer(group_map$Day)
-  long_df &lt;- merge(
-    long_df,
-    group_map[, c(&#39;Mouse&#39;, &#39;Day&#39;, &#39;Group&#39;)],
-    by.x = c(&#39;mouse_id&#39;, &#39;day&#39;),
-    by.y = c(&#39;Mouse&#39;, &#39;Day&#39;),
-    all.x = TRUE
-  )
-  names(long_df)[names(long_df) == &#39;Group&#39;] &lt;- &#39;treatment_group&#39;
-  long_df &lt;- long_df[, c(&#39;Genome&#39;, &#39;snp_id&#39;, &#39;Position&#39;, &#39;value&#39;, &#39;mouse_id&#39;, &#39;day&#39;, &#39;treatment_group&#39;)]
-}
-
-write.csv(long_df, long_out, row.names = FALSE)
-message(&#39;Saved: &#39;, long_out)
-
-  list(wide = wide_df, long = long_df)
-}</code></pre>
+<div id="enumerate-genomes-and-snps" class="section level2">
+<h2>2. Enumerate genomes and SNPs</h2>
+<p>Goal: list all genomes present, count how many rows each contributes,
+and count unique SNP identifiers per genome.</p>
+<p>These counts will anchor your interpretation later. If one genome
+contributes far more rows, its patterns will dominate simple histograms.
+Likewise, the SNP totals tell you whether a genome appears sparse
+because it has fewer markers or because of experimental filtering.
+Capture both the raw row counts and the unique SNP counts so you can
+mention them when presenting results.</p>
+<pre class="r"><code># TODO: unique() to list genomes
+# TODO: table() to count rows per genome
+# TODO: tapply() + length(unique()) to count SNPs per genome</code></pre>
+<p><em>Hint:</em> model your solution after the formula
+<code>tapply(long_df$snp_id, long_df$Genome, ...)</code>.</p>
 </div>
-<div id="dataset-1-two-spotlight-genomes" class="section level2">
-<h2>4. Dataset 1 – two spotlight genomes</h2>
-<pre class="r"><code>primary_genomes &lt;- c(&#39;Akkermansia_muciniphila_YL44&#39;, &#39;Bacteroides_caecimuris_I48&#39;)
-dataset1 &lt;- build_subset(primary_genomes, subset_path, long_path)</code></pre>
-<pre><code>## Preparing subset for genomes: Akkermansia_muciniphila_YL44, Bacteroides_caecimuris_I48</code></pre>
-<pre><code>## Saved: dataset1_subset.csv</code></pre>
-<pre><code>## Saved: dataset1_subset_long.csv</code></pre>
-<pre class="r"><code>head(dataset1$wide[, 1:5])</code></pre>
-<pre><code>##                         Genome      snp_id Position   1683-0   1683-4
-## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000 0.000000
-## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587 0.031414
-## 3 Akkermansia_muciniphila_YL44  355328-A-T   355328 0.138182 0.132275
-## 4 Akkermansia_muciniphila_YL44  356291-C-A   356291 0.000000 0.000000
-## 5 Akkermansia_muciniphila_YL44 2351445-C-T  2351445 0.000000 0.000000
-## 6   Bacteroides_caecimuris_I48 1601848-T-C  1601848 0.041609 0.000000</code></pre>
-<pre class="r"><code>head(dataset1$long)</code></pre>
-<pre><code>##                         Genome      snp_id Position    value mouse_id day
-## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000     1683   0
-## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587     1683   0
-## 3 Akkermansia_muciniphila_YL44  355328-A-T   355328 0.138182     1683   0
-## 4 Akkermansia_muciniphila_YL44  356291-C-A   356291 0.000000     1683   0
-## 5 Akkermansia_muciniphila_YL44 2351445-C-T  2351445 0.000000     1683   0
-## 6   Bacteroides_caecimuris_I48 1601848-T-C  1601848 0.041609     1683   0
-##   treatment_group
-## 1         Control
-## 2         Control
-## 3         Control
-## 4         Control
-## 5         Control
-## 6         Control</code></pre>
+<div id="summaries-by-genome" class="section level2">
+<h2>3. Summaries by genome</h2>
+<p>Goal: compute summary statistics of <code>value</code> for each
+genome (min/median/mean, etc.) using
+<code>aggregate(value ~ Genome, ...)</code>. Also, show a quick
+<code>summary()</code> of the first few values to illustrate what the
+anonymous function does.</p>
+<p>Interpreting a heatmap gets easier when you already know the numeric
+range per genome. Use this section to capture descriptive stats you can
+reuse in slides or discussion. Consider storing the aggregated summaries
+in an object (e.g., <code>genome_summary</code>) so you can sort by
+median or compare genomes later without rerunning the aggregation.</p>
+<pre class="r"><code># TODO: sample_values &lt;- long_df$value[1:10]; summary(sample_values)
+# TODO: aggregate(value ~ Genome, data = long_df, function(x) summary(x))</code></pre>
+<p><em>Hint:</em> read <code>value ~ Genome</code> as “value grouped by
+Genome”. The column to the left of <code>~</code> must be numeric.</p>
 </div>
-<div id="dataset-2-add-turicimonas-for-exercises" class="section level2">
-<h2>5. Dataset 2 – add Turicimonas for exercises</h2>
-<pre class="r"><code>extended_genomes &lt;- c(&#39;Akkermansia_muciniphila_YL44&#39;,
-                      &#39;Bacteroides_caecimuris_I48&#39;,
-                      &#39;Turicimonas_muris_YL45&#39;)
-dataset2 &lt;- build_subset(extended_genomes, subset2_path, long2_path)</code></pre>
-<pre><code>## Preparing subset for genomes: Akkermansia_muciniphila_YL44, Bacteroides_caecimuris_I48, Turicimonas_muris_YL45</code></pre>
-<pre><code>## Saved: dataset2_subset.csv</code></pre>
-<pre><code>## Saved: dataset2_subset_long.csv</code></pre>
-<pre class="r"><code>head(dataset2$long)</code></pre>
-<pre><code>##                         Genome      snp_id Position    value mouse_id day
-## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000     1683   0
-## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587     1683   0
-## 3 Akkermansia_muciniphila_YL44  355328-A-T   355328 0.138182     1683   0
-## 4 Akkermansia_muciniphila_YL44  356291-C-A   356291 0.000000     1683   0
-## 5 Akkermansia_muciniphila_YL44 2351445-C-T  2351445 0.000000     1683   0
-## 6   Bacteroides_caecimuris_I48 1601848-T-C  1601848 0.041609     1683   0
-##   treatment_group
-## 1         Control
-## 2         Control
-## 3         Control
-## 4         Control
-## 5         Control
-## 6         Control</code></pre>
+<div id="focus-on-turicimonas" class="section level2">
+<h2>4. Focus on Turicimonas</h2>
+<p>Goal: subset the data frame to <code>Turicimonas_muris_YL45</code>
+only, show <code>head()</code> of the subset, and build a
+<code>table(mouse_id, day)</code> for that genome.</p>
+<p>Turicimonas is the new genome compared with the two-genome
+walkthrough, so spend time understanding its footprint. After filtering,
+look at which mice and days have observations—do they align with the
+treatment timeline? You can also inspect a few <code>snp_id</code>s to
+see if they cluster by chromosome or appear randomly distributed.</p>
+<pre class="r"><code># TODO: turicimonas_df &lt;- long_df[long_df$Genome == &#39;Turicimonas_muris_YL45&#39;, ]
+# TODO: head(turicimonas_df)
+# TODO: table(turicimonas_df$mouse_id, turicimonas_df$day)</code></pre>
+<p><em>Hint:</em> inspect
+<code>head(long_df$Genome == &#39;Turicimonas_muris_YL45&#39;)</code> to see the
+TRUE/FALSE mask created by the comparison.</p>
 </div>
-<div id="dataset-3-include-all-genomes" class="section level2">
-<h2>6. Dataset 3 – include all genomes</h2>
-<pre class="r"><code>all_genomes &lt;- unique(raw_df$Genome)
-dataset3 &lt;- build_subset(all_genomes, subset3_path, long3_path)</code></pre>
-<pre><code>## Preparing subset for genomes: Akkermansia_muciniphila_YL44, Bacteroides_caecimuris_I48, Blautia_coccoides_YL58, Clostridium_innocuum_I46, Enterocloster_clostridioformis_YL32, Turicimonas_muris_YL45</code></pre>
-<pre><code>## Saved: dataset3_subset.csv</code></pre>
-<pre><code>## Saved: dataset3_subset_long.csv</code></pre>
-<pre class="r"><code>head(dataset3$long)</code></pre>
-<pre><code>##                         Genome      snp_id Position    value mouse_id day
-## 1 Akkermansia_muciniphila_YL44  239840-C-G   239840 0.000000     1683   0
-## 2 Akkermansia_muciniphila_YL44  241793-A-G   241793 0.049587     1683   0
-## 3 Akkermansia_muciniphila_YL44  355328-A-T   355328 0.138182     1683   0
-## 4 Akkermansia_muciniphila_YL44  356291-C-A   356291 0.000000     1683   0
-## 5 Akkermansia_muciniphila_YL44 2351445-C-T  2351445 0.000000     1683   0
-## 6   Bacteroides_caecimuris_I48 1601848-T-C  1601848 0.041609     1683   0
-##   treatment_group
-## 1         Control
-## 2         Control
-## 3         Control
-## 4         Control
-## 5         Control
-## 6         Control</code></pre>
-<p>With both CSV sets created, move on to
-<code>scripts/individual_notebooks/01_explore_data.Rmd</code> for the
-guided walkthrough, or try the exercises notebook
-(<code>scripts/individual_notebooks/01_explore_data_exercises.Rmd</code>,
-with
-<code>scripts/individual_notebooks/01_explore_data_exercises_solution.Rmd</code>
-as a key) that uses the three-genome dataset, and finally render
-<code>scripts/individual_notebooks/02_simple_heatmap.Rmd</code> for the
-visualization.</p>
+<div id="allele-frequency-focus-turicimonas-vs-all-genomes" class="section level2">
+<h2>5. Allele-frequency focus (Turicimonas vs all genomes)</h2>
+<p>Goal: plot the allele-frequency (<code>value</code>) histogram for
+<code>Turicimonas_muris_YL45</code>, then for the entire dataset. Report
+<code>summary()</code> for both vectors and note whether Turicimonas
+shows more high-frequency SNPs.</p>
+<p>Go beyond the simple plot: compare medians, interquartile ranges, and
+extreme values. If distributions look different, jot down a short
+interpretation such as “Turicimonas peaks near 0.4 whereas Akkermansia
+spans 0–1 evenly.” These observations will justify why adding a third
+genome matters in the downstream heatmap exercise.</p>
+<pre class="r"><code># TODO: turicimonas_values &lt;- long_df$value[long_df$Genome == &#39;Turicimonas_muris_YL45&#39;]
+# TODO: hist(turicimonas_values, breaks = 20, main = &#39;Turicimonas AF&#39;, xlab = &#39;value&#39;)
+# TODO: summary(turicimonas_values)
+# TODO: hist(long_df$value, breaks = 30, main = &#39;All genomes AF&#39;, xlab = &#39;value&#39;)
+# TODO: summary(long_df$value)
+# Question: Does Turicimonas concentrate at higher or lower allele frequencies compared to the mix?</code></pre>
+<p><em>Hint:</em> reuse the histogram idea from the guided notebook and
+jot down your interpretation.</p>
+</div>
+<div id="missing-values" class="section level2">
+<h2>6. Missing values</h2>
+<p>Goal: check whether the <code>value</code> column contains any
+<code>NA</code>s overall and per mouse/day combination.</p>
+<p>Missing entries often indicate gaps in the sequencing schedule or
+quality filters that failed. Calculating <code>na_total</code> tells you
+whether the dataset is complete, while the <code>tapply()</code> step
+pinpoints exactly which mouse/day pairs are affected. If you do find
+<code>NA</code>s, note them explicitly so you can exclude or impute them
+consistently later.</p>
+<pre class="r"><code># TODO: na_total &lt;- sum(is.na(long_df$value))
+# TODO: na_by_mouse_day &lt;- with(long_df, tapply(value, list(mouse_id, day), function(x) sum(is.na(x))))
+# TODO: print both objects and interpret (all zeros means no missing data).</code></pre>
+<p><em>Question:</em> If you do detect NA values, which genome(s) or
+treatment groups do they belong to? State explicitly whether Turicimonas
+introduces any missing allele frequencies.</p>
+</div>
+<div id="treatment-groups" class="section level2">
+<h2>7. Treatment groups</h2>
+<p>Goal: use the <code>treatment_group</code> column to understand how
+samples are distributed across treatments.</p>
+<p>Understanding group balance helps when you later draw stratified
+plots. Capture the total number of measurements per treatment, how many
+mice belong to each group, and whether every day has representation for
+each treatment. You can also look for edge cases (e.g., a mouse
+switching treatments) and document them here before they confuse you
+during plotting.</p>
+<pre class="r"><code># TODO: list unique(long_df$treatment_group)
+# TODO: table(long_df$treatment_group)
+# TODO: table(long_df$mouse_id, long_df$treatment_group)
+# TODO: subset long_df for a specific day (e.g., day 30) and inspect treatment groups</code></pre>
+<p><em>Hint:</em> use <code>table()</code> for quick counts and
+<code>unique()</code> to see combinations of mouse/day/group.</p>
+</div>
+<div id="stretch-idea" class="section level2">
+<h2>8. Stretch idea</h2>
+<p>Push yourself to answer: “Which genome has the highest median value
+on day 30?” Outline your approach below before coding it up.</p>
+<p>Treat this like a mini-analysis write-up: define the filter criteria,
+jot down which helper functions you will reuse (<code>tapply</code>,
+<code>aggregate</code>, or <code>dplyr</code>), and decide how you will
+report ties. If you have extra time, repeat for another day or compare
+medians vs means to see whether outliers influence your conclusion.</p>
+<pre class="r"><code># Notes / pseudo-code:
+# 1. Filter long_df to day == 30
+# 2. Split by Genome and compute median(value)
+# 3. Identify the maximum</code></pre>
+<p>These practice tasks mirror the guided walkthrough but force you to
+re-create the analysis yourself. Once satisfied, continue with
+<code>scripts/individual_notebooks/02_simple_heatmap.Rmd</code> to
+generate the heatmap.</p>
+</div>
+</div>
+<div id="exercise-simple-heatmap" class="section level1">
+<h1>Exercise – Simple Heatmap</h1>
+<p>This worksheet mirrors the guided heatmap build but uses the
+three-genome dataset
+(<code>second_day_part2/data/dataset2_subset_long.csv</code>). Work
+through the prompts, typing your own code where <code># TODO</code>
+markers appear. The goal is to recreate the full pipeline: load data,
+explore it briefly, build the <code>ComplexHeatmap</code>, and save the
+PDF.</p>
+<blockquote>
+<p><strong>Tip:</strong> Ensure packages from
+<code>00_prepare.Rmd</code> are installed, and regenerate the dataset
+via <code>data/00_prepare_dataset.Rmd</code> if needed. A worked key
+lives in
+<code>scripts/individual_notebooks/02_simple_heatmap_exercises_solution.Rmd</code>—check
+it only after trying on your own.</p>
+</blockquote>
+<div id="load-packages-and-define-paths" class="section level2">
+<h2>1. Load packages and define paths</h2>
+<p>Before you touch the data, bring the visualization libraries into
+scope and set up deterministic file paths. Reusing the same directory
+layout as the guided walkthrough avoids surprises when you wire this
+script into <code>render_all.sh</code>. In this chunk you should:</p>
+<ul>
+<li>Call <code>library(ComplexHeatmap)</code> and
+<code>library(circlize)</code> (add <code>viridisLite</code> or
+<code>RColorBrewer</code> if you plan to experiment with palettes).</li>
+<li>Build absolute paths for the wide, long, and PDF outputs using
+<code>file.path()</code> so the notebook works no matter which directory
+you knit from.</li>
+<li>Store the PDF name (<code>dataset2_heatmap.pdf</code> or similar)
+under <code>pdf_path</code>—you will reference it again during
+export.</li>
+</ul>
+<pre class="r"><code># TODO: library(ComplexHeatmap); library(circlize)
+# TODO: subset_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset2_subset.csv&#39;)
+#       long_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset2_subset_long.csv&#39;)
+#       pdf_path &lt;- file.path(&#39;..&#39;,&#39;pdf&#39;,&#39;dataset2_heatmap.pdf&#39;)</code></pre>
+<p><em>Question:</em> Why do we still need both the wide and long
+versions?</p>
+</div>
+<div id="loadinspect-the-data" class="section level2">
+<h2>2. Load/inspect the data</h2>
+<p>Create <code>wide_df</code>/<code>long_df</code> with
+<code>read.csv(..., stringsAsFactors = FALSE)</code> and immediately
+sanity-check them:</p>
+<ul>
+<li>Print <code>dim(wide_df)</code> and <code>dim(long_df)</code> to
+ensure they match expectations.</li>
+<li>Use <code>head()</code> (or <code>dplyr::glimpse()</code>) so you
+know which columns exist before writing subset logic.</li>
+<li>If you regenerated the datasets recently, make sure the timestamp or
+SNP counts align with your notes so the rest of the exercise is
+reproducible.</li>
+</ul>
+<pre class="r"><code># TODO: read the CSVs into wide_df and long_df (stringsAsFactors = FALSE)
+# TODO: print their dimensions and call head() on each</code></pre>
+</div>
+<div id="choose-a-treatment-group-subset" class="section level2">
+<h2>3. Choose a treatment group subset</h2>
+<p>Decide which <code>treatment_group</code> you want to display (e.g.,
+Control vs Ciprofloxacin). Filter the columns of the wide matrix so only
+samples from that group remain. Hint: use the long table to map
+<code>mouse_id</code> + <code>day</code> to sample IDs like
+<code>1683-0</code> before subsetting the wide table.</p>
+<p>This step mimics the decision-making you would do for a figure
+panel:</p>
+<ol style="list-style-type: decimal">
+<li>Inspect <code>unique(long_df$treatment_group)</code> to remind
+yourself of the valid options.</li>
+<li>Build a tidy metadata table with one row per sample
+(<code>mouse_id</code>, <code>day</code>, <code>treatment_group</code>,
+and a combined <code>sample_id</code>).</li>
+<li>Use that metadata to pick the relevant columns from the wide table;
+this ensures your heatmap only contains the cohort you plan to
+discuss.</li>
+<li>Keep the metadata tibble handy—you will reuse the ordering columns
+later.</li>
+</ol>
+<pre class="r"><code># TODO: target_group &lt;- &#39;Control&#39;
+# TODO: build sample_meta &lt;- unique(long_df[, c(&#39;mouse_id&#39;,&#39;day&#39;,&#39;treatment_group&#39;)])
+# TODO: sample_meta$sample_id &lt;- paste(...)
+# TODO: keep_samples &lt;- sample_meta$sample_id[sample_meta$treatment_group == target_group]
+# TODO: subset the wide_df columns with keep_samples</code></pre>
+</div>
+<div id="quick-summaries" class="section level2">
+<h2>4. Quick summaries</h2>
+<p>Checkpoint statistics help you spot typos early. Record at least the
+following numbers before moving on:</p>
+<ul>
+<li>Count SNPs per genome using <code>table(wide_df$Genome)</code> so
+you know which genomes dominate the matrix.</li>
+<li>Build <code>with(long_df, table(mouse_id, day))</code> to verify
+every mouse/day pair is present (missing rows usually mean a filtering
+bug).</li>
+<li>Use
+<code>tapply(long_df$value, long_df$Genome, FUN = summary)</code> or
+custom <code>min/median/max</code> calls to understand the numeric
+range—this will inform your color palette.</li>
+<li>Optional: store these summaries in variables and print short
+interpretations (e.g., “Turicimonas has the fewest SNPs but the widest
+spread of values”).</li>
+</ul>
+<pre class="r"><code># TODO: add commands described above</code></pre>
+</div>
+<div id="build-the-heatmap-matrix" class="section level2">
+<h2>5. Build the heatmap matrix</h2>
+<p>Transform the wide data frame into a numeric matrix ready for
+ComplexHeatmap:</p>
+<ul>
+<li>Drop the genome metadata columns so you only keep sample
+measurements.</li>
+<li>Convert the remaining data to a matrix and coerce to numeric (in
+case CSV import left character columns).</li>
+<li>Create informative row names such as <code>Genome | snp_id</code> to
+make debugging easier if you temporarily enable
+<code>show_row_names = TRUE</code>.</li>
+<li>Reconstruct <code>sample_meta</code> (or reuse the earlier version)
+directly from the column names, split into
+<code>mouse_id</code>/<code>day</code>, and define an ordering via
+<code>order(mouse_id, day)</code> so columns follow the experimental
+timeline.</li>
+<li>Apply that order to both <code>heatmap_matrix</code> and the
+metadata so everything stays synchronized.</li>
+</ul>
+<pre class="r"><code># TODO: sample_cols &lt;- setdiff(names(wide_df), c(&#39;Genome&#39;,&#39;snp_id&#39;,&#39;Position&#39;))
+# TODO: heatmap_matrix &lt;- as.matrix(wide_df[, sample_cols]); mode(heatmap_matrix) &lt;- &#39;numeric&#39;
+# TODO: rownames &lt;- paste(wide_df$Genome, wide_df$snp_id, sep = &#39; | &#39;)
+# TODO: create sample_meta with mouse_id/day parsed from column names
+# TODO: order columns by mouse/day and reorder heatmap_matrix accordingly</code></pre>
+<p><em>Hint:</em> reuse the ordering logic from the guided notebook
+(<code>order()</code> on <code>mouse_id</code>, <code>day</code>,
+<code>sample_id</code>).</p>
+</div>
+<div id="colors-and-annotations" class="section level2">
+<h2>6. Colors and annotations</h2>
+<p>With the matrix ordered, design the visual cues that explain it:</p>
+<ul>
+<li>Derive <code>mins</code>, <code>mids</code>, and <code>maxs</code>
+(or quantiles) using <code>range()</code> so the color scale reflects
+the actual data spread.</li>
+<li>Build a palette via <code>circlize::colorRamp2()</code>—try both a
+diverging scheme and a sequential scheme to see which communicates the
+values better.</li>
+<li>Craft column annotations: treatment group, day/baseline status, or
+mouse ID. Store them in a <code>HeatmapAnnotation</code> so you can
+reuse the object across plot iterations.</li>
+<li>If you prefer explicit daylight vs post-treatment shading, add
+<code>annotation_legend_param</code> entries with descriptive
+titles.</li>
+</ul>
+<pre class="r"><code># TODO: compute min/mid/max for the matrix (na.rm = TRUE)
+# TODO: color_fun &lt;- circlize::colorRamp2(...)
+# TODO: build mouse/day annotation via HeatmapAnnotation()</code></pre>
+<p>Challenge yourself to switch the palette (e.g., use
+<code>RColorBrewer::brewer.pal</code>).</p>
+</div>
+<div id="draw-and-export-the-heatmap" class="section level2">
+<h2>7. Draw and export the heatmap</h2>
+<p>Bring everything together in a final plot:</p>
+<ol style="list-style-type: decimal">
+<li>Instantiate <code>Heatmap()</code> with your matrix,
+<code>col = color_fun</code>, ordering, and <code>top_annotation</code>.
+Consider toggling <code>column_split</code>, <code>column_title</code>,
+or <code>column_names_rot</code> if it helps readability.</li>
+<li>Call <code>draw(ht)</code> in the notebook to confirm the appearance
+before exporting.</li>
+<li>Save a PDF by wrapping
+<code>pdf(pdf_path, width = 10, height = 6)</code> /
+<code>dev.off()</code> around <code>draw(ht)</code> (or use
+<code>ComplexHeatmap::draw()</code> followed by
+<code>ComplexHeatmap::save_pdf()</code> if you prefer).</li>
+<li>Print a message stating where the file landed so future-you knows it
+worked.</li>
+</ol>
+<pre class="r"><code># TODO: construct Heatmap(...) object with top_annotation, column_split, etc.
+# TODO: draw() it in the notebook
+# TODO: save to pdf_path (dir.create + pdf + draw + dev.off())</code></pre>
+</div>
+<div id="reflection-prompts" class="section level2">
+<h2>8. Reflection prompts</h2>
+<ol style="list-style-type: decimal">
+<li>Do you notice any new patterns when Turicimonas is included?</li>
+<li>How would you highlight just the Turicimonas rows (hint:
+<code>row_split</code>)?</li>
+<li>What additional annotation (e.g., day as a gradient) could help the
+reader?</li>
+</ol>
+<p>Document your answers below—future iterations of this course often
+borrow the best observations or styling tweaks, so write clearly enough
+that a teammate could reproduce your reasoning.</p>
+<pre class="r"><code># TODO: jot down observations or extra code experiments</code></pre>
+<p>Once you have a working script, compare with the solution notebook
+and proceed back to the main workflow.</p>
+</div>
+</div>
+<div id="exercise-full-heatmap" class="section level1">
+<h1>Exercise – Full Heatmap</h1>
+<p>This practice notebook guides you through rebuilding the “all
+genomes” heatmap (<code>dataset3_subset*.csv</code>). Compared with
+earlier exercises, you now juggle a larger matrix, multiple annotation
+layers, and custom ordering. Follow the prompts, fill in each
+<code># TODO</code>, and keep notes on the design decisions you
+make.</p>
+<blockquote>
+<p><strong>Tip:</strong> Run
+<code>scripts/individual_notebooks/00_prepare.Rmd</code> first so
+<code>ComplexHeatmap</code>, <code>circlize</code>, and helper packages
+are ready. If the dataset is missing, regenerate it via
+<code>data/00_prepare_dataset.Rmd</code>.</p>
+</blockquote>
+<div id="packages-paths-helper-settings" class="section level2">
+<h2>1. Packages, paths, helper settings</h2>
+<p>Set yourself up for success by loading packages, pointing to the
+dataset files, and defining constants you will re-use (e.g., the NA
+color and PDF output path). Add any palettes you plan to try so they are
+available later.</p>
+<pre class="r"><code># TODO: library(ComplexHeatmap); library(circlize); library(viridisLite)
+# TODO: subset_path &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset.csv&#39;)
+#       long_path   &lt;- file.path(&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset_long.csv&#39;)
+#       pdf_path    &lt;- file.path(&#39;..&#39;,&#39;pdf&#39;,&#39;04_full_heatmap_exercise.pdf&#39;)
+# TODO: na_color &lt;- &#39;#dcdcdc&#39;
+# TODO: set.seed(...) if you plan to shuffle or sample</code></pre>
+<p><em>Reflection:</em> Why do we keep both the wide and long versions
+even though the heatmap consumes only the wide table?</p>
+</div>
+<div id="load-data-and-report-missingness" class="section level2">
+<h2>2. Load data and report missingness</h2>
+<p>Read both tables, print their dimensions, and log the total number of
+NA values in the <code>value</code> column. If NAs are present, produce
+a matrix (mouse vs day) that shows where they occur so you can make
+informed filtering choices later.</p>
+<pre class="r"><code># TODO: wide_df &lt;- read.csv(subset_path, check.names = FALSE, stringsAsFactors = FALSE)
+# TODO: long_df &lt;- read.csv(long_path, check.names = FALSE, stringsAsFactors = FALSE)
+# TODO: cat(&#39;Wide rows x cols:&#39;, nrow(wide_df), ncol(wide_df), &#39;\n&#39;)
+# TODO: cat(&#39;Long rows x cols:&#39;, nrow(long_df), ncol(long_df), &#39;\n&#39;)
+# TODO: na_total &lt;- sum(is.na(long_df$value))
+# TODO: if (na_total &gt; 0) { build tapply(...) to locate them }</code></pre>
+<p><em>Question:</em> Does the larger dataset introduce NA clusters
+concentrated in a single mouse/treatment?</p>
+</div>
+<div id="build-the-numeric-matrix" class="section level2">
+<h2>3. Build the numeric matrix</h2>
+<p>Construct the heatmap matrix using the sample columns, ensuring you
+keep row labels informative for debugging. Reuse or rebuild a
+<code>sample_meta</code> data frame that captures <code>mouse_id</code>,
+<code>day</code>, <code>treatment_group</code>, and
+<code>sample_id</code>. This metadata will power your annotations and
+ordering.</p>
+<pre class="r"><code># TODO: sample_cols &lt;- setdiff(names(wide_df), c(&#39;Genome&#39;,&#39;snp_id&#39;,&#39;Position&#39;))
+# TODO: mat &lt;- as.matrix(wide_df[, sample_cols]); mode(mat) &lt;- &#39;numeric&#39;
+# TODO: rownames(mat) &lt;- paste(wide_df$Genome, wide_df$snp_id, sep = &#39; | &#39;)
+# TODO: sample_meta &lt;- unique(long_df[, c(&#39;mouse_id&#39;,&#39;day&#39;,&#39;treatment_group&#39;)])
+# TODO: sample_meta$sample_id &lt;- paste(sample_meta$mouse_id, sample_meta$day, sep=&#39;-&#39;)
+# TODO: sample_meta &lt;- sample_meta[match(colnames(mat), sample_meta$sample_id), ]</code></pre>
+<p><em>Check:</em> Use
+<code>stopifnot(identical(colnames(mat), sample_meta$sample_id))</code>
+to catch mismatches early.</p>
+</div>
+<div id="baseline-heatmap-and-color-experiments" class="section level2">
+<h2>4. Baseline heatmap and color experiments</h2>
+<p>Start with a minimal <code>Heatmap</code> (no clustering, no
+annotations) so you can verify the matrix orientation. Next, experiment
+with at least two color palettes by constructing separate
+<code>colorRamp2</code> functions. Document which palette you prefer and
+why (contrast, perceptual ordering, etc.).</p>
+<pre class="r"><code># TODO: mins &lt;- min(mat, na.rm = TRUE); maxs &lt;- max(mat, na.rm = TRUE); mids &lt;- (mins+maxs)/2
+# TODO: palette_a &lt;- circlize::colorRamp2(c(mins, mids, maxs), c(&#39;#0c2c84&#39;,&#39;#f7fbff&#39;,&#39;#b30000&#39;))
+# TODO: palette_b &lt;- circlize::colorRamp2(c(mins, mids, maxs), viridisLite::viridis(3))
+# TODO: Heatmap(mat, name=&#39;value&#39;, col=palette_a, na_col = na_color)
+# TODO: Heatmap(mat, name=&#39;value&#39;, col=palette_b, na_col = na_color)</code></pre>
+<p><em>Reflection:</em> Which palette makes low values easiest to
+distinguish once annotations are added?</p>
+</div>
+<div id="column-annotations-and-ordering" class="section level2">
+<h2>5. Column annotations and ordering</h2>
+<p>Build annotations that explain treatment group and
+baseline/post-antibiotic status. Then define an ordering (e.g., order by
+<code>mouse_id</code>, then <code>day</code>) and apply it consistently
+to both the matrix and the annotation object. Draw the heatmap again to
+confirm columns appear in the intended sequence.</p>
+<pre class="r"><code># TODO: sample_meta$post_ab &lt;- ifelse(sample_meta$day == 0, &#39;baseline&#39;, &#39;post&#39;)
+# TODO: col_ann &lt;- HeatmapAnnotation(
+#         treatment = sample_meta$treatment_group,
+#         status = sample_meta$post_ab,
+#         annotation_name_side = &#39;left&#39;
+#       )
+# TODO: order_idx &lt;- order(sample_meta$mouse_id, sample_meta$day)
+# TODO: mat_ordered &lt;- mat[, order_idx]
+# TODO: col_ann_ordered &lt;- col_ann[order_idx]
+# TODO: Heatmap(mat_ordered, name=&#39;value&#39;, top_annotation = col_ann_ordered,
+#               cluster_rows = FALSE, cluster_columns = FALSE, na_col = na_color)</code></pre>
+<p><em>Check:</em> Are replicates or treatment switches now easier to
+spot?</p>
+</div>
+<div id="annotation-enhancements-column-splits-and-readable-row-titles" class="section level2">
+<h2>6. Annotation enhancements, column splits, and readable row
+titles</h2>
+<p>Recreate the richer annotation stack from
+<code>03_heatmap_annotations.Rmd</code>, but now apply it to the full
+dataset. Ideas to try:</p>
+<ul>
+<li>Encode <code>treatment_group</code> with a named color vector so the
+legend matches your slide deck.</li>
+<li>Add a continuous day gradient using <code>anno_simple()</code> so
+viewers can track the time axis directly in the annotation bar.</li>
+<li>Overlay mouse IDs (rotated text or a thin color strip) to highlight
+replicate structure.</li>
+<li>Optionally, split rows by genome (<code>row_split</code>) to mimic
+the multi-panel layout from the guided notebook, and either shorten
+those labels or shrink the font so they do not overlap in the PDF.</li>
+<li>Add a <code>column_split</code> (e.g., by treatment group) so the
+plot is chunked into digestible vertical blocks in addition to the
+chronological ordering.</li>
+</ul>
+<pre class="r"><code># TODO: treatment_cols &lt;- c(...); status_cols &lt;- c(...)
+# TODO: day_col_fun &lt;- circlize::colorRamp2(range(sample_meta$day), c(&#39;#f7fbff&#39;,&#39;#084594&#39;))
+# TODO: col_ann_rich &lt;- HeatmapAnnotation(
+#         treatment = anno_simple(sample_meta$treatment_group, col = treatment_cols),
+#         status    = anno_simple(sample_meta$post_ab, col = status_cols),
+#         day       = anno_simple(sample_meta$day, col = day_col_fun),
+#         mouse     = anno_text(sample_meta$mouse_id, rot = 90, gp = grid::gpar(fontsize = 6)),
+#         annotation_name_side = &#39;left&#39;
+#       )
+# TODO: col_ann_rich &lt;- col_ann_rich[order_idx]
+# TODO: column_split &lt;- factor(sample_meta$treatment_group[order_idx], levels = treatment_levels)
+# TODO: row_split &lt;- factor(wide_df$Genome, levels = unique(wide_df$Genome))
+# TODO: row_titles &lt;- gsub(&#39;_.*&#39;, &#39;&#39;, levels(row_split)) # or set fontsize via row_title_gp
+# TODO: Heatmap(mat_ordered, name=&#39;value&#39;, col = palette_a, top_annotation = col_ann_rich,
+#               cluster_rows = TRUE, row_split = row_split, column_split = column_split,
+#               na_col = na_color, show_row_names = FALSE, show_column_names = FALSE,
+#               row_title = row_titles, row_title_gp = grid::gpar(fontsize = 9))</code></pre>
+<p><em>Reflection:</em> Which annotation layer (treatment colors, day
+gradient, mouse IDs) helped the most when interpreting the plot? Keep
+notes for your presentation.</p>
+</div>
+<div id="row-filtering-via-variance" class="section level2">
+<h2>7. Row filtering via variance</h2>
+<p>Large matrices can hide structure. Compute per-row variance, keep the
+top 100 rows (or another threshold), and draw a diagnostic heatmap to
+see whether the higher-variance SNPs highlight patterns that were
+previously buried. Remember to reapply the column ordering and
+annotations.</p>
+<pre class="r"><code># TODO: row_var &lt;- apply(mat, 1, var, na.rm = TRUE)
+# TODO: keep_idx &lt;- order(row_var, decreasing = TRUE)[seq_len(min(100, nrow(mat)))]
+# TODO: mat_topvar &lt;- mat[keep_idx, order_idx]
+# TODO: Heatmap(mat_topvar, name=&#39;value&#39;, top_annotation = col_ann_rich,
+#               cluster_rows = TRUE, cluster_columns = FALSE, column_split = column_split,
+#               na_col = na_color, row_split = row_split[keep_idx], show_row_names = FALSE,
+#               row_title_gp = grid::gpar(fontsize = 9))</code></pre>
+<p><em>Reflection:</em> Does variance filtering change the biological
+story you would tell?</p>
+</div>
+<div id="final-polish-and-pdf-export" class="section level2">
+<h2>8. Final polish and PDF export</h2>
+<p>Combine your favorite palette, annotations, column order, and a row
+clustering strategy into a final heatmap. Add a column title and tweak
+legend names if needed. Export the final figure to <code>pdf_path</code>
+so it can be shared outside the notebook.</p>
+<pre class="r"><code># TODO: ht_final &lt;- Heatmap(
+#         mat_ordered,
+#         name = &#39;value&#39;,
+#         col = palette_a,
+#         top_annotation = col_ann_rich,
+#         cluster_rows = TRUE,
+#         cluster_columns = FALSE,
+#         column_split = column_split,
+#         show_row_names = FALSE,
+#         show_column_names = FALSE,
+#         na_col = na_color,
+#         row_split = row_split,
+#         row_title = row_titles,
+#         row_title_gp = grid::gpar(fontsize = 9),
+#         column_title = &#39;All genomes (dataset3)&#39;
+#       )
+# TODO: draw(ht_final)
+# TODO: pdf(pdf_path, width = 11, height = 7); draw(ht_final); dev.off();
+#       cat(&#39;Saved heatmap to&#39;, pdf_path, &#39;\n&#39;)</code></pre>
+<p><em>Question:</em> Which design choices would you highlight if you
+presented this plot in lab meeting (ordering rationale, annotation
+selection, etc.)?</p>
+</div>
+<div id="notes-and-extensions" class="section level2">
+<h2>9. Notes and extensions</h2>
+<p>Use this space to capture observations, alternative palettes, or next
+steps (e.g., adding row annotations, trying <code>row_split</code>,
+exporting PNGs).</p>
+<pre class="r"><code># TODO: jot down thoughts, ideas, or additional code experiments</code></pre>
+<p>Once you’re happy with the exercise output, compare it against the
+solution notebook
+(<code>scripts/individual_notebooks/04_full_heatmap_exercises_solution.Rmd</code>)
+to fill any gaps.</p>
+</div>
+</div>
+<div id="bonus-heatmap-customization" class="section level1">
+<h1>Bonus – Heatmap Customization</h1>
+<p>This optional worksheet extends the full heatmap workflow with
+decorations and custom legends inspired by the <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/">ComplexHeatmap
+book</a>. You will work with the <code>dataset3_subset*.csv</code> files
+(all genomes, all treatment groups) and add three extras:</p>
+<ol style="list-style-type: decimal">
+<li>Highlight high-variance rows directly on the heatmap body with
+<code>decorate_heatmap_body()</code> (<a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html">chapter
+8</a>).</li>
+<li>Add a custom legend describing your highlight using
+<code>Legend()</code> (<a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html">chapter
+5</a>).</li>
+<li>Combine two heatmaps into a <code>HeatmapList</code> so you can show
+a derived metric alongside the main matrix (<a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html">chapter
+10</a>).</li>
+</ol>
+<blockquote>
+<p><strong>Goal:</strong> reinforce how decorations/legends/heatmap
+lists fit into your teaching notebook without making the code
+overwhelming. The prompts below keep the same “fill in the TODO” style
+as the other exercises.</p>
+</blockquote>
+<div id="setup-and-pick-two-treatment-groups" class="section level2">
+<h2>1. Setup and pick two treatment groups</h2>
+<p>Load <code>ComplexHeatmap</code>, <code>circlize</code>,
+<code>viridisLite</code>, and <code>grid</code>. Read both
+<code>dataset3_subset.csv</code> (wide) and
+<code>dataset3_subset_long.csv</code> (long) from
+<code>second_day_part2/data</code>. Pick two treatment groups to compare
+(for example Control vs Ciprofloxacin) and build a sample metadata table
+with <code>sample_id</code>, <code>mouse_id</code>, <code>day</code>,
+and <code>treatment_group</code>.</p>
+<pre class="r"><code># TODO: library(ComplexHeatmap); library(circlize); library(viridisLite); library(grid)
+# TODO: subset_path &lt;- file.path(&#39;..&#39;,&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset.csv&#39;)
+# TODO: long_path   &lt;- file.path(&#39;..&#39;,&#39;..&#39;,&#39;data&#39;,&#39;dataset3_subset_long.csv&#39;)
+# TODO: wide_df &lt;- read.csv(...); long_df &lt;- read.csv(...)
+# TODO: choose target_groups &lt;- c(&#39;Control&#39;, &#39;Ciprofloxacin&#39;) (or any two)
+# TODO: long_df$sample_id &lt;- paste(long_df$mouse_id, long_df$day, sep=&#39;-&#39;)
+# TODO: sample_meta &lt;- unique(long_df[, c(&#39;sample_id&#39;,&#39;mouse_id&#39;,&#39;day&#39;,&#39;treatment_group&#39;)])
+# TODO: sample_meta &lt;- subset(sample_meta, treatment_group %in% target_groups)</code></pre>
+<p><em>Why?</em> Decorations depend on knowing orientation and group
+membership. Keeping metadata tidy upfront simplifies the later
+steps.</p>
+<p>Before moving on, explore the metadata you just built. Getting
+comfortable with the annotation inputs reduces surprises later.</p>
+<pre class="r"><code># TODO: table(sample_meta$treatment_group)
+# TODO: table(sample_meta$treatment_group, sample_meta$day)
+# TODO: sample_meta &lt;- sample_meta[order(sample_meta$treatment_group, sample_meta$mouse_id, sample_meta$day), ]
+# TODO: head(sample_meta)</code></pre>
+<p>Keep these summary outputs (or screenshots) handy so you can explain
+which mice and time points appear in the heatmap.</p>
+</div>
+<div id="build-the-base-matrix-and-ordering" class="section level2">
+<h2>2. Build the base matrix and ordering</h2>
+<p>Create a numeric matrix that keeps only the selected samples. Order
+columns by <code>treatment_group</code>, then <code>mouse_id</code>,
+then <code>day</code>. Compute a sequential color scale spanning the
+observed range (e.g., via <code>colorRamp2()</code>), and record
+row-level information (genome name, row variance) that you will use
+later.</p>
+<pre class="r"><code># TODO: sample_cols &lt;- sample_meta$sample_id ordered as described above
+# TODO: heatmap_matrix &lt;- as.matrix(wide_df[, sample_cols]); mode(heatmap_matrix) &lt;- &#39;numeric&#39;
+# TODO: rownames(heatmap_matrix) &lt;- paste(wide_df$Genome, wide_df$snp_id, sep=&#39; | &#39;)
+# TODO: row_genome &lt;- wide_df$Genome
+# TODO: row_var &lt;- apply(heatmap_matrix, 1, var, na.rm = TRUE)
+# TODO: define color_fun &lt;- circlize::colorRamp2(...)</code></pre>
+<p><em>Checkpoint:</em> print the range of the matrix and confirm you
+have rows &gt; 0 before moving on.</p>
+</div>
+<div id="explore-annotation-friendly-summaries" class="section level2">
+<h2>3. Explore annotation-friendly summaries</h2>
+<p>Treat <code>sample_meta</code> as a small dataset worth exploring on
+its own. Summaries and quick visuals reinforce how treatments, mice, and
+days relate before you encode them in colors.</p>
+<pre class="r"><code># TODO: print(table(sample_meta$treatment_group, sample_meta$mouse_id))
+# TODO: print(table(sample_meta$treatment_group, sample_meta$day))
+# TODO: annotation_df &lt;- sample_meta[, c(&#39;sample_id&#39;,&#39;treatment_group&#39;,&#39;day&#39;)]
+# TODO: head(annotation_df)</code></pre>
+<p>Optional: sketch a barplot of day counts per treatment
+(<code>barplot()</code> is plenty).</p>
+</div>
+<div id="columnrow-annotations" class="section level2">
+<h2>4. Column/row annotations</h2>
+<p>Reuse <code>sample_meta</code> to define column annotations for
+treatment group and day. Also build a row annotation that shows the
+genome label so you can scan which organisms contribute high-variance
+SNPs. Use distinct palettes for clarity.</p>
+<pre class="r"><code># TODO: treatment_colors &lt;- c(Control = &#39;#1b9e77&#39;, Ciprofloxacin = &#39;#d95f02&#39;) (adjust as needed)
+# TODO: day_colors &lt;- circlize::colorRamp2(seq(min(sample_meta$day), max(sample_meta$day), length.out = 4), viridisLite::viridis(4))
+# TODO: col_ann &lt;- HeatmapAnnotation(...)
+# TODO: row_ann &lt;- rowAnnotation(...)</code></pre>
+<p>Preview the annotations before combining everything. A blank heatmap
+with only the column annotation is enough to sanity-check the
+palettes.</p>
+<pre class="r"><code># TODO: preview_mat &lt;- matrix(0, nrow = 1, ncol = ncol(heatmap_matrix))
+# TODO: preview_ht &lt;- Heatmap(preview_mat,
+#                             col = c(&#39;0&#39; = &#39;#ffffff&#39;),
+#                             top_annotation = col_ann,
+#                             cluster_rows = FALSE,
+#                             cluster_columns = FALSE,
+#                             show_heatmap_legend = FALSE,
+#                             show_row_names = FALSE,
+#                             show_column_names = FALSE,
+#                             column_title = &#39;Annotation preview&#39;)
+# TODO: draw(preview_ht, annotation_legend_side = &#39;right&#39;)</code></pre>
+<p>You can create a similar preview for the row annotation by making a
+one-column matrix and assigning
+<code>right_annotation = row_ann</code>.</p>
+</div>
+<div id="highlight-high-variance-rows-with-decorations" class="section level2">
+<h2>5. Highlight high-variance rows with decorations</h2>
+<p>Use <code>quantile(row_var, 0.9)</code> (or a threshold you prefer)
+to flag the top 10% most variable rows. Save the indices so you can
+mention them in the discussion or add legends later.</p>
+<pre class="r"><code># TODO: high_var_cut &lt;- quantile(row_var, 0.9, na.rm = TRUE)
+# TODO: highlight_rows &lt;- which(row_var &gt;= high_var_cut)
+# TODO: ht_bonus &lt;- Heatmap(..., name = &#39;bonus_heatmap&#39;, col = color_fun,
+#                           top_annotation = col_ann, right_annotation = row_ann,
+#                           column_split = factor(sample_meta$treatment_group, levels = target_groups),
+#                           cluster_rows = FALSE, cluster_columns = FALSE,
+#                           show_row_names = FALSE)
+# TODO: draw(ht_bonus)</code></pre>
+</div>
+<div id="add-a-companion-heatmap-and-custom-legends" class="section level2">
+<h2>6. Add a companion heatmap and custom legends</h2>
+<p>Compute a row-wise statistic to show next to the main heatmap (e.g.,
+difference between the two treatment means, number of times each row
+exceeded 0.5, etc.). Turn that vector into a single-column heatmap and
+combine it with the main heatmap via the <code>+</code> operator.
+Finally, create a <code>Legend()</code> describing the highlighted rows
+and pass it to <code>draw()</code> via
+<code>annotation_legend_list</code> or
+<code>heatmap_legend_list</code>.</p>
+<pre class="r"><code># TODO: control_mean &lt;- rowMeans(heatmap_matrix[, sample_meta$treatment_group == target_groups[1], drop = FALSE])
+# TODO: treated_mean &lt;- rowMeans(heatmap_matrix[, sample_meta$treatment_group == target_groups[2], drop = FALSE])
+# TODO: mean_delta &lt;- treated_mean - control_mean
+# TODO: delta_ht &lt;- Heatmap(mean_delta, name = &#39;Δ mean&#39;, width = unit(1.2, &#39;cm&#39;),
+#                           col = circlize::colorRamp2(c(min(mean_delta), 0, max(mean_delta)),
+#                                                       c(&#39;#4575b4&#39;, &#39;#f7f7f7&#39;, &#39;#d73027&#39;)),
+#                           show_row_names = FALSE, cluster_rows = FALSE)
+# TODO: combo &lt;- ht_bonus + delta_ht
+# TODO: highlight_legend &lt;- Legend(title = &#39;Highlight&#39;, labels = &#39;Row variance ≥ 90th pct&#39;, legend_gp = gpar(col = &#39;#ff9500&#39;, fill = NA, lwd = 2))
+# TODO: draw(combo, heatmap_legend_list = list(highlight_legend), annotation_legend_side = &#39;right&#39;)</code></pre>
+<p>Experiment with other <code>Legend()</code> entries (e.g., for
+treatment colors) so the final plot clearly explains what the decoration
+means.</p>
+</div>
+<div id="reflection" class="section level2">
+<h2>7. Reflection</h2>
+<p>Document what the decoration + companion heatmap revealed. Did the
+highlighted rows correspond to a particular genome? How would you
+explain the extra legend to students who are new to ComplexHeatmap? Jot
+down notes or screenshots for your Day 2 facilitation.</p>
+<pre class="r"><code># TODO: cat(&#39;Observations: ...&#39;) or store `highlight_rows` for later use</code></pre>
+<p>You can now integrate this chunk into
+<code>day2_walkthrough.Rmd</code> or keep it as a bonus appendix
+depending on time.</p>
+</div>
 </div>
 
 

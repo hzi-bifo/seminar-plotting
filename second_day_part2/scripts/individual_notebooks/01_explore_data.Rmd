@@ -14,7 +14,7 @@ we move on to plotting. Run `second_day_part2/data/00_prepare_dataset.Rmd`
 first if you need to regenerate the CSV. Knit it from the repository root with:
 
 ```
-R -e "rmarkdown::render('second_day_part2/scripts/01_explore_data.Rmd')"
+R -e "rmarkdown::render('second_day_part2/scripts/individual_notebooks/01_explore_data.Rmd')"
 ```
 
 ## 1. Load the CSV
@@ -199,4 +199,4 @@ creates a logical mask; only the TRUE rows survive when we subset with
 
 Having these quick checks documented makes it easy to reassure learners that we
 understand the input file before moving into the plotting notebook
-(`second_day_part2/scripts/02_simple_heatmap.Rmd`).
+(`second_day_part2/scripts/individual_notebooks/02_simple_heatmap.Rmd`).

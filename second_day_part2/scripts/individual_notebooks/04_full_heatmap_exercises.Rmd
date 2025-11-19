@@ -12,7 +12,7 @@ This practice notebook guides you through rebuilding the "all genomes" heatmap
 larger matrix, multiple annotation layers, and custom ordering. Follow the
 prompts, fill in each `# TODO`, and keep notes on the design decisions you make.
 
-> **Tip:** Run `scripts/00_prepare.Rmd` first so `ComplexHeatmap`, `circlize`,
+> **Tip:** Run `scripts/individual_notebooks/00_prepare.Rmd` first so `ComplexHeatmap`, `circlize`,
 > and helper packages are ready. If the dataset is missing, regenerate it via
 > `data/00_prepare_dataset.Rmd`.
 
@@ -213,4 +213,4 @@ Use this space to capture observations, alternative palettes, or next steps
 ```
 
 Once you're happy with the exercise output, compare it against the solution
-notebook (`scripts/04_full_heatmap_exercises_solution.Rmd`) to fill any gaps.
+notebook (`scripts/individual_notebooks/04_full_heatmap_exercises_solution.Rmd`) to fill any gaps.

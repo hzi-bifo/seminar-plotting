@@ -180,8 +180,8 @@ par(mfrow = c(1, 1))
 ## 10. Which SNPs vary the most?
 
 To focus on the most dynamic rows, compute the variance of each SNP and plot a
-small heatmap of the top 20. This helps students see where the biggest changes
-occur before moving to the advanced notebook.
+small heatmap of the top 20. This highlights where the biggest changes occur
+before moving to the advanced notebook.
 
 ```{r top-variance, fig.width=9, fig.height=5}
 row_var <- apply(mat_all, 1, var, na.rm = TRUE)

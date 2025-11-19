@@ -178,4 +178,4 @@ or compare medians vs means to see whether outliers influence your conclusion.
 
 These practice tasks mirror the guided walkthrough but force you to re-create
 the analysis yourself. Once satisfied, continue with
-`scripts/02_simple_heatmap.Rmd` to generate the heatmap.
+`scripts/individual_notebooks/02_simple_heatmap.Rmd` to generate the heatmap.

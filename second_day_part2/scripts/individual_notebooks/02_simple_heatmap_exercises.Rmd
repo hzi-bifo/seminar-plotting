@@ -15,7 +15,7 @@ goal is to recreate the full pipeline: load data, explore it briefly, build the
 
 > **Tip:** Ensure packages from `00_prepare.Rmd` are installed, and regenerate
 the dataset via `data/00_prepare_dataset.Rmd` if needed. A worked key lives in
-`scripts/02_simple_heatmap_exercises_solution.Rmd`—check it only after trying
+`scripts/individual_notebooks/02_simple_heatmap_exercises_solution.Rmd`—check it only after trying
 on your own.
 
 ## 1. Load packages and define paths

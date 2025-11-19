@@ -7,7 +7,7 @@ output:
     toc_depth: 2
 ---
 
-Use this key after attempting `scripts/01_explore_data_exercises.Rmd`. The code
+Use this key after attempting `scripts/individual_notebooks/01_explore_data_exercises.Rmd`. The code
 chunks mirror the TODOs but include one possible solution for each task.
 
 ## 1. Load and preview the dataset
@@ -93,4 +93,4 @@ medians_day30[which.max(medians_day30)]
 ```
 
 Feel free to compare your answers with these outputs, then proceed to
-`scripts/02_simple_heatmap.Rmd`.
+`scripts/individual_notebooks/02_simple_heatmap.Rmd`.

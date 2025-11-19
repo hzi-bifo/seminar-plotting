@@ -11,39 +11,29 @@ render() {
   local file="$1"
   local format="$2"
   local out_dir="$3"
+  local extra="${4-}"
   echo "Rendering ${file} -> ${format}"
-  R -e "rmarkdown::render('${file}', output_format='${format}', output_dir='${out_dir}')"
+  if [[ -n "$extra" ]]; then
+    R -e "rmarkdown::render('${file}', output_format=${extra}, output_dir='${out_dir}')"
+  else
+    R -e "rmarkdown::render('${file}', output_format='${format}', output_dir='${out_dir}')"
+  fi
 }
 
-ALL_RMDS=(
-  "$SCRIPT_DIR/00_prepare.Rmd"
+DAY2_RMDS=(
+  "$SCRIPT_DIR/day2_walkthrough.Rmd"
+  "$SCRIPT_DIR/day2_exercises.Rmd"
+  "$SCRIPT_DIR/day2_exercises_solution.Rmd"
+)
+
+EXTRA_RMDS=(
   "$ROOT_DIR/data/00_prepare_dataset.Rmd"
-  "$SCRIPT_DIR/01_explore_data.Rmd"
-  "$SCRIPT_DIR/01_explore_data_exercises.Rmd"
-  "$SCRIPT_DIR/01_explore_data_exercises_solution.Rmd"
-  "$SCRIPT_DIR/02_simple_heatmap.Rmd"
-  "$SCRIPT_DIR/02_simple_heatmap_exercises.Rmd"
-  "$SCRIPT_DIR/02_simple_heatmap_exercises_solution.Rmd"
-  "$SCRIPT_DIR/03_heatmap_annotations.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap_exercises.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap_exercises_solution.Rmd"
 )
 
-HEATMAP_RMDS=(
-  "$SCRIPT_DIR/02_simple_heatmap.Rmd"
-  "$SCRIPT_DIR/02_simple_heatmap_exercises.Rmd"
-  "$SCRIPT_DIR/02_simple_heatmap_exercises_solution.Rmd"
-  "$SCRIPT_DIR/03_heatmap_annotations.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap_exercises.Rmd"
-  "$SCRIPT_DIR/04_full_heatmap_exercises_solution.Rmd"
-)
-
-for file in "${ALL_RMDS[@]}"; do
+for file in "${DAY2_RMDS[@]}" "${EXTRA_RMDS[@]}"; do
   render "$file" "html_document" "$HTML_DIR"
 done
 
-for file in "${HEATMAP_RMDS[@]}"; do
-  render "$file" "pdf_document" "$PDF_DIR"
+for file in "${DAY2_RMDS[@]}"; do
+  render "$file" "pdf_document" "$PDF_DIR" "rmarkdown::pdf_document(latex_engine='xelatex')"
 done

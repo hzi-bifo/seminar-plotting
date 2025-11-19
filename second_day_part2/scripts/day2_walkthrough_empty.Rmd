@@ -1,0 +1,407 @@
+---
+title: "Day 2 – Walk-through"
+author: "Seminar plotting materials"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+Use this consolidated walk-through to guide Day 2. Each section corresponds to the standalone notebooks (now under `scripts/individual_notebooks/`) but lives in one file so you can knit or print everything at once.
+
+
+---
+
+
+# 00 Prepare Environment
+
+Use this short notebook (or just run the snippets below) before the workshop to
+ensure all required packages are installed. Keep it simple: install everything
+in one go, then load each package once to check that it works.
+
+```{r p00-install, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("ComplexHeatmap")
+install.packages(c('circlize', 'tidyr', 'dplyr'))
+```
+
+```{r p00-load, eval=FALSE}
+library(ComplexHeatmap)
+library(circlize)
+library(tidyr)
+library(dplyr)
+```
+
+For reference documentation and additional examples, bookmark the official
+ComplexHeatmap book: <https://jokergoo.github.io/ComplexHeatmap-reference/book/>.
+
+After installing, you can knit `second_day_part2/data/00_prepare_dataset.Rmd` to
+create the teaching datasets (if needed) and move on to the exploration scripts.
+
+
+# 01 Explore Data
+
+We start the Day 2 session with the already prepared file
+`second_day_part2/data/dataset1_subset_long.csv`. This document simply shows how
+to open that file with base R commands and how to inspect what is inside before
+we move on to plotting. Run `second_day_part2/data/00_prepare_dataset.Rmd`
+first if you need to regenerate the CSV. Knit it from the repository root with:
+
+## 1. Load the CSV
+
+```{r p01-load-data}
+
+```
+
+## 2. Look at column names and a small preview
+
+`colnames()` lists the headers exactly as they appear in the CSV and `head()`
+prints the first few rows. Encourage learners to read these outputs aloud so
+they begin to map column names to real-world meaning (genome name, SNP id,
+mouse ID, day, value, ...).
+
+```{r p01-basics}
+
+```
+
+It can also help to peek at the SNP identifiers themselves to remind everyone
+what a typical label looks like:
+
+```{r p01-show-snps}
+```
+
+## 3. Which genomes are present?
+
+We often start by asking “Which genomes are represented here?”. `unique()`
+returns all distinct values, while `table()` counts how many rows belong to
+each genome.
+
+```{r p01-genome-info}
+
+```
+
+Explain to students that each row contains the `Genome`, the unique SNP id, the
+mouse ID, the day of sampling, and the measured value.
+
+## 4. How many SNPs per genome?
+
+Counting the unique SNP identifiers per genome shows how much information we
+keep for each organism. The helper `tapply(values, groups, FUN)` applies a
+function to each subset of `values` defined by `groups`. Here we give it the
+vector of SNP ids and ask it to count how many unique ids (`length(unique(x))`)
+exist inside each genome group.
+
+```{r p01-snp-counts}
+
+```
+
+## 6. How many measurements per mouse and per day?
+
+```{r p01-mouse-day}
+
+```
+
+For a combined view you can also build a two-way table. Again we use `table()`,
+this time with `mouse_id` on rows and `day` on columns. Reading across a row
+shows how many time points we have for a given mouse.
+
+```{r p01-mouse-day-2way}
+
+```
+
+Pick any cell and inspect those rows directly. For example, mouse 1683 on day 0
+has the following measurements (all SNPs for that mouse/day):
+
+```{r p01-mouse-day-example}
+
+```
+
+## 6. What do the allele-frequency values look like?
+
+Start by focusing on a single genome (Akkermansia) so the histogram is easy to
+interpret, then compare it against the combined dataset.
+
+```{r p01-value-hist-akk}
+
+```
+
+Do the same for Bacteroides (the other genome in this dataset).
+
+```{r p01-value-hist-bact}
+
+```
+
+Now look at the complete long table to see how the mixture of genomes changes the distribution.
+
+```{r p01-value-hist}
+
+```
+
+To compare genomes explicitly, break the summary down by genome using
+`aggregate(value ~ Genome, ...)`. Read `value ~ Genome` as “value grouped by
+Genome”. The column on the left must be numeric because we are calling
+`summary()` on it.
+
+```{r p01-value-summary-by-genome}
+
+```
+
+## 7. How many missing values?
+
+Count how many `NA` values appear in `value` and, if any, locate them by mouse/day.
+
+```{r p01-missing}
+
+```
+
+## 8. Treatment-group overview
+
+The long table now contains a `treatment_group` column. Start by listing the distinct labels and counting how many rows belong to each group.
+
+```{r p01-group-counts}
+
+```
+
+Which treatment groups appear for each mouse? Use a cross-tabulation to reinforce how mice were assigned.
+
+```{r p01-group-by-mouse}
+
+```
+
+You can also inspect specific days. For example, day 30 only:
+
+```{r p01-group-by-day}
+
+```
+
+## 9. Focus on a single genome (Akkermansia)
+
+Subsetting is a great way to answer specific questions. Below we keep only
+`Akkermansia_muciniphila_YL44` (using a logical comparison inside the square
+brackets) and inspect the resulting table. This demonstrates how to focus on
+one organism without altering the original data frame.
+
+Explain that `long_df$Genome == 'Akkermansia_muciniphila_YL44'` evaluates to a
+vector of TRUE/FALSE values—TRUE where the genome matches that text and FALSE
+everywhere else. When we place that logical vector inside `[...]`, R keeps only
+the TRUE rows.
+
+```{r p01-akkermansia}
+
+```
+
+```{r p01-equality-demo}
+
+```
+
+Reading this out loud (“TRUE, TRUE, FALSE, …”) reinforces that the comparison
+creates a logical mask; only the TRUE rows survive when we subset with
+`[...]`.
+
+Having these quick checks documented makes it easy to reassure learners that we
+understand the input file before moving into the plotting notebook
+(`second_day_part2/scripts/individual_notebooks/02_simple_heatmap.Rmd`).
+
+
+# 02 Simple Heatmap
+
+A minimal example that turns the prepared wide table (`dataset1_subset.csv`)
+into a heatmap with practically no extra formatting. This is the first step
+before moving on to the fully annotated version in `03_heatmap_annotations.Rmd`.
+
+## 1. Packages and paths
+
+```{r p02-setup, message=FALSE, warning=FALSE}
+
+```
+
+## 2. Load, subset by treatment group, and convert to matrices
+
+```{r p02-matrix}
+
+```
+
+## 3. Choose a data-aware color scale
+
+Allele frequencies naturally lie between 0 and 1. Using a diverging palette with an assumed midpoint (e.g., 0.5) suggests there is a special reference level, which is misleading for these measurements. Instead, derive a sequential palette from the observed range so color intensity increases smoothly with the allele frequency.
+
+```{r p02-color-scale}
+
+```
+
+Feel free to swap in other sequential palettes (e.g., `RColorBrewer`) as long as the hues progress monotonically with the data.
+
+## 4. Draw the simplest possible heatmap
+
+```{r p02-draw, fig.width=9, fig.height=6}
+
+```
+
+## 5. Optional: highlight treatment and baseline/post status
+
+Before moving on, you can add a light-weight column annotation labeling each sample with its treatment group and whether it was collected at baseline (day 0) or post-antibiotic (day > 0).
+
+```{r p02-column-annotation, fig.width=9, fig.height=6}
+
+```
+
+## 6. Optional: compare two treatment groups side-by-side
+
+If you want to compare two treatment groups visually, filter the full matrix to
+those samples and split the columns by treatment. This keeps the code simple
+while showing how cohorts differ.
+
+```{r p02-compare-groups, eval=FALSE}
+
+```
+
+## 7. Optional: save to PDF
+
+```{r p02-export, eval=FALSE}
+
+```
+
+## 8. Try a few clustering methods
+
+Even though this notebook is meant to stay simple, it is still useful to peek at
+what happens when we let ComplexHeatmap cluster rows/columns. Below are three
+variants that only differ in the linkage method.
+
+```{r p02-clustering-experiments, fig.width=9, fig.height=6}
+
+```
+
+## 9. Optional: inspect dendrograms directly
+
+Sometimes you just want to see the clustering tree without the heatmap. You can
+reuse the ordered matrix to build a dendrogram using base R functions:
+
+```{r p02-dendrogram-only, fig.width=7, fig.height=4}
+
+```
+
+## 10. Which SNPs vary the most?
+
+To focus on the most dynamic rows, compute the variance of each SNP and plot a
+small heatmap of the top 20. This highlights where the biggest changes occur
+before moving to the advanced notebook.
+
+```{r p02-top-variance, fig.width=9, fig.height=5}
+
+```
+
+Ready for more control? Open `03_heatmap_annotations.Rmd` to add ordering,
+annotations, and publication polish.
+
+
+# 03 Heatmap + Annotations
+
+This notebook incrementally builds on the basic heatmap from `02_simple_heatmap.Rmd`. Each step introduces one new detail so students can see how changes affect the final figure.
+
+We assume `second_day_part2/data/00_prepare_dataset.Rmd` has already produced the CSVs.
+
+## 1. Load packages and data
+
+```{r p03-packages, message=FALSE, warning=FALSE}
+
+```
+
+## 2. Step 1 – Plain heatmap (same as 02_simple_heatmap)
+
+```{r p03-step1-plain, fig.width=9, fig.height=6}
+
+```
+
+## 3. Step 2 – Reorder columns (mouse/day ordering)
+
+```{r p03-step2-order, fig.width=9, fig.height=6}
+
+```
+
+## 4. Step 3 – Add row labels (Genome | SNP)
+
+```{r p03-step3-rowlabels, fig.width=9, fig.height=6}
+
+```
+
+## 5. Step 4 – Add simple color control
+
+```{r p03-step4-colors, fig.width=9, fig.height=6}
+
+```
+
+## 6. Step 5 – Add column annotations (mouse ID, day)
+
+```{r p03-step5-annotations, fig.width=10, fig.height=6}
+
+```
+
+## 7. Step 6 – Export to PDF
+
+```{r p03-export, eval=FALSE}
+```
+
+You can extend this notebook further by experimenting with row splits, additional color control, or integrating external annotations. Compare this result with the minimalist `02_simple_heatmap.Rmd` to emphasize how each step adds clarity.
+
+
+# 04 Full Heatmap
+
+This notebook takes `dataset3_subset.csv` / `dataset3_subset_long.csv` (all genomes) and gradually moves from a plain heatmap to a more publication-ready version. Each step adds one feature so you can see the incremental effect.
+
+## 1. Packages, paths, and helpers
+
+```{r p04-setup, message=FALSE, warning=FALSE}
+
+```
+
+## 2. Load data and basic NA report
+
+```{r p04-load-data}
+
+```
+
+## 3. Base heatmap (no annotations)
+
+```{r p04-base-heatmap, fig.width=10, fig.height=6}
+
+```
+
+## 4. Explore color scales
+
+Generate three quick variants to see how different palettes affect the look.
+
+```{r p04-color-variants, fig.width=10, fig.height=6}
+
+```
+
+## 5. Add treatment and baseline/post annotations
+
+```{r p04-annotations, fig.width=10, fig.height=6}
+
+```
+
+## 6. Order columns (mouse/day) and cluster rows
+
+```{r p04-ordering, fig.width=10, fig.height=6}
+
+```
+
+## 7. Row filtering example (top variance)
+
+```{r p04-top-variance, fig.width=10, fig.height=6}
+
+```
+
+## 8. Final polish and PDF export
+
+Here we combine ordering, clustering, and annotations into one figure and save it.
+
+```{r p04-final, fig.width=10, fig.height=6}
+
+```
+
+```{r p04-export, eval=FALSE}
+
+```

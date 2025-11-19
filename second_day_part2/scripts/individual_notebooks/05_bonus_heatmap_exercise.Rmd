@@ -1,0 +1,184 @@
+---
+title: "Day 2 – Bonus Heatmap Customization (Exercise)"
+author: "Seminar practice worksheet"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+This optional worksheet extends the full heatmap workflow with decorations and
+custom legends inspired by the
+[ComplexHeatmap book](https://jokergoo.github.io/ComplexHeatmap-reference/book/).
+You will work with the `dataset3_subset*.csv` files (all genomes, all treatment
+groups) and add three extras:
+
+1. Highlight high-variance rows directly on the heatmap body with
+   `decorate_heatmap_body()` ([chapter 8](https://jokergoo.github.io/ComplexHeatmap-reference/book/heatmap-decoration.html)).
+2. Add a custom legend describing your highlight using `Legend()`
+   ([chapter 5](https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html)).
+3. Combine two heatmaps into a `HeatmapList` so you can show a derived metric
+   alongside the main matrix ([chapter 10](https://jokergoo.github.io/ComplexHeatmap-reference/book/a-list-of-heatmaps.html)).
+
+> **Goal:** reinforce how decorations/legends/heatmap lists fit into your
+> teaching notebook without making the code overwhelming. The prompts below keep
+> the same "fill in the TODO" style as the other exercises.
+
+## 1. Setup and pick two treatment groups
+
+Load `ComplexHeatmap`, `circlize`, `viridisLite`, and `grid`. Read both
+`dataset3_subset.csv` (wide) and `dataset3_subset_long.csv` (long) from
+`second_day_part2/data`. Pick two
+treatment groups to compare (for example Control vs Ciprofloxacin) and build a
+sample metadata table with `sample_id`, `mouse_id`, `day`, and
+`treatment_group`.
+
+```{r bonus-setup, eval=FALSE}
+# TODO: library(ComplexHeatmap); library(circlize); library(viridisLite); library(grid)
+# TODO: subset_path <- file.path('..','..','data','dataset3_subset.csv')
+# TODO: long_path   <- file.path('..','..','data','dataset3_subset_long.csv')
+# TODO: wide_df <- read.csv(...); long_df <- read.csv(...)
+# TODO: choose target_groups <- c('Control', 'Ciprofloxacin') (or any two)
+# TODO: long_df$sample_id <- paste(long_df$mouse_id, long_df$day, sep='-')
+# TODO: sample_meta <- unique(long_df[, c('sample_id','mouse_id','day','treatment_group')])
+# TODO: sample_meta <- subset(sample_meta, treatment_group %in% target_groups)
+```
+
+*Why?* Decorations depend on knowing orientation and group membership. Keeping
+metadata tidy upfront simplifies the later steps.
+
+Before moving on, explore the metadata you just built. Getting comfortable with
+the annotation inputs reduces surprises later.
+
+```{r bonus-metadata-summary, eval=FALSE}
+# TODO: table(sample_meta$treatment_group)
+# TODO: table(sample_meta$treatment_group, sample_meta$day)
+# TODO: sample_meta <- sample_meta[order(sample_meta$treatment_group, sample_meta$mouse_id, sample_meta$day), ]
+# TODO: head(sample_meta)
+```
+
+Keep these summary outputs (or screenshots) handy so you can explain which mice
+and time points appear in the heatmap.
+
+## 2. Build the base matrix and ordering
+
+Create a numeric matrix that keeps only the selected samples. Order columns by
+`treatment_group`, then `mouse_id`, then `day`. Compute a sequential color scale
+spanning the observed range (e.g., via `colorRamp2()`), and record row-level
+information (genome name, row variance) that you will use later.
+
+```{r bonus-matrix, eval=FALSE}
+# TODO: sample_cols <- sample_meta$sample_id ordered as described above
+# TODO: heatmap_matrix <- as.matrix(wide_df[, sample_cols]); mode(heatmap_matrix) <- 'numeric'
+# TODO: rownames(heatmap_matrix) <- paste(wide_df$Genome, wide_df$snp_id, sep=' | ')
+# TODO: row_genome <- wide_df$Genome
+# TODO: row_var <- apply(heatmap_matrix, 1, var, na.rm = TRUE)
+# TODO: define color_fun <- circlize::colorRamp2(...)
+```
+
+*Checkpoint:* print the range of the matrix and confirm you have rows > 0 before
+moving on.
+
+## 3. Explore annotation-friendly summaries
+
+Treat `sample_meta` as a small dataset worth exploring on its own. Summaries and
+quick visuals reinforce how treatments, mice, and days relate before you encode
+them in colors.
+
+```{r bonus-annotation-summary, eval=FALSE}
+# TODO: print(table(sample_meta$treatment_group, sample_meta$mouse_id))
+# TODO: print(table(sample_meta$treatment_group, sample_meta$day))
+# TODO: annotation_df <- sample_meta[, c('sample_id','treatment_group','day')]
+# TODO: head(annotation_df)
+```
+
+Optional: sketch a barplot of day counts per treatment (`barplot()` is plenty).
+
+## 4. Column/row annotations
+
+Reuse `sample_meta` to define column annotations for treatment group and day.
+Also build a row annotation that shows the genome label so you can scan which
+organisms contribute high-variance SNPs. Use distinct palettes for clarity.
+
+```{r bonus-annotations, eval=FALSE}
+# TODO: treatment_colors <- c(Control = '#1b9e77', Ciprofloxacin = '#d95f02') (adjust as needed)
+# TODO: day_colors <- circlize::colorRamp2(seq(min(sample_meta$day), max(sample_meta$day), length.out = 4), viridisLite::viridis(4))
+# TODO: col_ann <- HeatmapAnnotation(...)
+# TODO: row_ann <- rowAnnotation(...)
+```
+
+Preview the annotations before combining everything. A blank heatmap with only
+the column annotation is enough to sanity-check the palettes.
+
+```{r bonus-annotation-preview, eval=FALSE}
+# TODO: preview_mat <- matrix(0, nrow = 1, ncol = ncol(heatmap_matrix))
+# TODO: preview_ht <- Heatmap(preview_mat,
+#                             col = c('0' = '#ffffff'),
+#                             top_annotation = col_ann,
+#                             cluster_rows = FALSE,
+#                             cluster_columns = FALSE,
+#                             show_heatmap_legend = FALSE,
+#                             show_row_names = FALSE,
+#                             show_column_names = FALSE,
+#                             column_title = 'Annotation preview')
+# TODO: draw(preview_ht, annotation_legend_side = 'right')
+```
+
+You can create a similar preview for the row annotation by making a one-column
+matrix and assigning `right_annotation = row_ann`.
+
+## 5. Highlight high-variance rows with decorations
+
+Use `quantile(row_var, 0.9)` (or a threshold you prefer) to flag the top 10% most
+variable rows. Save the indices so you can mention them in the discussion or add
+legends later.
+
+```{r bonus-decoration, eval=FALSE}
+# TODO: high_var_cut <- quantile(row_var, 0.9, na.rm = TRUE)
+# TODO: highlight_rows <- which(row_var >= high_var_cut)
+# TODO: ht_bonus <- Heatmap(..., name = 'bonus_heatmap', col = color_fun,
+#                           top_annotation = col_ann, right_annotation = row_ann,
+#                           column_split = factor(sample_meta$treatment_group, levels = target_groups),
+#                           cluster_rows = FALSE, cluster_columns = FALSE,
+#                           show_row_names = FALSE)
+# TODO: draw(ht_bonus)
+```
+
+## 6. Add a companion heatmap and custom legends
+
+Compute a row-wise statistic to show next to the main heatmap (e.g., difference
+between the two treatment means, number of times each row exceeded 0.5, etc.).
+Turn that vector into a single-column heatmap and combine it with the main
+heatmap via the `+` operator. Finally, create a `Legend()` describing the
+highlighted rows and pass it to `draw()` via `annotation_legend_list` or
+`heatmap_legend_list`.
+
+```{r bonus-heatmap-list, eval=FALSE}
+# TODO: control_mean <- rowMeans(heatmap_matrix[, sample_meta$treatment_group == target_groups[1], drop = FALSE])
+# TODO: treated_mean <- rowMeans(heatmap_matrix[, sample_meta$treatment_group == target_groups[2], drop = FALSE])
+# TODO: mean_delta <- treated_mean - control_mean
+# TODO: delta_ht <- Heatmap(mean_delta, name = 'Δ mean', width = unit(1.2, 'cm'),
+#                           col = circlize::colorRamp2(c(min(mean_delta), 0, max(mean_delta)),
+#                                                       c('#4575b4', '#f7f7f7', '#d73027')),
+#                           show_row_names = FALSE, cluster_rows = FALSE)
+# TODO: combo <- ht_bonus + delta_ht
+# TODO: highlight_legend <- Legend(title = 'Highlight', labels = 'Row variance ≥ 90th pct', legend_gp = gpar(col = '#ff9500', fill = NA, lwd = 2))
+# TODO: draw(combo, heatmap_legend_list = list(highlight_legend), annotation_legend_side = 'right')
+```
+
+Experiment with other `Legend()` entries (e.g., for treatment colors) so the
+final plot clearly explains what the decoration means.
+
+## 7. Reflection
+
+Document what the decoration + companion heatmap revealed. Did the highlighted
+rows correspond to a particular genome? How would you explain the extra legend
+to students who are new to ComplexHeatmap? Jot down notes or screenshots for
+your Day 2 facilitation.
+
+```{r bonus-notes, eval=FALSE}
+# TODO: cat('Observations: ...') or store `highlight_rows` for later use
+```
+
+You can now integrate this chunk into `day2_walkthrough.Rmd` or keep it as a
+bonus appendix depending on time.

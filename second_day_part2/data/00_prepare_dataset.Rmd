@@ -147,8 +147,8 @@ head(dataset3$long)
 ```
 
 With both CSV sets created, move on to
-`scripts/01_explore_data.Rmd` for the guided walkthrough, or try the exercises
-notebook (`scripts/01_explore_data_exercises.Rmd`, with
-`scripts/01_explore_data_exercises_solution.Rmd` as a key) that uses the
-three-genome dataset, and finally render `scripts/02_simple_heatmap.Rmd` for the
+`scripts/individual_notebooks/01_explore_data.Rmd` for the guided walkthrough, or try the exercises
+notebook (`scripts/individual_notebooks/01_explore_data_exercises.Rmd`, with
+`scripts/individual_notebooks/01_explore_data_exercises_solution.Rmd` as a key) that uses the
+three-genome dataset, and finally render `scripts/individual_notebooks/02_simple_heatmap.Rmd` for the
 visualization.
