@@ -11,8 +11,6 @@ ChatGPT, Gemini) responsibly for coding help.
 - **Audience:** PhD students, postdocs, and early-career researchers in biology,
   bioinformatics, or related life sciences fields with basic programming
   experience.
-- **Schedule:** 18–20 November 2025, 10:00–17:00 CET (online via Zoom, 6 hours
-  per day including breaks).
 - **Bring:** Laptop with R + Python (or Colab), access to your preferred AI
   assistant, and Inkscape (free vector editor).
 
