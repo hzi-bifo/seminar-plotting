@@ -1008,3 +1008,9 @@ body { padding-bottom: 74px; }
 .filter-code-token[aria-pressed="true"] { outline-width:1px; outline-offset:1px; }
 .filter-explorer > section { min-width:0; }
 .filter-code { max-width:100%; font-size:15px; }
+
+.filter-code-token { background:transparent; color:#283f4b; }
+.filter-code-token[aria-pressed="true"] { background:#e1ebf2; color:#28485d; }
+.token-genome[aria-pressed="true"] { background:#e9dff5; color:#65368c; }
+.token-day[aria-pressed="true"] { background:#dcefe8; color:#216b52; }
+.token-and[aria-pressed="true"],.token-columns[aria-pressed="true"] { background:#fae6cf; color:#81501c; }

@@ -243,11 +243,11 @@ filterSlide.extra=`<div class="filter-explorer"><section><h2>Read the code in pi
 ${filterToken('columns',']')}
 ${filterToken('count','nrow(selected)')}</pre><div class="filter-explanation" aria-live="polite"><h2 id="filter-explain-title"></h2><p id="filter-explain-text"></p></div><details><summary>Copy the complete R code</summary>${rCode('selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" &\n    long_df$day == 9,\n]\nnrow(selected)')}</details></section><section><h2>Which rows pass this test?</h2><p class="day2-note">Illustrative excerpt · names shortened · each row is one SNP/sample measurement.</p><table class="filter-demo-table"><thead><tr><th>Genome</th><th>Day</th><th>Pass?</th></tr></thead><tbody>${[['Akkermansia',9],['Turicimonas',0],['Turicimonas',9],['Bacteroides',9],['Turicimonas',9],['Turicimonas',30]].map(([g,d])=>`<tr data-filter-genome="${g}" data-filter-day="${d}"><td>${g}</td><td>${d}</td><td class="filter-pass"></td></tr>`).join('')}</tbody></table><p id="filter-table-caption"></p><details><summary>Reveal the full dataset result</summary>${rCode('[1] 96')}<p>24 Turicimonas SNPs × 4 mouse/day samples. Missing values are kept: the filter tests genome and day, not frequency.</p></details><p><strong>Your turn:</strong> predict what changes if you use <code>day == 30</code>, then try it in R.</p></section></div>`;
 function bindFilterExplorer(){
- const show=id=>{
+ const show=(id,active)=>{
   const [title,description,mode]=filterParts[id];
   document.querySelector('#filter-explain-title').textContent=title;
   document.querySelector('#filter-explain-text').textContent=description;
-  document.querySelectorAll('[data-filter-part]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.filterPart===id)));
+  document.querySelectorAll('[data-filter-part]').forEach(el=>el.setAttribute('aria-pressed',String(el===active)));
   const test=['genome','day','both'].includes(mode);
   let count=0;
   document.querySelectorAll('[data-filter-genome]').forEach(row=>{
@@ -259,6 +259,6 @@ function bindFilterExplorer(){
   });
   document.querySelector('#filter-table-caption').textContent=test?`${count} of these 6 example rows pass ${mode==='both'?'both conditions':mode==='genome'?'the genome test alone':'the day test alone'}.`:'The original table remains unchanged. Select a condition to see which rows pass.';
  };
- document.querySelectorAll('[data-filter-part]').forEach(el=>{el.onclick=el.onmouseenter=el.onfocus=()=>show(el.dataset.filterPart);});
+ document.querySelectorAll('[data-filter-part]').forEach(el=>{el.onclick=el.onmouseenter=el.onfocus=()=>show(el.dataset.filterPart,el);});
  show('and');
 }
