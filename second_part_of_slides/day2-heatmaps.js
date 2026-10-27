@@ -1,4 +1,6 @@
 function day2HeatmapsPage(id) {
+ const openImportHelp=['r-copy-paths','r-working-directory'].includes(id);
+ if(openImportHelp)id='r-files';
  const openServerFaq=['r-session-faq','r-browser-faq'].includes(id);
  if(openServerFaq)id='r-server';
  if(id==='assignment-context'){location.replace('#day2-heatmaps/r-files');return;}
@@ -36,6 +38,7 @@ function day2HeatmapsPage(id) {
 
  app.innerHTML=`<section class="day2-slide"><p class="presentation-kicker">Day 2 · Part 2 · ${esc(slide.group)}</p><h1>${esc(slide.title)}</h1><p class="day2-intro">${esc(slide.note)}</p>${demo||`${images}${supporting}${bullets}${slide.extra}`}${demo?`<details><summary>Original course example</summary>${images}${bullets}${slide.extra}</details>`:''}${challenge}<nav class="navigation footer-controls"><button id="day2-prev">Previous</button><span>${index+1} / ${day2HeatmapSlides.length}</span><button id="day2-next" ${index===day2HeatmapSlides.length-1?'disabled':''}>${index===day2HeatmapSlides.length-1?'Finished':'Next'}</button></nav></section>`;
  if(openServerFaq)document.querySelector('.server-faq').open=true;
+ if(openImportHelp)document.querySelector('.import-help').open=true;
  bindHeatmapInteractive(id);
  bindHmStory(id);
  if(id==='r-preview')bindWideLong();
