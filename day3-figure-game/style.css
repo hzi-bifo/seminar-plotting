@@ -863,3 +863,16 @@ body { padding-bottom: 74px; }
 .ai-tool-cards img { width:64px; height:64px; }
 .ai-tool-cards strong { font-size:23px; }
 @media(max-width:650px){.ai-tool-cards{gap:8px;}.ai-tool-cards>div{flex-direction:column;padding:12px 4px;gap:8px;}.ai-tool-cards img{width:48px;height:48px;}.ai-tool-cards strong{font-size:17px;}}
+
+.ai-practice-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin:28px 0; }
+.ai-practice-grid article { padding:24px 20px; border:1px solid #dce5e8; border-radius:14px; background:#f5f9f8; }
+.ai-practice-icon { display:block; width:52px; height:52px; margin-bottom:18px; color:#267568; }
+.ai-practice-icon svg { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.ai-practice-grid h2 { font-size:21px; margin:0 0 12px; }
+.ai-practice-grid p { font-size:17px; line-height:1.6; margin:0; }
+.ai-prompt-pair { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:24px 0; }
+.ai-prompt-pair section { border-left:4px solid #c07a32; padding:4px 20px; }
+.ai-prompt-pair h2 { font-size:20px; margin:0 0 10px; }
+.ai-prompt-pair p { font-size:19px; line-height:1.5; margin:0; }
+@media(max-width:1000px){.ai-practice-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.ai-practice-grid,.ai-prompt-pair{grid-template-columns:1fr;}}

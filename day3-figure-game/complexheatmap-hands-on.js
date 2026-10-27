@@ -158,15 +158,16 @@ day2HeatmapSlides.push(
  <div class="hm-checklist"><article><span>1</span><h2>Try a real task</h2><p>Start from your working plot. Ask for one improvement, an explanation of an argument, or help with an error. Run the suggested code and inspect the result.</p></article><article><span>2</span><h2>Compare experiences</h2><p>What worked? What failed? Did the assistant misunderstand the data, use the wrong library or change something you wanted to keep?</p></article><article><span>3</span><h2>Collect good practices</h2><p>Share one useful prompt, one mistake and one check that caught it. Together, turn these examples into advice for the next person.</p></article></div>
  <p><strong>Small experiment:</strong> try the same question with only your code, then add a plot image and the supplied dataset or a pasted table with column names. Does the answer improve? What is still misunderstood?</p>
  <p class="day2-note">Record: task → context supplied → suggestion → what you tested → outcome. A suggestion that sounds convincing still needs checking.</p>`},
- {id:'ai-good-practices',title:'Working with AI · good practices to test',group:'Working with AI',note:'Give useful context, ask open questions and compare every revision with your original.',images:[],bullets:[],credit:[],source:[],extra:`
- <div class="hands-settings"><section><h2>Give context and check the changes</h2>
- <ul><li><strong>Keep a baseline:</strong> save your working code and plot. Compare the revised version with both.</li><li><strong>Name the library:</strong> “Use R and ComplexHeatmap.” Include your code and the <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank" rel="noopener">ComplexHeatmap documentation ↗</a>.</li><li><strong>Explain the data:</strong> what rows, columns, values and NA mean; which question the plot should answer. Try the supplied CSV or a pasted table, and identify it as an excerpt if incomplete.</li><li><strong>State what must stay fixed:</strong> samples, values, NA, transformations and the 0–1 frequency scale. Check that annotations still match sample IDs and that no filtering or scaling was added unexpectedly.</li><li><strong>Run and inspect:</strong> request an explanation of each change. Check warnings, legends and the resulting plot; working code alone is not enough.</li></ul>
- </section><section><h2>Open questions to try</h2>
- <p>“What would you improve to make this heatmap easier to interpret? Suggest three changes and explain their trade-offs before changing the code.”</p>
- <p>“What might a reader misunderstand about this figure? Consider the colour scale, missing values, ordering and annotations.”</p>
- <p>“Which ordering would help answer [my biological question]? Explain what clustering would reveal and what it might obscure.”</p>
- <p>“Compare the original and revised code. Did any values, samples, transformations or annotation mappings change unintentionally?”</p>
- <p><strong>Discuss:</strong> which context helped most, which mistakes recurred, and which checks should everyone use?</p></section></div>`}
+ {id:'ai-good-practices',title:'Working with AI · good practices',group:'AI tools',note:'Give context. Make one change. Check the result.',images:[],bullets:[],credit:[],source:[],extra:`
+ <div class="ai-practice-grid">
+ <article><span class="ai-practice-icon" aria-hidden="true">${'<svg viewBox="0 0 48 48"><path d="M10 7h20l8 8v26H10zM30 7v10h8M17 24h14M17 31h10"/></svg>'}</span><h2>Keep the original</h2><p>Save your code and plot.<br>Compare before and after.</p></article>
+ <article><span class="ai-practice-icon" aria-hidden="true">${'<svg viewBox="0 0 48 48"><path d="M8 9h32v25H23l-10 8v-8H8zM15 17h18M15 24h13"/></svg>'}</span><h2>Give context</h2><p>Code + plot + approved data.<br>Name <strong>ComplexHeatmap</strong> and <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank" rel="noopener">link its docs</a>.</p></article>
+ <article><span class="ai-practice-icon" aria-hidden="true">${'<svg viewBox="0 0 48 48"><rect x="10" y="21" width="28" height="21" rx="4"/><path d="M16 21v-9a8 8 0 0 1 16 0v9M24 29v6"/></svg>'}</span><h2>Keep meaning fixed</h2><p>Same values, samples and NA.<br>Check scale and annotation matches.</p></article>
+ <article><span class="ai-practice-icon" aria-hidden="true">${'<svg viewBox="0 0 48 48"><circle cx="21" cy="21" r="14"/><path d="m31 31 11 11M14 21l5 5 10-11"/></svg>'}</span><h2>Run &amp; inspect</h2><p>Try one change at a time.<br>Check the plot, not just the code.</p></article>
+ </div>
+ <div class="ai-prompt-pair"><section><h2>Ask for ideas</h2><p>“What would make this heatmap easier to interpret? Suggest three improvements before editing.”</p></section><section><h2>Ask for a check</h2><p>“Compare both versions. Did any data, scaling or sample annotations change unintentionally?”</p></section></div>
+ <details><summary>Two more questions to try</summary><p>“What might a reader misunderstand about the colours, missing values or ordering?”</p><p>“Which ordering would best answer my biological question, and why?”</p></details>`}
+
 );
 
 const aiSectionSlides = [
