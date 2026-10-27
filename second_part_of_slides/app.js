@@ -8,7 +8,11 @@ const sourceHTML = key => {
 };
 function home() {
   current = -1;
-  app.innerHTML = `<h1>Figures that communicate</h1><section class="course-day" aria-labelledby="day2-heading"><h2 id="day2-heading">Day 2 · Heatmap focus</h2><p>Part 2: reading, scaling, clustering and designing heatmaps.</p><a class="course-day-open" href="#day2-heatmaps">Open heatmap topics →</a></section><section class="course-day" aria-labelledby="day3-heading"><h2 id="day3-heading">Day 3 · From plot to publication</h2><nav class="presentation-sections" aria-label="Day 3 sections">${[
+  app.innerHTML = `<h1>Figures that communicate</h1><p class="day2-overview-intro">Choose a course day to explore its topics.</p><nav class="course-day-grid" aria-label="Course days"><a href="#day2-heatmaps"><img src="assets/day2-heatmaps/hands-on-workshop.svg" alt="People working together on a heatmap"><span class="presentation-kicker">Day 2 · Part 2</span><h2>Heatmap focus</h2><p>AI tools, reading heatmaps, scaling, clustering and hands-on work in R.</p><strong>Open Day 2 topics →</strong></a><a href="#day3"><img src="assets/day2-heatmaps/ai-collaboration.svg" alt="Discussion and code connected in an iterative workflow"><span class="presentation-kicker">Day 3</span><h2>From plot to publication</h2><p>Plot design, consistent panels, figure assembly, export and generative tools.</p><strong>Open Day 3 topics →</strong></a></nav>`;
+}
+function day3Overview() {
+  current = -1;
+  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><section class="course-day" aria-label="Day 3 topics"><nav class="presentation-sections" aria-label="Day 3 sections">${[
     ['1','What kinds of plots are there?','Explore plot families and the questions they answer.','#plot-types'],
     ['2','Examples for good figures','Inspect design choices in real biological research.','#section-2'],
     ['3','Good and bad plots','See the issue, then reveal an improved figure.','#section-3'],
@@ -150,6 +154,7 @@ function end(last = cards.length-1) {
   document.querySelector('#last').onclick = () => go(last);
 }
 function route() {
+  if(location.hash==='#day3'){day3Overview();window.scrollTo(0,0);return;}
   if(location.hash==='#section-11'||/^#generative-tools(?:\/[1-8])?$/.test(location.hash)){generativeToolsPage(location.hash.split('/')[1]);window.scrollTo(0,0);return;}
   if(location.hash==='#section-4'){comparisonOverview();window.scrollTo(0,0);return;}
   if(location.hash==='#day2-heatmaps'||location.hash.startsWith('#day2-heatmaps/')){day2HeatmapsPage(location.hash.split('/')[1]);window.scrollTo(0,0);return;}

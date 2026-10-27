@@ -1022,3 +1022,13 @@ body { padding-bottom: 74px; }
 .r-explain-panel { padding:20px; background:#edf5f1; border-left:4px solid #267568; min-height:170px; }
 .r-explain-panel h2 { font-size:23px; margin:0 0 12px; }.r-explain-panel p { font-size:18px; line-height:1.5; margin:0; }
 @media(max-width:950px){.r-explorer-grid{grid-template-columns:1fr;}}
+
+.course-day-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin:36px 0; }
+.course-day-grid>a { display:block; padding:28px; border:1px solid #d7e2e6; border-radius:18px; color:inherit; text-decoration:none; background:#f8fafb; }
+.course-day-grid>a:hover { background:#edf5f4; border-color:#267568; }
+.course-day-grid img { display:block; width:100%; height:230px; object-fit:contain; margin-bottom:24px; }
+.course-day-grid .presentation-kicker { display:block; }
+.course-day-grid h2 { font-size:30px; margin:12px 0; }
+.course-day-grid p { font-size:20px; line-height:1.5; }
+.course-day-grid strong { display:block; margin-top:24px; color:#216b5f; }
+@media(max-width:750px){.course-day-grid{grid-template-columns:1fr;}.course-day-grid img{height:170px;}}
