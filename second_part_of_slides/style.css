@@ -952,3 +952,12 @@ body { padding-bottom: 74px; }
 .assignment-visual-steps li+li:before { content:'→'; color:#819399; margin-right:8px; }
 .assignment-visual-steps svg { width:36px; height:36px; flex-shrink:0; color:#267568; }
 @media(max-width:800px){.assignment-visual-steps{flex-wrap:wrap;}.assignment-visual-steps li{flex:1 1 140px;}.assignment-visual-steps li+li:before{display:none;}}
+
+.session-error { background:#fff1e9; border-radius:10px; padding:16px 20px; color:#874522; font-size:18px; overflow-wrap:anywhere; }
+.session-faq-layout { display:grid; grid-template-columns:1fr 1.4fr; gap:28px; align-items:center; margin:24px 0; }
+.session-faq-layout ol { padding-left:24px; line-height:1.5; }
+.session-faq-layout li { margin-bottom:12px; }
+.session-faq-layout figure { margin:0; }
+.session-faq-layout img { width:100%; height:auto; border:1px solid #dce5e8; border-radius:10px; }
+.session-faq-layout figcaption { font-size:14px; font-weight:normal; margin-top:10px; }
+@media(max-width:800px){.session-faq-layout{grid-template-columns:1fr;}}
