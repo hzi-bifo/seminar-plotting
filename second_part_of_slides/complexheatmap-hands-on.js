@@ -239,7 +239,8 @@ const filterSlide=day2HeatmapSlides.find(s=>s.id==='r-filter');
 filterSlide.note='Explore [rows, columns] · hover, focus or click a coloured piece of code.';
 filterSlide.extra=`<div class="filter-explorer"><section><h2>Read the code in pieces</h2><pre class="filter-code">${filterToken('save','selected <-')} ${filterToken('source','long_df[')}
   ${filterToken('genome','long_df$Genome == "Turicimonas_muris_YL45"')} ${filterToken('and','&')}
-    ${filterToken('day','long_df$day == 9')}${filterToken('columns',',\n]')}
+    ${filterToken('day','long_df$day == 9')}${filterToken('columns',',')}
+${filterToken('columns',']')}
 ${filterToken('count','nrow(selected)')}</pre><div class="filter-explanation" aria-live="polite"><h2 id="filter-explain-title"></h2><p id="filter-explain-text"></p></div><details><summary>Copy the complete R code</summary>${rCode('selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" &\n    long_df$day == 9,\n]\nnrow(selected)')}</details></section><section><h2>Which rows pass this test?</h2><p class="day2-note">Illustrative excerpt · names shortened · each row is one SNP/sample measurement.</p><table class="filter-demo-table"><thead><tr><th>Genome</th><th>Day</th><th>Pass?</th></tr></thead><tbody>${[['Akkermansia',9],['Turicimonas',0],['Turicimonas',9],['Bacteroides',9],['Turicimonas',9],['Turicimonas',30]].map(([g,d])=>`<tr data-filter-genome="${g}" data-filter-day="${d}"><td>${g}</td><td>${d}</td><td class="filter-pass"></td></tr>`).join('')}</tbody></table><p id="filter-table-caption"></p><details><summary>Reveal the full dataset result</summary>${rCode('[1] 96')}<p>24 Turicimonas SNPs × 4 mouse/day samples. Missing values are kept: the filter tests genome and day, not frequency.</p></details><p><strong>Your turn:</strong> predict what changes if you use <code>day == 30</code>, then try it in R.</p></section></div>`;
 function bindFilterExplorer(){
  const show=id=>{

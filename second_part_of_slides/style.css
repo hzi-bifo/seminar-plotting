@@ -1001,3 +1001,10 @@ body { padding-bottom: 74px; }
 .filter-kept { background:#dcefe8; }.filter-dropped { background:#f2f3f4; color:#626c72; }
 #filter-table-caption { font-size:17px; }
 @media(max-width:950px){.filter-explorer{grid-template-columns:1fr;}}
+
+/* Keep interactive tokens on the same baseline as ordinary source code. */
+.filter-code { line-height:2.2; white-space:pre; overflow-x:auto; overflow-wrap:normal; }
+.filter-code-token { display:inline; vertical-align:baseline; font-family:inherit; font-size:inherit; line-height:inherit; white-space:pre; padding:2px 3px; margin:0; border:0; border-radius:4px; }
+.filter-code-token[aria-pressed="true"] { outline-width:1px; outline-offset:1px; }
+.filter-explorer > section { min-width:0; }
+.filter-code { max-width:100%; font-size:15px; }
