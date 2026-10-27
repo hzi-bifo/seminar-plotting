@@ -185,3 +185,27 @@ for (let i=day2HeatmapSlides.length-1;i>=0;i--) {
  if(aiOpeningIds.includes(day2HeatmapSlides[i].id)) day2HeatmapSlides.splice(i,1);
 }
 day2HeatmapSlides.unshift(...aiOpeningSlides);
+
+const aiWorkflowSteps = [
+ {label:'Give the task',chat:['You','Ask + paste context','Explain this heatmap error.'],agent:['You','Set a goal + scope','Fix the script in this folder.']},
+ {label:'Inspect & suggest',chat:['AI','Suggest a change','Returns an explanation and code.'],agent:['Agent','Inspect the files','Reads relevant code and data.']},
+ {label:'Make the change',chat:['You','Copy & edit','Apply the suggestion in RStudio.'],agent:['Agent','Edit the script','Writes changes within its permissions.']},
+ {label:'Run & iterate',chat:['You','Run + report back','Share the plot or error; ask again.'],agent:['Agent','Run + check + revise','Uses tool results to try the next step.']},
+ {label:'Review the result',chat:['You','Check the science','Compare data, labels and meaning.'],agent:['You','Review edits + plot','Accept only after checking the result.']}
+];
+const aiWorkflowSlide = day2HeatmapSlides.find(s=>s.id==='ai-chat-agent');
+aiWorkflowSlide.note='Same goal: improve a heatmap. Who does the work at each step?';
+aiWorkflowSlide.extra=`<div class="ai-flow-controls"><button id="ai-flow-next">Reveal next step →</button><button id="ai-flow-all">Show all</button><button id="ai-flow-reset">Restart</button><span id="ai-flow-status" aria-live="polite">Step 1 of 5 · Give the task</span></div><div class="ai-flow-columns">${[['chat','Chat-based help','You move suggestions into RStudio.'],['agent','Agentic AI','Claude Code / Codex can act through tools.']].map(([key,title,subtitle])=>`<section><h2>${title}</h2><p class="ai-flow-subtitle">${subtitle}</p><ol>${aiWorkflowSteps.map((step,i)=>`<li data-flow-step="${i}" ${i?'hidden':''}><span class="ai-flow-number">${i+1}</span><div><span class="ai-flow-owner ${step[key][0]==='You'?'is-human':'is-agent'}">${step[key][0]}</span><strong>${step[key][1]}</strong><p>${step[key][2]}</p></div></li>`).join('')}</ol></section>`).join('')}</div><p class="ai-flow-takeaway" id="ai-flow-takeaway" hidden><strong>The agent can run the technical loop. You still check the scientific meaning.</strong></p><details><summary>Tools, permissions and examples</summary><p>A chatbox can also have agent tools. What matters is access: reading files, editing code and running commands. Actions may run locally or in a remote workspace, within configured permissions.</p><p><a href="https://learn.chatgpt.com/docs/cli" target="_blank" rel="noopener">Codex documentation</a> · <a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">Claude Code documentation</a></p></details>`;
+function bindAiWorkflow(){
+ let step=0;
+ const update=()=>{
+  document.querySelectorAll('[data-flow-step]').forEach(el=>{el.hidden=Number(el.dataset.flowStep)>step;el.classList.toggle('is-current',Number(el.dataset.flowStep)===step);});
+  document.querySelector('#ai-flow-status').textContent=`Step ${step+1} of 5 · ${aiWorkflowSteps[step].label}`;
+  document.querySelector('#ai-flow-next').disabled=step===4;
+  document.querySelector('#ai-flow-takeaway').hidden=step!==4;
+ };
+ document.querySelector('#ai-flow-next').onclick=()=>{step=Math.min(4,step+1);update();};
+ document.querySelector('#ai-flow-all').onclick=()=>{step=4;update();};
+ document.querySelector('#ai-flow-reset').onclick=()=>{step=0;update();};
+ update();
+}
