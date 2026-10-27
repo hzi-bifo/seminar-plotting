@@ -895,3 +895,14 @@ body { padding-bottom: 74px; }
 .ai-flow-columns li p { font-size:15px; margin:5px 0 0; }
 .ai-flow-takeaway { font-size:19px; color:#216b5f; }
 @media(max-width:750px){.ai-flow-columns{grid-template-columns:1fr;}.ai-flow-columns section{padding:18px;}}
+
+.ai-flow-columns .ai-flow-chat { background:#eef4fc; border-top:5px solid #4378b6; }
+.ai-flow-columns .ai-flow-chat h2 { color:#28588e; }
+.ai-flow-columns .ai-flow-agent { background:#f4effa; border-top:5px solid #8960b5; }
+.ai-flow-columns .ai-flow-agent h2 { color:#704394; }
+.ai-flow-chat li.is-current { border-color:#4378b6; box-shadow:0 0 0 1px #4378b6; }
+.ai-flow-agent li.is-current { border-color:#8960b5; box-shadow:0 0 0 1px #8960b5; }
+.ai-flow-teaching { display:grid; grid-template-columns:1.4fr 1fr; gap:24px; margin:18px 0; }
+.ai-flow-teaching p { font-size:16px; line-height:1.5; margin:0; }
+.ai-flow-teaching p:last-child { border-left:3px solid #8960b5; padding-left:18px; }
+@media(max-width:750px){.ai-flow-teaching{grid-template-columns:1fr;}}
