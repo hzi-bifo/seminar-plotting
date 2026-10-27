@@ -14,6 +14,16 @@
     .message { font-size:clamp(22px,3vw,38px); line-height:1.5; margin:0; }
     a { display:inline-block; margin-top:56px; color:#234653; text-underline-offset:5px; font-size:18px; }
     a:focus-visible { outline:3px solid #b27030; outline-offset:8px; }
+    .countdown { font-size:clamp(48px,9vw,100px); font-variant-numeric:tabular-nums; font-weight:700; margin:12px 0; }
+    #return-time { font-size:22px; }
+    details { margin:28px auto 0; max-width:600px; font-size:17px; }
+    summary { cursor:pointer; }
+    form { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:12px; margin:18px 0; }
+    input,button { font:inherit; padding:10px 14px; border:1px solid #95b3b4; border-radius:8px; max-width:100%; }
+    button { background:white; color:#234653; cursor:pointer; }
+    #share-link { width:100%; margin:12px 0; }
+    .hint { font-size:14px; line-height:1.5; }
+    svg { width:100px; margin:8px auto; }
   </style>
 </head>
 <body>
@@ -22,7 +32,46 @@
     <svg viewBox="0 0 160 160" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M35 65h80v40a30 30 0 0 1-30 30H65a30 30 0 0 1-30-30z" fill="#fff"/><path d="M115 72h8a19 19 0 0 1 0 38h-9M25 145h103M55 45c-12-15 12-17 0-32M80 45c-12-15 12-17 0-32M105 45c-12-15 12-17 0-32"/></g></svg>
     <h1>We’re on a break.</h1>
     <p class="message">Stretch, grab a drink, take a breather.<br>We’ll continue shortly.</p>
+    <section id="timer" hidden><p id="return-time"></p><div class="countdown" id="countdown" role="timer" aria-label="Time until the break ends"></div><p id="timer-status" aria-live="polite"></p></section>
+    <details id="settings"><summary>Set the return time / share this break</summary>
+      <form id="break-form"><label for="end-time">Return date &amp; time</label><input type="datetime-local" id="end-time" required><button type="submit">Set countdown</button></form>
+      <p class="hint" id="timezone"></p>
+      <label for="share-link">Share this timed break</label><input id="share-link" readonly aria-label="Shareable break link"><button id="copy-link" type="button">Copy link</button><button id="clear-time" type="button">Clear countdown</button>
+      <p class="hint">The link includes the exact end time. Send the new link if you change it; already-open pages keep their previous time.</p><p id="copy-status" role="status"></p>
+    </details>
     <a href="./">Back to the course slides →</a>
   </main>
+<script>
+const input=document.querySelector('#end-time');
+const params=new URLSearchParams(location.search);
+let end=null;
+const raw=params.get('until');
+if(raw){const parsed=new Date(raw);if(Number.isFinite(parsed.getTime()))end=parsed;}
+const zone=Intl.DateTimeFormat().resolvedOptions().timeZone;
+document.querySelector('#timezone').textContent=`Choose a time in your browser’s time zone: ${zone}. The link preserves the same instant for all viewers.`;
+function localInput(date){const pad=n=>String(n).padStart(2,'0');return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;}
+input.value=localInput(end||new Date(Date.now()+15*60*1000));
+document.querySelector('#settings').open=!end;
+function update(){
+ document.querySelector('#timer').hidden=!end;
+ if(!end){document.querySelector('h1').textContent='We’re on a break.';return;}
+ const remaining=Math.max(0,Math.ceil((end-Date.now())/1000));
+ const hours=Math.floor(remaining/3600),minutes=Math.floor(remaining%3600/60),seconds=remaining%60;
+ document.querySelector('#countdown').textContent=(hours?String(hours).padStart(2,'0')+':':'')+String(minutes).padStart(2,'0')+':'+String(seconds).padStart(2,'0');
+ document.querySelector('#return-time').textContent='Back at '+new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(end)+' ('+zone+')';
+ document.querySelector('h1').textContent=remaining?'We’re on a break.':'Time to return.';
+ document.querySelector('.message').hidden=!!end;
+ const status=remaining?'Time remaining':'The break has ended. Please return to the session.';
+ if(document.querySelector('#timer-status').textContent!==status)document.querySelector('#timer-status').textContent=status;
+}
+function setLink(){document.querySelector('#share-link').value=location.href;}
+document.querySelector('#break-form').onsubmit=e=>{
+ e.preventDefault();const date=new Date(input.value);if(!Number.isFinite(date.getTime()))return;
+ end=date;const url=new URL(location.href);url.searchParams.set('until',end.toISOString());history.replaceState(null,'',url);setLink();update();document.querySelector('#settings').open=false;
+};
+document.querySelector('#clear-time').onclick=()=>{end=null;const url=new URL(location.href);url.searchParams.delete('until');history.replaceState(null,'',url);document.querySelector('.message').hidden=false;setLink();update();};
+document.querySelector('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);document.querySelector('#copy-status').textContent='Link copied.';}catch{document.querySelector('#share-link').select();document.querySelector('#copy-status').textContent='Copy the selected link manually.';}};
+setLink();update();setInterval(update,1000);
+</script>
 </body>
 </html>
