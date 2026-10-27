@@ -967,3 +967,17 @@ body { padding-bottom: 74px; }
 .server-faq-questions { margin-top:18px; }
 .server-faq-questions>details { margin:12px 0; padding:18px; border:1px solid #d7e2e6; border-radius:10px; background:#f5f8fa; }
 .server-faq-questions>details>summary { font-size:20px; font-weight:600; cursor:pointer; }
+
+.wd-ready { background:#edf5f1; padding:18px 22px; border-radius:12px; }
+.wd-visual { display:grid; grid-template-columns:1fr 1fr; gap:36px; margin:28px 0; }
+.wd-visual h2 { font-size:23px; }
+.wd-folder-tree { font-family:ui-monospace,monospace; font-size:20px; background:#f3f6f8; padding:24px; border-radius:14px; line-height:1.7; }
+.wd-parent small { font-family:system-ui,sans-serif; color:#64747d; font-size:15px; }
+.wd-parent-file { margin-left:32px; border-left:2px solid #b8c9ce; padding-left:18px; }
+.wd-current { margin:12px 0 0 32px; padding:12px; background:#dcefe9; border:2px solid #267568; border-radius:8px; }
+.wd-current strong { display:block; font-family:system-ui,sans-serif; font-size:15px; color:#216b5f; }
+.wd-child-file { margin-left:64px; padding-left:18px; border-left:2px solid #267568; }
+.wd-path-example { background:#f3f6f8; border-radius:10px; padding:16px 20px; margin-bottom:14px; overflow-wrap:anywhere; }
+.wd-path-example code { font-size:20px; }
+.wd-path-example p { margin:8px 0 0; font-size:18px; }
+@media(max-width:800px){.wd-visual{grid-template-columns:1fr;}.wd-folder-tree{font-size:17px;padding:16px;}}
