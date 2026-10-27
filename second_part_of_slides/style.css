@@ -1064,3 +1064,15 @@ body { padding-bottom: 74px; }
 @keyframes privacy-appear { from { opacity:.2; } to { opacity:1; } }
 @media(prefers-reduced-motion:reduce){.privacy-packet,.privacy-inbound,.privacy-typing{animation:none!important;}}
 @media(max-width:800px){.privacy-scene{grid-template-columns:1fr;min-height:0;}.privacy-transit{padding:0 20px;}}
+
+.filter-venn { margin:0 0 18px; }
+.filter-venn svg { width:100%; max-height:220px; display:block; }
+.filter-venn text { font-family:system-ui,sans-serif; font-size:16px; fill:#344d5a; text-anchor:middle; }
+.filter-venn .venn-count { font-weight:700; font-size:22px; }
+.filter-venn .venn-caption { font-size:14px; }
+.venn-region { fill:#edf0f3; }.venn-overlap { fill:#e2e7eb; }
+.venn-outline { fill:none; stroke:#8598a2; stroke-width:2; }
+.filter-venn[data-mode="genome"] .venn-left,.filter-venn[data-mode="genome"] .venn-overlap { fill:#cfb9e6; }
+.filter-venn[data-mode="day"] .venn-right,.filter-venn[data-mode="day"] .venn-overlap { fill:#a8d6c3; }
+.filter-venn[data-mode="both"] .venn-overlap { fill:#efc28d; }
+.filter-venn .day2-note { margin:4px 0; text-align:center; font-size:13px; }
