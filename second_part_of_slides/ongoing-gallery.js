@@ -18,3 +18,9 @@ function bindOngoingGallery(){
  document.querySelector('#ongoing-shelf').onchange=e=>{ongoingGalleryState.shelf=e.target.value;draw();};
  draw();
 }
+
+function ongoingGalleryBackdrop(){
+ const query=ongoingGalleryState.query.trim().toLowerCase();
+ const items=ongoingGalleryItems.filter(i=>(ongoingGalleryState.shelf==='all'||i.s===ongoingGalleryState.shelf)&&(!query||`${i.n} ${i.nd} ${i.k}`.toLowerCase().includes(query))).slice(0,24);
+ return `<div class="icon-request-backdrop" aria-hidden="true"><h2>Examples from Ongoing Science</h2><p>Browse the drawings from the local library.</p><div class="icon-backdrop-grid">${items.map(i=>`<div><img src="assets/ongoing-science/${i.id}.svg" alt=""><span>${consistencyEscape(i.n)}</span></div>`).join('')}</div></div>`;
+}
