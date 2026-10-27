@@ -1,4 +1,4 @@
-# Plots — independent Day 3 prototype
+# Plots, independent Day 3 prototype
 
 Open **index.html** in a browser. No server, installation, internet connection, course files, or build step is needed to play. Copy this whole folder elsewhere to keep it independent. Nothing is published automatically.
 
@@ -6,11 +6,11 @@ Open **index.html** in a browser. No server, installation, internet connection, 
 
 The main sequence contains 20 plots, selected for a small interpretive challenge rather than a conspicuous typo, missing label, or arithmetic mistake.
 
-1. **Easy: spot the problem** — nine cases, including three additional guided walkthroughs (distribution, pairing, and heatmap). The original six cover: truncated bars, overlapping pie categories, circle areas, different denominators, missing observations shown as zero, and overlapping points. Each reveals a corrected version after answering; the overlapping-points case instead provides a five-stage scatterplot walkthrough.
-2. **Simple good plots** — four examples: ranking, directly labelled lines, paired measurements, and aligned panels. Questions ask why the design supports a particular comparison.
-3. **Same data, different plots** — seven comparisons covering distributions, pairing, time spacing, heatmap scales, ranking, biological replicates, and error-bar interpretation.
-4. **Optional: complex figures** — a bacterial dual-axis comparison plus three paper/layout examples, separate from the main sequence.
-5. **Biology design comparisons** — three same-data pairs: overlapping cell markers, microbial composition, and relative cell-line growth. Each gives feedback about which version supports the stated question.
+1. **Easy: spot the problem**, nine cases, including three additional guided walkthroughs (distribution, pairing, and heatmap). The original six cover: truncated bars, overlapping pie categories, circle areas, different denominators, missing observations shown as zero, and overlapping points. Each reveals a corrected version after answering; the overlapping-points case instead provides a five-stage scatterplot walkthrough.
+2. **Simple good plots**, four examples: ranking, directly labelled lines, paired measurements, and aligned panels. Questions ask why the design supports a particular comparison.
+3. **Same data, different plots**, seven comparisons covering distributions, pairing, time spacing, heatmap scales, ranking, biological replicates, and error-bar interpretation.
+4. **Optional: complex figures**, a bacterial dual-axis comparison plus three paper/layout examples, separate from the main sequence.
+5. **Biology design comparisons**, three same-data pairs: overlapping cell markers, microbial composition, and relative cell-line growth. Each gives feedback about which version supports the stated question.
 
 All 42 cards work offline. External research links require internet. Retired examples remain in the source and assets for reuse, but are excluded from the game. The overlapping-category pie remains because it tests whether categories can form a whole; the pie with mismatched slice sizes remains excluded.
 

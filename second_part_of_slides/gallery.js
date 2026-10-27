@@ -76,7 +76,7 @@ plotTypes.push(...[
       [
         "gallery-circular-2.png",
         "The same composition as a donut",
-        "The centre displays the total; the ring shows the same three proportions. The hole does not improve precise comparison\u2014use bars when differences between categories are the question."
+        "The centre displays the total; the ring shows the same three proportions. The hole does not improve precise comparison, use bars when differences between categories are the question."
       ]
     ]
   },

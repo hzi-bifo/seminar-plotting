@@ -8,7 +8,7 @@ const sources = {
 };
 const phases = [
  {name:'Spot the trap',subtitle:'Read beyond first impressions',description:'Find the misleading choice. Explain the impression it creates, then suggest one repair.',time:'8–12 min'},
- {name:'Read the craft',subtitle:'More evidence. Clearer structure.',description:'Study published examples. What makes their information readable—and what would you change for a lecture?',time:'8–12 min'},
+ {name:'Read the craft',subtitle:'More evidence. Clearer structure.',description:'Study published examples. What makes their information readable, and what would you change for a lecture?',time:'8–12 min'},
  {name:'Choose the view',subtitle:'Same data. Different decisions.',description:'Choose the figure that best answers the stated question. A useful plot always has a purpose.',time:'12–18 min'}
 ];
 const originalCards = [
@@ -310,7 +310,7 @@ const moreEasyCards = [
   }
 ];
 const optionalCards = [originalCards[2], originalCards[4], originalCards[5], originalCards[11]].map(c => ({...c, phase: 3}));
-sources.fullfactCake = {label:'Full Fact, 2013 — review of the National Health Service birthday graphic',url:'https://fullfact.org/news/new-years-resolution-5-i-will-not-make-bad-graphs/',credit:'Original graphic credited through Full Fact to British Future. Reproduced here for local teaching critique; no open reuse licence asserted.'};
+sources.fullfactCake = {label:'Full Fact, 2013, review of the National Health Service birthday graphic',url:'https://fullfact.org/news/new-years-resolution-5-i-will-not-make-bad-graphs/',credit:'Original graphic credited through Full Fact to British Future. Reproduced here for local teaching critique; no open reuse licence asserted.'};
 sources.fullfactDefra = {label:'Department for Environment, Food and Rural Affairs; discussed by Full Fact, 2013',url:'https://fullfact.org/news/new-years-resolution-5-i-will-not-make-bad-graphs/',credit:'Published government figures reproduced in Full Fact’s review. The original shows 2007; the later edition shows 2012.'};
 const realCards = [
   {
@@ -353,7 +353,7 @@ const realCards = [
       "More colours will not create room for the labels. The later edition groups countries into broader regions."
     ],
     "repair": "real-defra-after.jpg",
-    "repairLabel": "Later published design — 2012 data, not the same observations"
+    "repairLabel": "Later published design, 2012 data, not the same observations"
   }
 ];
 const polishedGoodCards = [
@@ -533,7 +533,7 @@ const additionalMistakes = [
     "data": "good-lines.csv"
   }
 ];
-sources.onsPopulation = {label:'Office for National Statistics — Census 2011 and 2021; service manual example',url:'https://service-manual.ons.gov.uk/data-visualisation/guidance/principles',credit:'Source: Office for National Statistics. Contains public sector information licensed under the Open Government Licence v3.0. Browser snapshots of the original interactive figures, 20 October 2026.',license:'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'};
+sources.onsPopulation = {label:'Office for National Statistics, Census 2011 and 2021; service manual example',url:'https://service-manual.ons.gov.uk/data-visualisation/guidance/principles',credit:'Source: Office for National Statistics. Contains public sector information licensed under the Open Government Licence v3.0. Browser snapshots of the original interactive figures, 20 October 2026.',license:'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'};
 realCards.push({
   "phase": 4,
   "title": "Show the comparison the reader needs",
@@ -573,7 +573,7 @@ const revisions = {
     question: 'For a quick ranking, which choice helps most?',
     options: ['Ordering the bars by count.', 'Keeping the conditions in dose order.'],
     correct: 0,
-    feedback: ['Yes. Ordering by count makes the rank visible immediately. Dose order would be useful for a different question: how counts change with dose.', 'Dose order helps examine a dose-response pattern. For the stated task—ranking the counts—ordering by value is more direct.']
+    feedback: ['Yes. Ordering by count makes the rank visible immediately. Dose order would be useful for a different question: how counts change with dose.', 'Dose order helps examine a dose-response pattern. For the stated task, ranking the counts, ordering by value is more direct.']
   },
   'Follow a line without a lookup': {
     question: 'Why are end labels useful for these two lines?',
@@ -1062,7 +1062,7 @@ advancedWalkthroughs.push({
     {
       "image": "emphasis-step-4.png",
       "title": "Highlight one group when the question calls for it",
-      "text": "For a different question—treatment versus a reference—make treatment coloured and control grey, with shape reinforcing condition. Day is intentionally not encoded in this version, so it is unsuitable for studying progression. Keep day colour or the time-axis view when evolution is the main message. Emphasis should follow the question."
+      "text": "For a different question, treatment versus a reference, make treatment coloured and control grey, with shape reinforcing condition. Day is intentionally not encoded in this version, so it is unsuitable for studying progression. Keep day colour or the time-axis view when evolution is the main message. Emphasis should follow the question."
     },
     {
       "image": "emphasis-step-5.png",
@@ -1148,7 +1148,7 @@ sources.hmp = {
 advancedWalkthroughs.push({
   "phase": 5,
   "title": "Published example: the Human Microbiome Project",
-  "description": "Each narrow bar is a microbiome sample, grouped horizontally by seven body sites. Stacked heights represent relative abundance: panel a shows microbial phyla; panel b shows metabolic pathways. Colours have separate meanings in the two panels. RC means retroauricular crease—the skin behind the ear. This is a comparison of samples, not a time series.",
+  "description": "Each narrow bar is a microbiome sample, grouped horizontally by seven body sites. Stacked heights represent relative abundance: panel a shows microbial phyla; panel b shows metabolic pathways. Colours have separate meanings in the two panels. RC means retroauricular crease, the skin behind the ear. This is a comparison of samples, not a time series.",
   "question": "What does grouping by body site and aligning the panels make easier to compare?",
   "images": [
     "hmp-2012-figure2.png"
@@ -1198,7 +1198,7 @@ advancedWalkthroughs.push(...[
       {
         "image": "decoration-step-2.png",
         "title": "Use a flat fill and quieter reference lines",
-        "text": "A single fill makes the endpoints easier to read. Light grid lines still support comparison. Gradients are useful when they encode a defined continuous quantity—as in a heatmap—not simply because they look elaborate."
+        "text": "A single fill makes the endpoints easier to read. Light grid lines still support comparison. Gradients are useful when they encode a defined continuous quantity, as in a heatmap, not simply because they look elaborate."
       },
       {
         "image": "decoration-step-3.png",
