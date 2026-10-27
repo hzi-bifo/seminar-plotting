@@ -10,9 +10,7 @@ function home() {
   current = -1;
   app.innerHTML = `<h1>Figures that communicate</h1><p class="day2-overview-intro">Choose a course day to explore its topics.</p><nav class="course-day-grid" aria-label="Course days"><a href="#day2-heatmaps"><img src="assets/day2-heatmaps/hands-on-workshop.svg" alt="People working together on a heatmap"><span class="presentation-kicker">Day 2 · Part 2</span><h2>Heatmap focus</h2><p>AI tools, reading heatmaps, scaling, clustering and hands-on work in R.</p><strong>Open Day 2 topics →</strong></a><a href="#day3"><img src="assets/day2-heatmaps/ai-collaboration.svg" alt="Discussion and code connected in an iterative workflow"><span class="presentation-kicker">Day 3</span><h2>From plot to publication</h2><p>Plot design, consistent panels, figure assembly, export and generative tools.</p><strong>Open Day 3 topics →</strong></a></nav>`;
 }
-function day3Overview() {
-  current = -1;
-  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><nav class="day2-topics day3-topic-cards" aria-label="Day 3 sections">${[
+const day3Chapters = [
     ['1','What kinds of plots are there?','Explore plot families and the questions they answer.','#plot-types'],
     ['2','Examples for good figures','Inspect design choices in real biological research.','#section-2'],
     ['3','Good and bad plots','See the issue, then reveal an improved figure.','#section-3'],
@@ -24,7 +22,10 @@ function day3Overview() {
     ['9','Include icons in the plot','Generate, compare and place clear scientific icons.','#section-9'],
     ['10','Submit the manuscript','Embed previews, upload figure files and prepare for revisions.','#section-10'],
     ['11','Use generative tools','Redesign six mismatched panels from the Day 1 and Day 2 data.','#section-11']
-  ].map(([n,title,text,url])=>`<a href="${url}"><img src="assets/day3-topics/topic-${n}.svg" alt=""><h2><span class="day2-topic-number">${n}</span>${title}</h2><p>${text}</p></a>`).join('')}</nav>`;
+  ];
+function day3Overview() {
+  current = -1;
+  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><nav class="day2-topics day3-topic-cards" aria-label="Day 3 sections">${day3Chapters.map(([n,title,text,url])=>`<a href="#chapter-${n}"><img src="assets/day3-topics/topic-${n}.svg" alt=""><h2><span class="day2-topic-number">${n}</span>${title}</h2><p>${text}</p></a>`).join('')}</nav>`;
 }
 function sectionPage(n) {
   current = -1;
@@ -160,7 +161,7 @@ function end(last = cards.length-1) {
   app.innerHTML = `<p class="presentation-kicker">Section recap</p><h2>What made the figure clearer?</h2><p>Match the display to the question. Check scales and visual encodings. Keep useful detail, and remove distractions.</p><p>Choose one figure from your work. What would you change, and why?</p><p><a class="recap-next" href="#section-${cards[last]?.phase === 5 ? 6 : cards[last]?.phase === 3 || cards[last]?.phase === 6 ? 3 : 4}">Continue to the next section →</a></p><nav class="navigation"><button id="last">Previous plot</button><a href="#home">Overview</a></nav>`;
   document.querySelector('#last').onclick = () => go(last);
 }
-function route() {
+function renderRoute() {
   if(location.hash==='#microbiota-composition'){
     render(cards.findIndex(c=>c.data==='microbial-composition.csv'));
     document.querySelector('#reveal-teaching').click();
@@ -197,6 +198,42 @@ function route() {
   const m = location.hash.match(/^#card-(\d+)$/);
   if (m) { const i = Number(m[1])-1; if (i >= 0 && i <= cards.length) { render(i); return; } }
   home();
+}
+
+function day3ChapterFor(hash) {
+  const numbered=hash.match(/^#(?:chapter|section)-(\d+)$/);
+  if(numbered)return Number(numbered[1]);
+  if(hash.startsWith('#plot-'))return 1;
+  if(hash.startsWith('#generative-tools'))return 11;
+  if(['#consistency','#point-consistency','#condition-walkthrough','#size-walkthrough','#heatmap-consistency'].includes(hash))return 5;
+  if(hash==='#microbiota-composition')return 3;
+  const card=hash.match(/^#(?:card|finish)-(\d+)$/);
+  if(card){const index=Number(card[1])-(hash.startsWith('#card-')?1:0);return ({0:3,1:3,2:4,3:2,4:3,5:5,6:2})[cards[index]?.phase];}
+  return null;
+}
+let lastDay3Chapter=null;
+function route() {
+  const hash=location.hash, chapter=day3ChapterFor(hash);
+  const opening=hash.match(/^#chapter-(\d+)$/);
+  if(opening && day3Chapters[chapter-1]){
+    lastDay3Chapter=chapter;current=-1;
+    const [n,title,text,url]=day3Chapters[chapter-1];
+    app.innerHTML=`<section class="chapter-opening"><img src="assets/day3-topics/topic-${n}.svg" alt=""><p class="presentation-kicker">Day 3 · Chapter ${n} of 11</p><h1>${title}</h1><p>${text}</p><nav class="navigation"><a href="#day3">All Day 3 topics</a><button id="chapter-start">Start chapter →</button></nav></section>`;
+    document.querySelector('#chapter-start').onclick=()=>{
+      if(chapter===6)assemblyStep=0;
+      if(chapter===7)formatStep=0;
+      if(chapter===8)postStep=0;
+      if(chapter===9)iconStep=0;
+      if(chapter===10)submissionStep=0;
+      location.hash=url;
+    };
+    window.scrollTo(0,0);return;
+  }
+  if(chapter && chapter!==lastDay3Chapter && (/^#section-/.test(hash)||hash==='#plot-types')){
+    location.replace('#chapter-'+chapter);return;
+  }
+  lastDay3Chapter=chapter;
+  renderRoute();
 }
 window.addEventListener('hashchange',route);
 route();

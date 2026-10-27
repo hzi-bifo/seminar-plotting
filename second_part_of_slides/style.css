@@ -1098,3 +1098,9 @@ body { padding-bottom: 74px; }
 .composition-example img { display:block; max-height:70vh; width:100%; object-fit:contain; }
 .composition-example figcaption { font-size:14px; color:#52636c; margin-top:12px; }
 @media(max-width:800px) { .composition-example-grid { grid-template-columns:1fr; } }
+
+.chapter-opening { max-width:900px; margin:5vh auto; text-align:center; }
+.chapter-opening>img { display:block; width:min(400px,70vw); height:32vh; object-fit:contain; margin:0 auto 24px; }
+.chapter-opening h1 { font-size:clamp(30px,4vw,52px); }
+.chapter-opening>p:not(.presentation-kicker) { font-size:24px; color:#52636c; }
+.chapter-opening .navigation { justify-content:center; gap:32px; }
