@@ -242,31 +242,44 @@ const filterParts={
 const filterToken=(id,text)=>`<button class="filter-code-token token-${id}" data-filter-part="${id}" aria-pressed="false">${consistencyEscape(text)}</button>`;
 const filterSlide=day2HeatmapSlides.find(s=>s.id==='r-filter');
 filterSlide.note='Hover or click the code: two conditions, and the rows they share.';
-filterSlide.extra=`<div class="filter-explorer"><section><h2>Read the code in pieces</h2><pre class="filter-code">${filterToken('save','selected <-')} ${filterToken('source','long_df[')}
+filterSlide.extra=`<div class="filter-logic-controls" role="group" aria-label="Combine conditions"><button data-filter-logic="and" aria-pressed="true">&amp; AND · both</button><button data-filter-logic="or" aria-pressed="false">| OR · either</button></div><p id="filter-plain-language" class="wd-ready"></p><div class="filter-explorer"><section><h2>Read the code in pieces</h2><pre class="filter-code">${filterToken('save','selected <-')} ${filterToken('source','long_df[')}
   ${filterToken('genome','long_df$Genome == "Turicimonas_muris_YL45"')} ${filterToken('and','&')}
     ${filterToken('day','long_df$day == 9')}${filterToken('columns',',')}
 ${filterToken('columns',']')}
-${filterToken('count','nrow(selected)')}</pre><div class="filter-explanation" aria-live="polite"><h2 id="filter-explain-title"></h2><p id="filter-explain-text"></p></div><details><summary>Copy the complete R code</summary>${rCode('selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" &\n    long_df$day == 9,\n]\nnrow(selected)')}</details></section><section><div class="filter-venn"><svg viewBox="0 0 440 210" role="img" aria-label="Venn diagram: Turicimonas and day 9 overlap where both conditions are true"><defs><clipPath id="filter-venn-left-clip"><circle cx="175" cy="112" r="72"/></clipPath></defs><circle class="venn-region venn-left" cx="175" cy="112" r="72"/><circle class="venn-region venn-right" cx="265" cy="112" r="72"/><circle class="venn-overlap" cx="265" cy="112" r="72" clip-path="url(#filter-venn-left-clip)"/><circle class="venn-outline" cx="175" cy="112" r="72"/><circle class="venn-outline" cx="265" cy="112" r="72"/><text x="122" y="23">Turicimonas</text><text x="288" y="23">Day 9</text><text x="145" y="119" class="venn-count">2</text><text x="220" y="119" class="venn-count">2</text><text x="295" y="119" class="venn-count">2</text><text x="220" y="204" class="venn-caption">&amp; = intersection: both conditions are TRUE</text></svg><p class="day2-note">Counts refer only to the six example rows below.</p></div><h2>Which rows pass this test?</h2><p class="day2-note">Illustrative excerpt · names shortened · each row is one SNP/sample measurement.</p><table class="filter-demo-table"><thead><tr><th>Genome</th><th>Day</th><th>Pass?</th></tr></thead><tbody>${[['Akkermansia',9],['Turicimonas',0],['Turicimonas',9],['Bacteroides',9],['Turicimonas',9],['Turicimonas',30]].map(([g,d])=>`<tr data-filter-genome="${g}" data-filter-day="${d}"><td>${g}</td><td>${d}</td><td class="filter-pass"></td></tr>`).join('')}</tbody></table><p id="filter-table-caption"></p><details><summary>Reveal the full dataset result</summary>${rCode('[1] 96')}<p>24 Turicimonas SNPs × 4 mouse/day samples. Missing values are kept: the filter tests genome and day, not frequency.</p></details><p><strong>Your turn:</strong> predict what changes if you use <code>day == 30</code>, then try it in R.</p></section></div>`;
+${filterToken('count','nrow(selected)')}</pre><div class="filter-explanation" aria-live="polite"><h2 id="filter-explain-title"></h2><p id="filter-explain-text"></p></div><details><summary>Copy the complete R code</summary><div id="filter-copy-code">${rCode('selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" &\n    long_df$day == 9,\n]\nnrow(selected)')}</div></details></section><section><div class="filter-venn"><svg viewBox="0 0 440 210" role="img" aria-label="Venn diagram: Turicimonas and day 9 overlap where both conditions are true"><defs><clipPath id="filter-venn-left-clip"><circle cx="175" cy="112" r="72"/></clipPath></defs><circle class="venn-region venn-left" cx="175" cy="112" r="72"/><circle class="venn-region venn-right" cx="265" cy="112" r="72"/><circle class="venn-overlap" cx="265" cy="112" r="72" clip-path="url(#filter-venn-left-clip)"/><circle class="venn-outline" cx="175" cy="112" r="72"/><circle class="venn-outline" cx="265" cy="112" r="72"/><text x="122" y="23">Turicimonas</text><text x="288" y="23">Day 9</text><text x="145" y="119" class="venn-count">2</text><text x="220" y="119" class="venn-count">2</text><text x="295" y="119" class="venn-count">2</text><text x="220" y="204" class="venn-caption">&amp; = intersection: both conditions are TRUE</text></svg><p class="day2-note">Counts refer only to the six example rows below.</p></div><h2>Which rows pass this test?</h2><p class="day2-note">Illustrative excerpt · names shortened · each row is one SNP/sample measurement.</p><table class="filter-demo-table"><thead><tr><th>Genome</th><th>Day</th><th>Pass?</th></tr></thead><tbody>${[['Akkermansia',9],['Turicimonas',0],['Turicimonas',9],['Bacteroides',9],['Turicimonas',9],['Turicimonas',30]].map(([g,d])=>`<tr data-filter-genome="${g}" data-filter-day="${d}"><td>${g}</td><td>${d}</td><td class="filter-pass"></td></tr>`).join('')}</tbody></table><p id="filter-table-caption"></p><details><summary>Reveal the full dataset result</summary><pre class="hands-code"><code id="filter-full-count">[1] 96</code></pre><p id="filter-full-explanation"></p></details><p><strong>Your turn:</strong> predict what changes if you use <code>day == 30</code>, then try it in R.</p></section></div>`;
 function bindFilterExplorer(){
+ let logic='and';
  const show=(id,active)=>{
-  const [title,description,mode]=filterParts[id];
-  document.querySelector('#filter-explain-title').textContent=title;
-  document.querySelector('#filter-explain-text').textContent=description;
+  const [baseTitle,baseDescription,mode]=filterParts[id];
+  const combined=logic==='and'?'both conditions':'at least one condition (including both)';
+  document.querySelector('#filter-explain-title').textContent=id==='and'?(logic==='and'?'AND: intersection':'OR: union'):baseTitle;
+  document.querySelector('#filter-explain-text').textContent=id==='and'?`Keep a row if ${combined} ${logic==='and'?'are':'is'} TRUE. ${logic==='or'?'A row matching both is included only once.':''}`:id==='count'?`Count the selected SNP/sample measurements, not mice. The full result is ${logic==='and'?'96':'1,632'} rows.`:baseDescription;
   document.querySelectorAll('[data-filter-part]').forEach(el=>el.setAttribute('aria-pressed',String(el===active)));
-  document.querySelector('.filter-venn').dataset.mode=mode;
-  const test=['genome','day','both'].includes(mode);
-  let count=0;
+  document.querySelector('.filter-venn').dataset.mode=mode==='both'&&logic==='or'?'union':mode;
+  const test=['genome','day','both'].includes(mode);let count=0;
   document.querySelectorAll('[data-filter-genome]').forEach(row=>{
-   const genome=row.dataset.filterGenome==='Turicimonas', day=row.dataset.filterDay==='9';
-   const passes=mode==='genome'?genome:mode==='day'?day:genome&&day;
+   const genome=row.dataset.filterGenome==='Turicimonas',day=row.dataset.filterDay==='9';
+   const passes=mode==='genome'?genome:mode==='day'?day:logic==='and'?genome&&day:genome||day;
    row.classList.toggle('filter-kept',test&&passes);row.classList.toggle('filter-dropped',test&&!passes);
-   row.querySelector('.filter-pass').textContent=test?(passes?'TRUE · keep':'FALSE'):'N/A';
-   if(passes)count++;
+   row.querySelector('.filter-pass').textContent=test?(passes?'TRUE · keep':'FALSE'):'N/A';if(passes)count++;
   });
-  document.querySelector('#filter-table-caption').textContent=test?`${count} of these 6 example rows pass ${mode==='both'?'both conditions':mode==='genome'?'the genome test alone':'the day test alone'}.`:'The original table remains unchanged. Select a condition to see which rows pass.';
+  document.querySelector('#filter-table-caption').textContent=test?`${count} of these 6 example rows pass ${mode==='both'?combined:mode==='genome'?'the genome test alone':'the day test alone'}.`:'The original table remains unchanged. Select a condition to see which rows pass.';
+ };
+ const update=()=>{
+  const op=logic==='and'?'&':'|';
+  document.querySelector('[data-filter-part="and"]').textContent=op;
+  document.querySelectorAll('[data-filter-logic]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.filterLogic===logic)));
+  document.querySelector('#filter-plain-language').textContent=logic==='and'?'Keep rows from Turicimonas that were measured on day 9.':'Keep rows from Turicimonas on any day, OR rows from any genome measured on day 9 (or both).';
+  document.querySelector('.venn-caption').textContent=logic==='and'?'& = intersection: both conditions are TRUE':'| = union: at least one condition is TRUE';
+  document.querySelector('.filter-venn svg').setAttribute('aria-label',logic==='and'?'Intersection of Turicimonas and day 9':'Union of Turicimonas and day 9, including their overlap');
+  document.querySelector('#filter-copy-code code').textContent=`selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" ${op}\n    long_df$day == 9,\n]\nnrow(selected)`;
+  document.querySelector('#filter-full-count').textContent=logic==='and'?'[1] 96':'[1] 1632';
+  document.querySelector('#filter-full-explanation').textContent=logic==='and'?'24 Turicimonas SNPs × 4 mouse/day samples = 96 rows. Missing frequencies are kept.':'1,536 Turicimonas rows + 192 day-9 rows − 96 overlapping rows = 1,632. Rows matching both are counted once; missing frequencies are kept.';
+  show('and',document.querySelector('[data-filter-part="and"]'));
  };
  document.querySelectorAll('[data-filter-part]').forEach(el=>{el.onclick=el.onmouseenter=el.onfocus=()=>show(el.dataset.filterPart,el);});
- show('and');
+ document.querySelectorAll('[data-filter-logic]').forEach(el=>el.onclick=()=>{logic=el.dataset.filterLogic;update();});
+ update();
 }
 
 // Shared, keyboard-accessible explanations for the short R walkthroughs.
