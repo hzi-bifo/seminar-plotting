@@ -98,9 +98,9 @@ function render(i) {
   if (c.phase === 6) {
     const examples = cards.map((card,index)=>({card,index})).filter(item=>item.card.phase===6);
     const position = examples.findIndex(item=>item.index===i);
-    app.innerHTML = `<p class="presentation-kicker">Section 2 · Examples for good figures · ${position+1} / ${examples.length}</p><h1>Good plot</h1><p class="good-plot-note">${c.goodPoint}</p><section class="figures single published-slide">${c.images.map(src=>`<figure><img src="assets/${src}" alt="${c.title}"></figure>`).join('')}</section><details><summary>Source & credits</summary><p>${c.title}</p><p>${c.source ? sourceHTML(c.source) : 'Course example.'}</p></details><nav class="navigation"><button id="prev">Previous</button><a href="#section-2">Examples for good figures</a><button id="next">${position===examples.length-1?'Finish':'Next good plot'}</button></nav>`;
+    app.innerHTML = `<p class="presentation-kicker">Section 2 · Examples for good figures · ${position+1} / ${examples.length}</p><h1>Good plot</h1><p class="good-plot-note">${c.goodPoint}</p><section class="figures single published-slide">${c.images.map(src=>`<figure><img src="assets/${src}" alt="${c.title}"></figure>`).join('')}</section><details><summary>Source & credits</summary><p>${c.title}</p><p>${c.source ? sourceHTML(c.source) : 'Course example.'}</p></details><nav class="navigation"><button id="prev">Previous</button><a href="#section-2">Examples for good figures</a><button id="next">${position===examples.length-1?'Next section →':'Next good plot'}</button></nav>`;
     document.querySelector('#prev').onclick=()=>{if(position>0)go(examples[position-1].index);else location.hash='section-2';};
-    document.querySelector('#next').onclick=()=>{if(position<examples.length-1)go(examples[position+1].index);else location.hash='home';};
+    document.querySelector('#next').onclick=()=>{if(position<examples.length-1)go(examples[position+1].index);else location.hash='section-3';};
     return;
   }
   const published = c.source && sources[c.source].credit;
@@ -157,7 +157,7 @@ function showWalkthrough(step) {
 }
 function end(last = cards.length-1) {
   current = cards.length;
-  app.innerHTML = `<p class="presentation-kicker">Section recap</p><h2>What made the figure clearer?</h2><p>Match the display to the question. Check scales and visual encodings. Keep useful detail, and remove distractions.</p><p>Choose one figure from your work. What would you change, and why?</p><p><a href="#section-${cards[last]?.phase === 5 ? 6 : cards[last]?.phase === 3 || cards[last]?.phase === 6 ? 3 : 4}">Continue to the next section →</a></p><nav class="navigation"><button id="last">Previous plot</button><a href="#home">Overview</a></nav>`;
+  app.innerHTML = `<p class="presentation-kicker">Section recap</p><h2>What made the figure clearer?</h2><p>Match the display to the question. Check scales and visual encodings. Keep useful detail, and remove distractions.</p><p>Choose one figure from your work. What would you change, and why?</p><p><a class="recap-next" href="#section-${cards[last]?.phase === 5 ? 6 : cards[last]?.phase === 3 || cards[last]?.phase === 6 ? 3 : 4}">Continue to the next section →</a></p><nav class="navigation"><button id="last">Previous plot</button><a href="#home">Overview</a></nav>`;
   document.querySelector('#last').onclick = () => go(last);
 }
 function route() {

@@ -6,7 +6,7 @@ document.body.append(slideBar);
 function updateSlideBar() {
   const visible = selector => [...app.querySelectorAll(selector)].find(el=>!el.disabled && !el.hidden && !el.closest('[hidden]'));
   const back=visible('#generative-prev, #comparison-prev, #day2-prev, #submission-prev, #icons-prev, #assembly-prev, #post-prev, #format-prev, #size-prev, #condition-prev, #heatmap-prev, #type-prev, #gallery-prev, #consistency-prev, #point-prev, #step-back, #prev, #last');
-  const next=visible('#day2-reveal, #reveal-teaching, #reveal-focus, #reveal-repair, #begin-walkthrough, #step-next') || visible('#generative-next, #comparison-next, #day2-next, #submission-next, #icons-next, #assembly-next, #post-next, #format-next, #size-next, #condition-next, #heatmap-next, #type-next, #gallery-next, #consistency-next, #point-next, #next');
+  const next=visible('#day2-reveal, #reveal-teaching, #reveal-focus, #reveal-repair, #begin-walkthrough, #step-next, .recap-next') || visible('#generative-next, #comparison-next, #day2-next, #submission-next, #icons-next, #assembly-next, #post-next, #format-next, #size-next, #condition-next, #heatmap-next, #type-next, #gallery-next, #consistency-next, #point-next, #next');
   const plotDetail = /^#plot-(?!types$)[a-z]+$/.test(location.hash);
   const pageProgress = app.querySelector('.footer-controls span')?.textContent;
   const finished = app.querySelector('#generative-next:disabled, #comparison-next:disabled, #day2-next:disabled, #submission-next:disabled, #icons-next:disabled, #assembly-next:disabled, #post-next:disabled, #format-next:disabled, #size-next:disabled, #condition-next:disabled, #consistency-next:disabled, #point-next:disabled, #heatmap-next:disabled');
@@ -17,7 +17,7 @@ function updateSlideBar() {
     if(finished)return;
     if(next){next.click();return;}
     const hash=location.hash;
-    location.hash=hash==='#home'?'day2-heatmaps':hash==='#day3'?'plot-types':hash.startsWith('#plot-')||hash==='#plot-types'?'section-2':hash==='#section-3'?'card-'+(cards.findIndex(c=>c.phase===0)+1):hash==='#section-4'?'card-'+(cards.findIndex(c=>c.phase===2)+1):hash==='#section-5'?'consistency':hash==='#section-2'?'card-'+(cards.indexOf(publishedGoodExamples[0])+1):'home';
+    location.hash=hash==='#home'?'day2-heatmaps':hash==='#day3'?'plot-types':hash.startsWith('#plot-')||hash==='#plot-types'?'section-2':hash==='#section-3'?'card-'+(cards.findIndex(c=>c.phase===0)+1):hash==='#section-4'?'card-'+(cards.findIndex(c=>c.phase===2)+1):hash==='#section-5'?'consistency':hash==='#section-2'?'card-'+(cards.indexOf(publishedGoodExamples[0])+1):'day3';
   };
 }
 new MutationObserver(updateSlideBar).observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','disabled']});
