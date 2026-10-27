@@ -206,3 +206,14 @@ const aiWorkflowBuilds = aiWorkflowSteps.map((step, index)=>({
   .replace('id="ai-flow-takeaway" hidden',`id="ai-flow-takeaway"${index===4?'':' hidden'}`)
 }));
 day2HeatmapSlides.splice(day2HeatmapSlides.findIndex(s=>s.id==='ai-chat-agent'),1,...aiWorkflowBuilds);
+
+const aiBreakoutSlide={id:'ai-breakout',title:'Breakout rooms · improve one heatmap together',group:'AI tools',note:'3–5 people per room · one shared screen · one change at a time',images:[],bullets:[],credit:[],source:[],extra:`
+<div class="ai-room-diagram">
+ <section class="ai-room-people"><h2>Discuss as a group</h2><div class="ai-room-avatars" aria-label="A group of four participants">${['#4378b6','#8960b5','#267568','#b77939'].map(c=>`<svg viewBox="0 0 64 70" aria-hidden="true"><circle cx="32" cy="20" r="13" fill="${c}"/><path d="M8 65V54a24 24 0 0 1 48 0v11" fill="${c}" opacity=".7"/></svg>`).join('')}</div><p class="ai-room-bubble">“Can we make the NA values grey?”</p><p class="ai-room-bubble">“Let’s find a clearer colour scale.”</p><p class="ai-room-bubble">“Did the data or sample order change?”</p></section>
+ <div class="ai-room-arrow" aria-hidden="true">→</div>
+ <section class="ai-room-screen"><h2>One person shares their screen</h2><div class="ai-room-windows"><div><h3>AI chat · e.g. ChatGPT</h3><p class="ai-room-prompt">“Use R + ComplexHeatmap. Show missing cells in grey. Keep the data, order and 0–1 scale unchanged.”</p><p class="ai-room-response">Read the suggestion together.<br>Decide what to try.</p></div><div><h3>RStudio · your notebook</h3><pre><code>Heatmap(mat,
+  na_col = "grey80",
+  ...
+)</code></pre><p>Apply the change → run the chunk → inspect the plot.</p><div class="ai-room-matrix" aria-label="Schematic heatmap with grey missing cells">${['#eaf3dc','#9fcca3','#267568','#d4d4d4','#9fcca3','#267568','#eaf3dc','#9fcca3','#d4d4d4','#eaf3dc','#9fcca3','#267568'].map(c=>`<span style="background:${c}"></span>`).join('')}</div></div></div><p class="ai-room-caption">Rotate who types. Everyone helps choose, interpret and check.</p></section>
+</div><div class="ai-room-share"><strong>Bring back:</strong> one before/after plot · one useful prompt · one mistake or surprise</div>`};
+day2HeatmapSlides.splice(day2HeatmapSlides.findIndex(s=>s.id==='working-with-ai')+1,0,aiBreakoutSlide);
