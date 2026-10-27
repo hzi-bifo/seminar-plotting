@@ -1032,3 +1032,5 @@ body { padding-bottom: 74px; }
 .course-day-grid p { font-size:20px; line-height:1.5; }
 .course-day-grid strong { display:block; margin-top:24px; color:#216b5f; }
 @media(max-width:750px){.course-day-grid{grid-template-columns:1fr;}.course-day-grid img{height:170px;}}
+
+.day3-topic-image { display:block; width:100%; height:clamp(110px,17vh,180px); object-fit:contain; margin-bottom:18px; }
