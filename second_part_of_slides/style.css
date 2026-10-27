@@ -1034,3 +1034,10 @@ body { padding-bottom: 74px; }
 @media(max-width:750px){.course-day-grid{grid-template-columns:1fr;}.course-day-grid img{height:170px;}}
 
 .day3-topic-image { display:block; width:100%; height:clamp(110px,17vh,180px); object-fit:contain; margin-bottom:18px; }
+
+.motivation-matrix { width:100%; border-spacing:4px; font-size:19px; margin:22px 0; }
+.motivation-matrix td { text-align:center; padding:18px 10px; background:#f1f4f6; border-radius:4px; }
+.motivation-matrix th { font-size:16px; font-weight:500; }
+.motivation-annotation { display:flex; gap:3px; margin:20px 0; }
+.motivation-annotation span { flex:1; padding:14px 3px; background:#dce8f7; color:#28485d; font-size:11px; text-align:center; }
+.motivation-annotation span:nth-child(n+3) { background:#eee1f5; color:#65368c; }
