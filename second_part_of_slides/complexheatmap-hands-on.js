@@ -64,9 +64,9 @@ handsOnNew.push(['r-copy-paths','After copying · where does R look for the data
 ${rCode('~/my-plotting/second_day_part2/\n  data/\n    dataset3_subset.csv\n    dataset3_subset_long.csv\n  scripts/\n    day2_walkthrough.Rmd\n    individual_notebooks/\n      04_full_heatmap.Rmd')}
 <p>In <code>scripts/day2_walkthrough.Rmd</code>, <code>../data/</code> means: go up to <code>second_day_part2</code>, then enter <code>data</code>.</p>
 <p>In an individual notebook one folder deeper, use <code>../../data/</code>.</p>
-</section><section><h2>Running the copied walkthrough</h2>
-<p>For Console commands, choose <strong>Session → Set Working Directory → To Source File Location</strong> with the copied walkthrough open.</p>
-${rCode('# Console: start in the copied scripts folder\nsetwd("~/my-plotting/second_day_part2/scripts")\ngetwd()\n\ninput_path <- file.path("..", "data", "dataset1_subset_long.csv")\nfile.exists(input_path)  # Expected: TRUE')}
+</section><section class="optional-path-fix"><h2>Only if the copied notebook cannot find a file</h2><p><strong>Already working? Skip this block.</strong> Keep the existing paths and working directory. You do not need to run <code>setwd()</code> just because you made a copy.</p>
+<p>If a file is not found, check <code>getwd()</code> first. For Console commands, you may need to choose <strong>Session → Set Working Directory → To Source File Location</strong> with the copied walkthrough open, or use the example below. Change paths only if they do not match your folder layout.</p>
+${rCode('# Only if needed: start the Console in the copied scripts folder\nsetwd("~/my-plotting/second_day_part2/scripts")\ngetwd()\n\ninput_path <- file.path("..", "data", "dataset1_subset_long.csv")\nfile.exists(input_path)  # Expected: TRUE')}
 <p>Notebook chunks and knitting normally use the notebook’s folder unless configured otherwise. Run <code>getwd()</code> inside a chunk to check its starting folder.</p>
 </section></div><p><strong>For the upcoming Console practice slides:</strong> we will switch into <code>data</code> and use just the CSV filename. The working-directory slide shows how.</p>`]);
 handsOnNew.push(['r-working-directory','Working directory · where R looks for files',`

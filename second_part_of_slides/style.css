@@ -927,3 +927,6 @@ body { padding-bottom: 74px; }
 .ai-room-share { border-left:4px solid #267568; padding:16px 20px; background:#f5f8fa; font-size:20px; }
 @media(max-width:900px){.ai-room-diagram{grid-template-columns:1fr;}.ai-room-arrow{transform:rotate(90deg);}.ai-room-avatars{justify-content:center;}}
 @media(max-width:500px){.ai-room-windows{grid-template-columns:1fr;}}
+
+.optional-path-fix { background:#f1f2f3; color:#596168; border:1px solid #d9dde0; border-radius:12px; padding:20px; }
+.optional-path-fix .hands-code { background:#e5e8ea; color:#505960; }
