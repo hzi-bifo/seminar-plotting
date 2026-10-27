@@ -175,3 +175,11 @@ const aiSectionSlides = [
 ].map(([id,title,note,extra])=>({id,title,note,extra,group:'AI tools',images:[],bullets:[],credit:[],source:[]}));
 day2HeatmapSlides.splice(day2HeatmapSlides.findIndex(s=>s.id==='working-with-ai'),0,...aiSectionSlides);
 for(const slide of day2HeatmapSlides.filter(s=>['working-with-ai','ai-good-practices'].includes(s.id))) slide.group='AI tools';
+
+// Begin Day 2 with AI guidance before reading and building heatmaps.
+const aiOpeningIds = ['ai-tools','ai-chat-agent','ai-data-protection','working-with-ai','ai-good-practices'];
+const aiOpeningSlides = aiOpeningIds.map(id=>day2HeatmapSlides.find(slide=>slide.id===id));
+for (let i=day2HeatmapSlides.length-1;i>=0;i--) {
+ if(aiOpeningIds.includes(day2HeatmapSlides[i].id)) day2HeatmapSlides.splice(i,1);
+}
+day2HeatmapSlides.unshift(...aiOpeningSlides);
