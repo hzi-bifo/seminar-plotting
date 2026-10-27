@@ -690,7 +690,7 @@ const biologyDesignCases = [
   {
     "phase": 4,
     "title": "Compare the smaller microbial groups",
-    "description": "Sequencing reads from one microbiome sample were assigned to ten mutually exclusive taxa. Both plots show each taxon’s percentage of assigned reads. In B, horizontal distance represents that percentage.",
+    "description": "Sequencing reads from one microbiome sample were assigned to ten mutually exclusive taxa. All three plots show each taxon’s percentage of assigned reads. The separate bars share a baseline; the 100% stacked bar shows the composition of the whole sample.",
     "question": "Which view makes it easier to compare taxa D, E, and F?",
     "images": [
       "biology-taxa-a.png",
@@ -705,6 +705,7 @@ const biologyDesignCases = [
       "The pie is a valid composition, but comparing similar slice angles requires more effort. It can still work for a broad part-to-whole message.",
       "The bars share a baseline and are ordered by abundance, making 10%, 8%, and 7% easy to compare. These are read proportions, not necessarily cell proportions."
     ],
+    "additionalView": "biology-taxa-stacked.svg",
     "data": "microbial-composition.csv"
   },
   {

@@ -77,7 +77,12 @@ function renderTeachingSlide(i) {
       showWalkthrough(Math.min(1,c.steps.length-1));
     }else{
       if(alternative){document.querySelector('.figures').classList.remove('single');document.querySelector('.figures').insertAdjacentHTML('beforeend',`<figure><img src="assets/${alternative}" alt="${c.title}: alternative figure"></figure>`);}
-      document.querySelector('#feedback').innerHTML=`<p>${note}</p>`;
+      document.querySelector('#feedback').innerHTML=`<p>${note}</p>${c.additionalView?'<button id="reveal-stacked">Also compare a 100% stacked bar</button>':''}`;
+      if(c.additionalView)document.querySelector('#reveal-stacked').onclick=()=>{
+        document.querySelector('.figures').classList.add('three-views');
+        document.querySelector('.figures').insertAdjacentHTML('beforeend',`<figure><img src="assets/${c.additionalView}" alt="The same microbial read proportions in a 100% stacked bar"></figure>`);
+        document.querySelector('#reveal-stacked').replaceWith(Object.assign(document.createElement('p'),{textContent:'A stacked bar shows the whole composition, but D, E and F start at different positions. Separate bars make their 10%, 8% and 7% easier to compare using a shared baseline.'}));
+      };
     }
   };
 }

@@ -1088,3 +1088,6 @@ body { padding-bottom: 74px; }
 .venn-universe { fill:transparent; stroke:#cbd6dc; stroke-width:1; }
 .filter-venn[data-mode="complement"] .venn-universe,.filter-venn[data-mode="complement"] .venn-right { fill:#efc28d; }
 .filter-venn[data-mode="complement"] .venn-left,.filter-venn[data-mode="complement"] .venn-overlap { fill:#edf0f3; }
+
+.figures.three-views { grid-template-columns: repeat(3,minmax(0,1fr)); }
+@media(max-width:900px) { .figures.three-views { grid-template-columns:1fr; } }

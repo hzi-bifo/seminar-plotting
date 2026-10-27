@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" role="img" aria-labelledby="title desc">
+<title id="title">Read composition as a 100% stacked bar</title>
+<desc id="desc">One microbiome sample. Taxa D, E and F comprise 10%, 8% and 7% of assigned reads. Segments have different starting positions.</desc>
+<rect width="1100" height="750" fill="white"/>
+<g font-family="Arial, sans-serif" fill="#111">
+<text x="550" y="55" text-anchor="middle" font-size="27" font-weight="bold">Read composition of one microbiome sample</text>
+<rect x="100" y="210" width="252.0" height="120" fill="#ffb7bb" stroke="#222" stroke-width="1.3"/>
+<rect x="352.0" y="210" width="171.0" height="120" fill="#edbe94" stroke="#222" stroke-width="1.3"/>
+<rect x="523.0" y="210" width="117.0" height="120" fill="#cfcb85" stroke="#222" stroke-width="1.3"/>
+<rect x="640.0" y="210" width="90.0" height="120" fill="#a7d38b" stroke="#222" stroke-width="1.3"/>
+<rect x="730.0" y="210" width="72.0" height="120" fill="#73d5b2" stroke="#222" stroke-width="1.3"/>
+<rect x="802.0" y="210" width="63.0" height="120" fill="#5ed1d1" stroke="#222" stroke-width="1.3"/>
+<rect x="865.0" y="210" width="45.0" height="120" fill="#80cdec" stroke="#222" stroke-width="1.3"/>
+<rect x="910.0" y="210" width="36.0" height="120" fill="#bfc6fa" stroke="#222" stroke-width="1.3"/>
+<rect x="946.0" y="210" width="27.0" height="120" fill="#e4b8ef" stroke="#222" stroke-width="1.3"/>
+<rect x="973.0" y="210" width="27.0" height="120" fill="#f7b0db" stroke="#222" stroke-width="1.3"/>
+<path d="M100 340v10" stroke="#333"/><text x="100" y="380" font-size="23" text-anchor="middle">0</text>
+<path d="M280 340v10" stroke="#333"/><text x="280" y="380" font-size="23" text-anchor="middle">20</text>
+<path d="M460 340v10" stroke="#333"/><text x="460" y="380" font-size="23" text-anchor="middle">40</text>
+<path d="M640 340v10" stroke="#333"/><text x="640" y="380" font-size="23" text-anchor="middle">60</text>
+<path d="M820 340v10" stroke="#333"/><text x="820" y="380" font-size="23" text-anchor="middle">80</text>
+<path d="M1000 340v10" stroke="#333"/><text x="1000" y="380" font-size="23" text-anchor="middle">100</text>
+<text x="550" y="425" text-anchor="middle" font-size="25">Assigned reads (%)</text>
+<rect x="100" y="480" width="22" height="22" fill="#ffb7bb" stroke="#222"/><text x="130" y="500" font-size="21">Taxon A: 28%</text>
+<rect x="285" y="480" width="22" height="22" fill="#edbe94" stroke="#222"/><text x="315" y="500" font-size="21">Taxon B: 19%</text>
+<rect x="470" y="480" width="22" height="22" fill="#cfcb85" stroke="#222"/><text x="500" y="500" font-size="21">Taxon C: 13%</text>
+<rect x="655" y="480" width="22" height="22" fill="#a7d38b" stroke="#222"/><text x="685" y="500" font-size="21">Taxon D: 10%</text>
+<rect x="840" y="480" width="22" height="22" fill="#73d5b2" stroke="#222"/><text x="870" y="500" font-size="21">Taxon E: 8%</text>
+<rect x="100" y="545" width="22" height="22" fill="#5ed1d1" stroke="#222"/><text x="130" y="565" font-size="21">Taxon F: 7%</text>
+<rect x="285" y="545" width="22" height="22" fill="#80cdec" stroke="#222"/><text x="315" y="565" font-size="21">Taxon G: 5%</text>
+<rect x="470" y="545" width="22" height="22" fill="#bfc6fa" stroke="#222"/><text x="500" y="565" font-size="21">Taxon H: 4%</text>
+<rect x="655" y="545" width="22" height="22" fill="#e4b8ef" stroke="#222"/><text x="685" y="565" font-size="21">Taxon I: 3%</text>
+<rect x="840" y="545" width="22" height="22" fill="#f7b0db" stroke="#222"/><text x="870" y="565" font-size="21">Taxon J: 3%</text>
+<text x="550" y="665" text-anchor="middle" font-size="23">One whole; the segments do not share a baseline.</text></g></svg>
