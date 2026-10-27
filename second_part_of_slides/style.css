@@ -961,3 +961,9 @@ body { padding-bottom: 74px; }
 .session-faq-layout img { width:100%; height:auto; border:1px solid #dce5e8; border-radius:10px; }
 .session-faq-layout figcaption { font-size:14px; font-weight:normal; margin-top:10px; }
 @media(max-width:800px){.session-faq-layout{grid-template-columns:1fr;}}
+
+.server-faq { margin:24px 0; border:0; padding:0; }
+.server-faq>summary { display:list-item; width:fit-content; padding:18px 26px; background:#234653; color:white; border-radius:12px; font-size:24px; font-weight:700; cursor:pointer; }
+.server-faq-questions { margin-top:18px; }
+.server-faq-questions>details { margin:12px 0; padding:18px; border:1px solid #d7e2e6; border-radius:10px; background:#f5f8fa; }
+.server-faq-questions>details>summary { font-size:20px; font-weight:600; cursor:pointer; }
