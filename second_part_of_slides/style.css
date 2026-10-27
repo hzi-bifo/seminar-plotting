@@ -1104,3 +1104,7 @@ body { padding-bottom: 74px; }
 .chapter-opening h1 { font-size:clamp(30px,4vw,52px); }
 .chapter-opening>p:not(.presentation-kicker) { font-size:24px; color:#52636c; }
 .chapter-opening .navigation { justify-content:center; gap:32px; }
+
+.tool-brand { display:flex; align-items:center; gap:20px; height:80px; margin-bottom:20px; }
+.tool-brand img { height:64px; width:64px; object-fit:contain; }
+.tool-brand .tool-wordmark { width:190px; max-width:100%; height:64px; }
