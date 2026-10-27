@@ -262,3 +262,73 @@ function bindFilterExplorer(){
  document.querySelectorAll('[data-filter-part]').forEach(el=>{el.onclick=el.onmouseenter=el.onfocus=()=>show(el.dataset.filterPart,el);});
  show('and');
 }
+
+// Shared, keyboard-accessible explanations for the short R walkthroughs.
+const rCodeGlossary={
+ 'read.csv':['Import a CSV','Reads the file into a data frame. The path must point to an existing CSV.'],
+ 'path.expand':['Expand the home-folder path','Replaces ~ with your home directory. This does not change the working directory.'],
+ 'file.path':['Build a file path','Joins the folder and filename using the appropriate path separator.'],
+ 'data_dir':['The data folder','Stores the path to your personal copy of the data.'],
+ 'long_df':['The long table','One row per SNP/sample measurement. Columns include the genome, mouse, day and frequency.'],
+ 'wide_df':['The wide table','One row per SNP; each sample has its own frequency column. Metadata columns must be separated before making a matrix.'],
+ 'check.names':['Keep sample names intact','With FALSE, R preserves names such as 1683-0 instead of making syntactically valid replacements.'],
+ 'FALSE':['A logical setting','Turns this option off. In check.names = FALSE, it disables automatic column-name repair.'],
+ 'head':['Preview the first rows','Shows the first few rows or vector entries without changing the object. The second argument controls how many.'],
+ 'str':['Inspect structure','Prints the object structure: number of observations, variables, column types and example values. It does not convert the data.'],
+ 'table':['Count categories','Counts how often each label occurs. Here it counts measurement rows per genome, not mice.'],
+ 'Genome':['Genome labels','Identifies the bacterial genome associated with each SNP measurement.'],
+ '$':['Select one named column','long_df$Genome extracts the Genome column as a vector.'],
+ 'is.na':['Find missing entries','Returns TRUE for missing values and FALSE otherwise. A measured zero returns FALSE.'],
+ 'sum':['Add the values','On a TRUE/FALSE vector, TRUE counts as 1 and FALSE as 0. On missing_per_sample it adds the counts.'],
+ 'value':['Allele frequencies','The numeric measurement used for heatmap colour. NA means unavailable; 0 is an observed frequency.'],
+ 'selected':['The filtered table','From the previous example: Turicimonas on day 9. Its missing-value count depends on which filter you ran.'],
+ 'setdiff':['Exclude metadata names','Returns names in the first vector that are absent from the second. This keeps sample columns and excludes Genome, snp_id and Position.'],
+ 'names':['Read column names','Returns the names of the data-frame columns, not their contents.'],
+ 'c':['Combine into a vector','Combines the listed column names so they can be selected or excluded together.'],
+ 'sample_cols':['Sample-column names','The frequency-column names remaining after metadata columns were removed.'],
+ 'as.matrix':['Convert to a matrix','Converts the selected sample columns to a matrix. Text columns can make the whole matrix character, so exclude metadata first.'],
+ 'mat':['The heatmap matrix','Numeric SNP rows × sample columns. NA values remain missing.'],
+ 'rownames':['Set row labels','Assigning here changes row names, not the underlying measurements.'],
+ 'paste':['Join labels','Combines each row’s genome and SNP ID into a readable label.'],
+ 'sep':['Choose a separator','Controls the text placed between the joined labels: here, a vertical bar with spaces.'],
+ 'snp_id':['SNP identity','Identifies the variant. Keep it as metadata or a row label rather than a heatmap measurement.'],
+ 'dim':['Check the dimensions','Returns the number of rows followed by the number of columns.'],
+ 'is.numeric':['Check numeric storage','Returns TRUE when the matrix is numeric. This check does not convert it.'],
+ 'colSums':['Add down each column','After is.na(mat), counts the missing SNP measurements within each sample column.'],
+ 'missing_per_sample':['A count for each sample','A named vector: each number counts missing entries in one sample column.'],
+ '<-':['Assign the result','Stores the expression on the right in the object named on the left.'],
+ '[':['Select rows and columns','Use [rows, columns]. An empty row position keeps all rows; an empty column position keeps all columns.'],
+ ',':['Separate arguments or dimensions','Inside [rows, columns], the comma separates row selection from column selection. Inside a function call, it separates arguments.'],
+ '3':['Show three rows','In head(..., 3), request the first three rows.'],
+ '4':['Show four entries','In head(..., 4), request the first four sample counts.'],
+ 'Heatmap':['Create a heatmap object','Builds a ComplexHeatmap object from the matrix and display settings. Use a capital H.'],
+ 'ht':['Store the heatmap','Holds the heatmap object in memory; this is not an exported image file.'],
+ 'draw':['Display the heatmap','Renders the stored heatmap on the current graphics device, such as the Plots pane or an open PDF device.']
+};
+function interactiveRCode(code){
+ const tokens=code.match(/#[^\n]*|"[^"\n]*"|'[^'\n]*'|<-|[A-Za-z_.][A-Za-z0-9_.]*|\d+|[^A-Za-z0-9_.'"#]+|./g)||[];
+ // Split punctuation runs while preserving whitespace and original source exactly.
+ return tokens.map(token=>{
+  if(token.startsWith('#')||token.startsWith('"')||token.startsWith("'"))return consistencyEscape(token);
+  const pieces=rCodeGlossary[token]?[token]:token.split(/([\[$,])/);
+  return pieces.map(part=>rCodeGlossary[part]?`<button class="r-explain-token" data-r-explain="${consistencyEscape(part)}" aria-pressed="false">${consistencyEscape(part)}</button>`:consistencyEscape(part)).join('');
+ }).join('');
+}
+for(const [id,title,intro,code,output,explanation,note,exercise] of heatmapDataBasics){
+ if(id==='r-filter')continue;
+ const slide=day2HeatmapSlides.find(s=>s.id===id);
+ const outputHtml=id==='r-str'?`<p class="day2-note">Shortened str() output · select a column type to explore it.</p><pre class="r-interactive-code">3072 observations; 7 variables
+${[['Genome','character','Bacterial genome labels: text used for grouping or annotations.'],['snp_id','character','Variant labels: identifiers, not measurements.'],['Position','integer','A numeric genome coordinate. It is metadata, so exclude it from the frequency matrix.'],['value','numeric','Allele frequency: the measurement used for heatmap colours.'],['mouse_id','integer','A numeric identifier. The storage type does not make it a measurement.'],['day','integer','Study day: useful for ordering samples and annotations.'],['treatment_group','character','Treatment labels: categorical metadata for annotations.']].map(([name,type,meaning])=>`<button class="r-explain-token" data-r-title="${name} · ${type}" data-r-description="${meaning}" aria-pressed="false">${name.padEnd(16)}: ${type}</button>`).join('\n')}</pre>`:`<details><summary>Reveal expected output</summary>${rCode(output)}</details>`;
+ slide.extra=`<p>${consistencyEscape(intro)}</p><p class="day2-note">Hover, focus or click a code fragment to explain it. Only the selected fragment is highlighted.</p><div class="r-explorer-grid"><section><h2>Try it in R</h2><pre class="r-interactive-code">${interactiveRCode(code)}</pre>${outputHtml}<details><summary>Copy the complete R code</summary>${rCode(code)}</details></section><section><div class="r-explain-panel" aria-live="polite"><h2 id="r-explain-title">What does this code do?</h2><p id="r-explain-description">${consistencyEscape(explanation)}</p></div><p class="day2-note">${consistencyEscape(note)}</p><h2>Your turn</h2><p>${consistencyEscape(exercise)}</p></section></div>${id==='r-read-csv'?importHelpHtml:''}`;
+}
+function bindRCodeExplorer(){
+ document.querySelectorAll('.r-explain-token').forEach(el=>{
+  const show=()=>{
+   document.querySelectorAll('.r-explain-token').forEach(token=>token.setAttribute('aria-pressed',String(token===el)));
+   const entry=el.dataset.rExplain?rCodeGlossary[el.dataset.rExplain]:[el.dataset.rTitle,el.dataset.rDescription];
+   document.querySelector('#r-explain-title').textContent=entry[0];
+   document.querySelector('#r-explain-description').textContent=entry[1];
+  };
+  el.onclick=el.onmouseenter=el.onfocus=show;
+ });
+}

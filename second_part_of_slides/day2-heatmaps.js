@@ -43,6 +43,7 @@ function day2HeatmapsPage(id) {
  bindHmStory(id);
  if(id==='r-preview')bindWideLong();
  if(id==='r-filter')bindFilterExplorer();
+ if(document.querySelector('.r-explain-token'))bindRCodeExplorer();
  document.querySelectorAll('[data-assignment-cell]').forEach(button=>button.onclick=()=>{
  const [r,c]=button.dataset.assignmentCell.split(',').map(Number), row=assignmentContextData.rows[r], v=row.values[c];
  document.querySelector('#assignment-cell-readout').innerHTML=`<p><strong>SNP ${row.snp}</strong><br>Mouse 1683 · day ${assignmentContextData.days[c]}</p><p class="hm-big-value">${v.toFixed(3)} ≈ ${(v*100).toFixed(1)}%</p>`;

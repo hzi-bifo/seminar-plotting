@@ -1014,3 +1014,11 @@ body { padding-bottom: 74px; }
 .token-genome[aria-pressed="true"] { background:#e9dff5; color:#65368c; }
 .token-day[aria-pressed="true"] { background:#dcefe8; color:#216b52; }
 .token-and[aria-pressed="true"],.token-columns[aria-pressed="true"] { background:#fae6cf; color:#81501c; }
+.r-explorer-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:30px; margin:20px 0; }
+.r-explorer-grid>section { min-width:0; }
+.r-interactive-code { white-space:pre; overflow-x:auto; max-width:100%; background:#f3f6f8; border-radius:12px; padding:18px; font:15px/2 ui-monospace,monospace; }
+.r-explain-token { display:inline; vertical-align:baseline; font:inherit; white-space:pre; padding:1px 0; margin:0; border:0; border-radius:3px; background:transparent; color:inherit; cursor:pointer; }
+.r-explain-token[aria-pressed="true"],.r-explain-token:focus-visible { color:#216b52; background:#dcefe8; outline:1px solid #267568; outline-offset:1px; }
+.r-explain-panel { padding:20px; background:#edf5f1; border-left:4px solid #267568; min-height:170px; }
+.r-explain-panel h2 { font-size:23px; margin:0 0 12px; }.r-explain-panel p { font-size:18px; line-height:1.5; margin:0; }
+@media(max-width:950px){.r-explorer-grid{grid-template-columns:1fr;}}
