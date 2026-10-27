@@ -885,7 +885,8 @@ body { padding-bottom: 74px; }
 .ai-flow-columns ol { margin:0; padding:0; list-style:none; }
 .ai-flow-columns li { display:flex; position:relative; gap:14px; margin:0 0 12px; padding:10px 12px; background:white; border:1px solid #dce5e8; border-radius:10px; }
 .ai-flow-columns li[hidden] { display:none; }
-.ai-flow-columns li+li:before { content:'↓'; position:absolute; left:24px; top:-18px; color:#71838a; }
+.ai-flow-columns li+li { margin-top:24px; }
+.ai-flow-columns li+li:before { content:'↓'; position:absolute; left:50%; top:-25px; transform:translateX(-50%); height:23px; line-height:23px; font-size:20px; color:#71838a; }
 .ai-flow-columns li.is-current { border-color:#267568; box-shadow:0 0 0 1px #267568; }
 .ai-flow-number { font-size:16px; padding-top:3px; color:#61747c; }
 .ai-flow-owner { display:inline-block; padding:2px 8px; margin-right:10px; border-radius:5px; font-size:13px; font-weight:600; }

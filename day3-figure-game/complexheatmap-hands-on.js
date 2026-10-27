@@ -196,16 +196,13 @@ const aiWorkflowSteps = [
 const aiWorkflowSlide = day2HeatmapSlides.find(s=>s.id==='ai-chat-agent');
 aiWorkflowSlide.note='Same goal: improve a heatmap. Who does the work at each step?';
 aiWorkflowSlide.extra=`<div class="ai-flow-controls"><button id="ai-flow-next">Reveal next step →</button><button id="ai-flow-all">Show all</button><button id="ai-flow-reset">Restart</button><span id="ai-flow-status" aria-live="polite">Step 1 of 5 · Give the task</span></div><div class="ai-flow-columns">${[['chat','Chat-based help','You choose which suggestions to apply in RStudio.'],['agent','Agentic AI','Claude Code / Codex can edit and run within permissions.']].map(([key,title,subtitle])=>`<section class="ai-flow-${key}"><h2>${title}</h2><p class="ai-flow-subtitle">${subtitle}</p><ol>${aiWorkflowSteps.map((step,i)=>`<li data-flow-step="${i}" ${i?'hidden':''}><span class="ai-flow-number">${i+1}</span><div><span class="ai-flow-owner ${step[key][0]==='You'?'is-human':'is-agent'}">${step[key][0]}</span><strong>${step[key][1]}</strong><p>${step[key][2]}</p></div></li>`).join('')}</ol></section>`).join('')}</div><div class="ai-flow-teaching"><p><strong>Chat-based tools are completely fine for this exercise.</strong> With a basic chat workflow, you decide what to copy, change and run—giving you direct control over each edit. Agents can make more changes for you, so set their scope and review the result.</p><p><strong>Tomorrow · live demo:</strong> I’ll use <strong>Claude Code</strong> to bring several plots into a consistent aesthetic for a journal submission.</p></div><p class="ai-flow-takeaway" id="ai-flow-takeaway" hidden><strong>The agent can run the technical loop. You still check the scientific meaning.</strong></p><details><summary>Tools, permissions and examples</summary><p>A chatbox can also have agent tools. What matters is access: reading files, editing code and running commands. Actions may run locally or in a remote workspace, within configured permissions.</p><p><a href="https://learn.chatgpt.com/docs/cli" target="_blank" rel="noopener">Codex documentation</a> · <a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener">Claude Code documentation</a></p></details>`;
-function bindAiWorkflow(){
- let step=0;
- const update=()=>{
-  document.querySelectorAll('[data-flow-step]').forEach(el=>{el.hidden=Number(el.dataset.flowStep)>step;el.classList.toggle('is-current',Number(el.dataset.flowStep)===step);});
-  document.querySelector('#ai-flow-status').textContent=`Step ${step+1} of 5 · ${aiWorkflowSteps[step].label}`;
-  document.querySelector('#ai-flow-next').disabled=step===4;
-  document.querySelector('#ai-flow-takeaway').hidden=step!==4;
- };
- document.querySelector('#ai-flow-next').onclick=()=>{step=Math.min(4,step+1);update();};
- document.querySelector('#ai-flow-all').onclick=()=>{step=4;update();};
- document.querySelector('#ai-flow-reset').onclick=()=>{step=0;update();};
- update();
-}
+// Each build is a normal slide, controlled by the deck's Next / Previous buttons.
+const aiWorkflowTemplate = aiWorkflowSlide.extra.replace(/<div class="ai-flow-controls">[\s\S]*?<\/div>/, '');
+const aiWorkflowBuilds = aiWorkflowSteps.map((step, index)=>({
+ ...aiWorkflowSlide,
+ id:index===0?'ai-chat-agent':`ai-chat-agent-${index+1}`,
+ note:`${index+1} / ${aiWorkflowSteps.length} · ${step.label} — who acts: you or the agent?`,
+ extra:aiWorkflowTemplate.replace(/<li data-flow-step="(\d)"[^>]*>/g,(_,n)=>`<li data-flow-step="${n}"${Number(n)>index?' hidden':''}${Number(n)===index?' class="is-current"':''}>`)
+  .replace('id="ai-flow-takeaway" hidden',`id="ai-flow-takeaway"${index===4?'':' hidden'}`)
+}));
+day2HeatmapSlides.splice(day2HeatmapSlides.findIndex(s=>s.id==='ai-chat-agent'),1,...aiWorkflowBuilds);
