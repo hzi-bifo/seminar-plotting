@@ -12,7 +12,7 @@ function home() {
 }
 function day3Overview() {
   current = -1;
-  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><section class="course-day" aria-label="Day 3 topics"><nav class="presentation-sections day3-topic-cards" aria-label="Day 3 sections">${[
+  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><nav class="day2-topics day3-topic-cards" aria-label="Day 3 sections">${[
     ['1','What kinds of plots are there?','Explore plot families and the questions they answer.','#plot-types'],
     ['2','Examples for good figures','Inspect design choices in real biological research.','#section-2'],
     ['3','Good and bad plots','See the issue, then reveal an improved figure.','#section-3'],
@@ -24,7 +24,7 @@ function day3Overview() {
     ['9','Include icons in the plot','Generate, compare and place clear scientific icons.','#section-9'],
     ['10','Submit the manuscript','Embed previews, upload figure files and prepare for revisions.','#section-10'],
     ['11','Use generative tools','Redesign six mismatched panels from the Day 1 and Day 2 data.','#section-11']
-  ].map(([n,title,text,url])=>`<a href="${url}"><img class="day3-topic-image" src="assets/day3-topics/topic-${n}.svg" alt=""><span class="section-number">${n}</span><h2>${title}</h2><p>${text}</p></a>`).join('')}</nav></section>`;
+  ].map(([n,title,text,url])=>`<a href="${url}"><img src="assets/day3-topics/topic-${n}.svg" alt=""><h2><span class="day2-topic-number">${n}</span>${title}</h2><p>${text}</p></a>`).join('')}</nav>`;
 }
 function sectionPage(n) {
   current = -1;
