@@ -987,3 +987,17 @@ body { padding-bottom: 74px; }
 #app details.server-faq[open] > summary { display:flex; width:fit-content; max-width:100%; gap:14px; padding:14px 22px; background:#234653; color:#fff; border:0; border-radius:10px; font-size:20px; font-weight:650; }
 #app details.server-faq > summary:hover { background:#315d6c; }
 #app details.server-faq > summary:focus-visible { outline:3px solid #b77939; outline-offset:4px; }
+.filter-explorer { display:grid; grid-template-columns:1.2fr 1fr; gap:30px; margin:24px 0; }
+.filter-explorer h2 { font-size:23px; }
+.filter-code { background:#f3f6f8; border-radius:12px; padding:18px; line-height:2; white-space:pre-wrap; overflow-wrap:anywhere; }
+.filter-code-token { font:inherit; font-size:16px; text-align:left; padding:3px 5px; border:1px solid transparent; border-radius:5px; white-space:pre-wrap; overflow-wrap:anywhere; max-width:100%; color:#28485d; background:#e1ebf2; cursor:pointer; }
+.token-genome { background:#e9dff5; color:#65368c; }.token-day { background:#dcefe8; color:#216b52; }.token-and,.token-columns { background:#fae6cf; color:#81501c; }
+.filter-code-token[aria-pressed="true"],.filter-code-token:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+.filter-explanation { padding:18px 20px; border-left:4px solid #267568; background:#edf5f1; min-height:150px; }
+.filter-explanation h2 { margin:0 0 10px; }.filter-explanation p { font-size:18px; line-height:1.5; margin:0; }
+.filter-demo-table { border-collapse:collapse; width:100%; font-size:18px; }
+.filter-demo-table th,.filter-demo-table td { padding:12px; text-align:left; border-bottom:2px solid white; }
+.filter-demo-table th { background:#edf1f3; }
+.filter-kept { background:#dcefe8; }.filter-dropped { background:#f2f3f4; color:#626c72; }
+#filter-table-caption { font-size:17px; }
+@media(max-width:950px){.filter-explorer{grid-template-columns:1fr;}}

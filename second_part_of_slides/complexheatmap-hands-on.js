@@ -224,3 +224,40 @@ const aiBreakoutSlide={id:'ai-breakout',title:'Breakout rooms · improve one hea
 )</code></pre><p>Apply the change → run the chunk → inspect the plot.</p><div class="ai-room-matrix" aria-label="Schematic heatmap with grey missing cells">${['#eaf3dc','#9fcca3','#267568','#d4d4d4','#9fcca3','#267568','#eaf3dc','#9fcca3','#d4d4d4','#eaf3dc','#9fcca3','#267568'].map(c=>`<span style="background:${c}"></span>`).join('')}</div></div></div><p class="ai-room-caption">Rotate who types. Everyone helps choose, interpret and check.</p></section>
 </div><div class="ai-room-share"><strong>Bring back:</strong> one before/after plot · one useful prompt · one mistake or surprise</div>`};
 day2HeatmapSlides.splice(day2HeatmapSlides.findIndex(s=>s.id==='working-with-ai')+1,0,aiBreakoutSlide);
+
+const filterParts={
+ save:['Save a new object','<- stores the result in selected. long_df stays unchanged.','save'],
+ source:['Start with the original table','long_df is the input data frame. Square brackets select from it.','source'],
+ genome:['Test the genome','== checks equality. Each row gets TRUE if Genome is Turicimonas_muris_YL45, otherwise FALSE.','genome'],
+ and:['Require both conditions','& combines the two tests row by row. A row is kept only if both are TRUE.','both'],
+ day:['Test the study day','Keep rows where day equals 9. This is a study-day label, not a row number.','day'],
+ columns:['Keep every column','The comma separates rows from columns: [rows, columns]. Nothing after the comma means keep all columns.','both'],
+ count:['Count the selected rows','nrow(selected) counts SNP/sample measurements, not mice. The full result is 24 SNPs × 4 samples = 96 rows, including NA values.','both']
+};
+const filterToken=(id,text)=>`<button class="filter-code-token token-${id}" data-filter-part="${id}" aria-pressed="false">${consistencyEscape(text)}</button>`;
+const filterSlide=day2HeatmapSlides.find(s=>s.id==='r-filter');
+filterSlide.note='Explore [rows, columns] · hover, focus or click a coloured piece of code.';
+filterSlide.extra=`<div class="filter-explorer"><section><h2>Read the code in pieces</h2><pre class="filter-code">${filterToken('save','selected <-')} ${filterToken('source','long_df[')}
+  ${filterToken('genome','long_df$Genome == "Turicimonas_muris_YL45"')} ${filterToken('and','&')}
+    ${filterToken('day','long_df$day == 9')}${filterToken('columns',',\n]')}
+${filterToken('count','nrow(selected)')}</pre><div class="filter-explanation" aria-live="polite"><h2 id="filter-explain-title"></h2><p id="filter-explain-text"></p></div><details><summary>Copy the complete R code</summary>${rCode('selected <- long_df[\n  long_df$Genome == "Turicimonas_muris_YL45" &\n    long_df$day == 9,\n]\nnrow(selected)')}</details></section><section><h2>Which rows pass this test?</h2><p class="day2-note">Illustrative excerpt · names shortened · each row is one SNP/sample measurement.</p><table class="filter-demo-table"><thead><tr><th>Genome</th><th>Day</th><th>Pass?</th></tr></thead><tbody>${[['Akkermansia',9],['Turicimonas',0],['Turicimonas',9],['Bacteroides',9],['Turicimonas',9],['Turicimonas',30]].map(([g,d])=>`<tr data-filter-genome="${g}" data-filter-day="${d}"><td>${g}</td><td>${d}</td><td class="filter-pass"></td></tr>`).join('')}</tbody></table><p id="filter-table-caption"></p><details><summary>Reveal the full dataset result</summary>${rCode('[1] 96')}<p>24 Turicimonas SNPs × 4 mouse/day samples. Missing values are kept: the filter tests genome and day, not frequency.</p></details><p><strong>Your turn:</strong> predict what changes if you use <code>day == 30</code>, then try it in R.</p></section></div>`;
+function bindFilterExplorer(){
+ const show=id=>{
+  const [title,description,mode]=filterParts[id];
+  document.querySelector('#filter-explain-title').textContent=title;
+  document.querySelector('#filter-explain-text').textContent=description;
+  document.querySelectorAll('[data-filter-part]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.filterPart===id)));
+  const test=['genome','day','both'].includes(mode);
+  let count=0;
+  document.querySelectorAll('[data-filter-genome]').forEach(row=>{
+   const genome=row.dataset.filterGenome==='Turicimonas', day=row.dataset.filterDay==='9';
+   const passes=mode==='genome'?genome:mode==='day'?day:genome&&day;
+   row.classList.toggle('filter-kept',test&&passes);row.classList.toggle('filter-dropped',test&&!passes);
+   row.querySelector('.filter-pass').textContent=test?(passes?'TRUE · keep':'FALSE'):'—';
+   if(passes)count++;
+  });
+  document.querySelector('#filter-table-caption').textContent=test?`${count} of these 6 example rows pass ${mode==='both'?'both conditions':mode==='genome'?'the genome test alone':'the day test alone'}.`:'The original table remains unchanged. Select a condition to see which rows pass.';
+ };
+ document.querySelectorAll('[data-filter-part]').forEach(el=>{el.onclick=el.onmouseenter=el.onfocus=()=>show(el.dataset.filterPart);});
+ show('and');
+}
