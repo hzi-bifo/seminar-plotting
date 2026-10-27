@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Graphics terms of use · Ongoing Science</title>
+<meta name="description" content="Terms for using the Ongoing Science illustration library: free under CC BY 4.0 with credit, or without credit with an OS subscription.">
+<link rel="canonical" href="https://ongoingscience.com/graphics-terms">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+:root{
+  color-scheme:light;
+  --ground:#EEF0EC; --paper:#F6F7F4; --surface:#FFFFFF; --ink:#111412; --muted:#555B57; --faint:#7A807C;
+  --line:#D3D7D1; --line-strong:#737A74; --hand:#2B3FD1; --hand-soft:rgba(43,63,209,.10);
+  --night:#0F1112; --night-ink:#E9ECE8; --night-muted:#9BA29D; --night-line:#2B302D; --night-hand:#8E9BFF;
+  --ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(16px,4vw,56px); --max:1240px; --bar:56px; --ease:cubic-bezier(.2,.7,.2,1);
+  --h2:clamp(30px,3.8vw,54px); --lead:clamp(17px,1.4vw,20px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip;scroll-padding-top:calc(var(--bar) + 24px)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.65 var(--ui);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--hand);outline-offset:2px}
+.wrap{width:100%;max-width:1080px;margin-inline:auto;padding-inline:var(--gut)}
+.bar{position:fixed;left:0;right:0;top:0;z-index:40;height:var(--bar);display:flex;align-items:center;gap:4px;padding-inline:var(--gut);color:var(--night-ink);background:color-mix(in srgb,var(--night) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--night-line)}
+.bar-brand{display:flex;align-items:center;gap:10px;margin-right:auto;text-decoration:none;font:500 17px/1 var(--ui);letter-spacing:-.012em}
+.bar-brand svg{width:20px;height:20px;fill:currentColor}
+.bar-nav{display:flex;gap:2px}
+.bar-nav a{display:inline-flex;align-items:center;height:34px;padding:0 11px;border-radius:999px;font:500 14px/1 var(--ui);text-decoration:none;opacity:.78}
+.bar-nav a:hover{opacity:1;background:color-mix(in srgb,currentColor 10%,transparent)}
+.head{padding-top:calc(var(--bar) + clamp(48px,9vh,104px));padding-bottom:clamp(32px,5vh,56px)}
+.kick{margin:0;font:400 14px/1.4 var(--mono);color:var(--muted)}
+.kick a{text-decoration:none}.kick a:hover{text-decoration:underline;text-underline-offset:3px}
+h1{margin:14px 0 0;font:400 clamp(34px,4.4vw,58px)/1.05 var(--serif);letter-spacing:-.02em;max-width:18ch;text-wrap:balance}
+.lead{margin:20px 0 0;max-width:42em;font-size:var(--lead);line-height:1.5;color:var(--muted);text-wrap:pretty}
+.ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:clamp(28px,4vh,40px)}
+.way{padding:20px 22px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.way b{display:block;font:400 22px/1.2 var(--serif);letter-spacing:-.01em}
+.way p{margin:8px 0 0;color:var(--muted);font-size:15px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:clamp(32px,6vw,88px);padding-block:clamp(32px,5vh,56px) clamp(64px,10vh,120px);border-top:1px solid var(--line)}
+.toc{position:sticky;top:calc(var(--bar) + 28px);align-self:start}
+.toc p{margin:0 0 10px;font:500 13px var(--ui);color:var(--ink)}
+.toc ol{margin:0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:t}
+.toc li{counter-increment:t}
+.toc a{display:flex;gap:10px;padding:5px 0;font-size:14px;color:var(--muted);text-decoration:none}
+.toc a::before{content:counter(t,decimal-leading-zero);font:400 12px/1.9 var(--mono);color:var(--faint)}
+.toc a:hover{color:var(--ink)}
+.sec{display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px;padding-block:28px;border-bottom:1px solid var(--line)}
+.sec:first-child{padding-top:0}
+.sec:last-of-type{border-bottom:0}
+.num{margin:0;font:400 13px/2.1 var(--mono);color:var(--faint)}
+.sec h2{margin:0 0 10px;font:400 clamp(22px,2.2vw,28px)/1.2 var(--serif);letter-spacing:-.01em}
+.sec p,.sec li{max-width:64ch;margin:0 0 12px;text-wrap:pretty}
+.sec ul{margin:0 0 12px;padding-left:1.2em}
+.sec b{font-weight:600}
+.asof{margin:24px 0 0 56px;font:400 13px var(--mono);color:var(--faint)}
+.foot{display:flex;flex-wrap:wrap;gap:6px 22px;padding:18px 0 32px;border-top:1px solid var(--line);font:400 12.5px/1.5 var(--mono);color:var(--muted)}
+.foot a{text-decoration:none}.foot a:hover{text-decoration:underline}
+@media (max-width:480px){.bar-nav a:last-child{display:none}}
+.bar-brand span{white-space:nowrap}
+@media (max-width:820px){.layout{grid-template-columns:1fr}.toc{position:static}.ways{grid-template-columns:1fr}.sec{grid-template-columns:1fr;gap:4px}.num{line-height:1.4}.asof{margin-left:0}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="bar-brand" href="/" aria-label="Ongoing Science, home"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 16h24v11H30v46h12v11H18z"/><path d="M50 16a34 34 0 0 1 0 68z"/></svg><span>Ongoing Science</span></a>
+  <nav class="bar-nav" aria-label="Sections"><a href="/os">OS</a><a href="/os/graphics">Graphics</a><a href="/os#pilot">Pilot</a></nav>
+</header>
+<header class="wrap head">
+  <p class="kick"><a href="/os/graphics">Graphics</a> · Terms of use</p>
+  <h1>Terms of use for the illustration library</h1>
+  <p class="lead">The drawings are free to use in your own work. These terms explain how they were made, how they are licensed, how to credit them and what to keep in mind.</p>
+  <div class="ways">
+    <div class="way"><b>For everyone</b><p>AI-generated graphics. To the extent we hold applicable rights, they are licensed under CC BY 4.0. Attribution is appreciated.</p></div>
+    <div class="way"><b>With OS</b><p>If you or your institution use OS, any rights we hold are also licensed to you without an attribution condition.</p></div>
+  </div>
+</header>
+<main class="wrap layout">
+  <nav class="toc" aria-label="Sections"><p>On this page</p><ol><li><a href="#s1">Who offers the drawings</a></li><li><a href="#s2">AI-generated graphics and licensing</a></li><li><a href="#s3">Subscriber licence</a></li><li><a href="#s4">What is not allowed</a></li><li><a href="#s5">Drawings made with AI</a></li><li><a href="#s6">Accuracy</a></li><li><a href="#s7">Liability</a></li><li><a href="#s8">Rights of others</a></li><li><a href="#s9">Changes and applicable law</a></li></ol></nav>
+  <div><section class="sec" id="s1" aria-labelledby="s1-h"><p class="num">01</p><div><h2 id="s1-h">Who offers the drawings</h2><p>The illustration library at ongoingscience.com/os/graphics ("the drawings") is offered by Dr. Philipp Münch, Ongoing Science, address as in the <a href="/impressum">legal notice</a> ("we").</p></div></section><section class="sec" id="s2" aria-labelledby="s2-h"><p class="num">02</p><div><h2 id="s2-h">AI-generated graphics and licensing</h2><p>These graphics were generated using AI tools. Whether copyright or related rights exist, and who holds them, may depend on applicable law and the circumstances of creation.</p>
+<p>To the extent Ongoing Science holds any copyright or related rights in these graphics under applicable law, we license those rights under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>.</p>
+<p>Where your use does not require permission under those rights, this licence imposes no obligations. Attribution to Ongoing Science is nevertheless appreciated.</p>
+<p><b>Suggested attribution</b><br>“Graphic provided by Ongoing Science — ongoingscience.com.”</p>
+<p>Where CC BY 4.0 applies, also link to the licence and indicate any modifications, as required by its terms.</p>
+<p>Where CC BY 4.0 applies, no additional permission, account, subscription, or payment to Ongoing Science is required to exercise the rights granted by that licence, including commercial reuse and modification. General website terms do not restrict those permissions. This licence grants only rights Ongoing Science has authority to license.</p></div></section><section class="sec" id="s3" aria-labelledby="s3-h"><p class="num">03</p><div><h2 id="s3-h">Subscriber licence</h2><p>3.1 If you, or the institution you work for, have an active subscription to OS, then to the extent we hold any copyright or related rights in the drawings, we also grant you a non-exclusive, worldwide, royalty-free right to use, reproduce, adapt and publish them without attribution, in print and online, for any purpose permitted by section 4.</p>
+<p>3.2 An institutional subscription covers everyone the institution lets use OS, such as employees, students and guests, for work done for or at the institution.</p>
+<p>3.3 The right covers works you create while the subscription is active. Such works, for example a published paper, a poster or a product, may stay in use without credit after the subscription ends. For new works created after the end, section 2 applies.</p>
+<p>3.4 Giving credit remains welcome, and some journals require it anyway (see section 5).</p></div></section><section class="sec" id="s4" aria-labelledby="s4-h"><p class="num">04</p><div><h2 id="s4-h">What is not allowed</h2><p>Under the subscriber licence in section 3 you may not:</p>
+<ul>
+<li>pass on the drawings on their own, as an icon set, clip-art collection, template pack or similar library, whether free or for sale;</li>
+<li>suggest that we endorse you, your work or your product;</li>
+<li>use the drawings in a way that breaks the law.</li>
+</ul>
+<p>These limits do not restrict anything you may do under CC BY 4.0.</p></div></section><section class="sec" id="s5" aria-labelledby="s5-h"><p class="num">05</p><div><h2 id="s5-h">Drawings made with AI</h2><p>The drawings are generated as vector code with AI tools, following our art direction and style rules, and checked by us. Some journals and publishers restrict AI-generated images or require a disclosure. Checking the policy of your journal or publisher, and making any disclosure it requires, is your responsibility. A suggested disclosure sentence is on the graphics page.</p></div></section><section class="sec" id="s6" aria-labelledby="s6-h"><p class="num">06</p><div><h2 id="s6-h">Accuracy</h2><p>The drawings are schematic. They simplify anatomy, structures and instruments and are not a substitute for reviewed scientific or technical drawings. Check them against your own sources before you rely on them. Open review notes are listed with each drawing.</p></div></section><section class="sec" id="s7" aria-labelledby="s7-h"><p class="num">07</p><div><h2 id="s7-h">Liability</h2><p>We provide the drawings free of charge and as they are. We are liable without limitation for intent and gross negligence, for injury to life, body or health, and under the German Product Liability Act. Otherwise our liability is excluded, as far as the law allows.</p></div></section><section class="sec" id="s8" aria-labelledby="s8-h"><p class="num">08</p><div><h2 id="s8-h">Rights of others</h2><p>We draw every illustration ourselves and do not copy third-party artwork. If you believe a drawing infringes your rights, write to us and we will check it and remove it if needed.</p></div></section><section class="sec" id="s9" aria-labelledby="s9-h"><p class="num">09</p><div><h2 id="s9-h">Changes and applicable law</h2><p>We may change these terms for the future. Changes never take away rights already granted under CC BY 4.0, to the extent it applies, or under the subscriber licence for existing works. German law applies, excluding the UN Convention on Contracts for the International Sale of Goods.</p></div></section><p class="asof">As of October 2026</p></div>
+</main>
+<footer class="wrap"><div class="foot"><span>© 2026 Ongoing Science</span><a href="/os/graphics">Graphics</a><a href="/os">OS</a><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div></footer>
+</body>
+</html>

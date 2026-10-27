@@ -1,0 +1,4 @@
+Raster: built-in image_gen tool; transparent_background=true
+Generate an image of a tailed bacteriophage for a scientific teaching slide. Show a recognisable faceted capsid, tail sheath, baseplate and tail fibres. Clean detailed scientific illustration, restrained teal and muted orange colours, centred with the whole phage visible. Transparent background. No text, labels or decorative background. A schematic illustration, not microscopy or a species-specific structural model.
+
+Vector: code-authored SVG using the phage prompt displayed in icons.js.

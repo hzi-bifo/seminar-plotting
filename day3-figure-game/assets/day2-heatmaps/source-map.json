@@ -1,0 +1,606 @@
+[
+  {
+    "slide": 148,
+    "text": [
+      "Day 2 (Part 2)",
+      "Heatmaps"
+    ],
+    "images": []
+  },
+  {
+    "slide": 149,
+    "text": [
+      "What a heatmap encodes",
+      "A numeric matrix with rows = features (e.g., genes) and columns = samples/conditions.",
+      "Tiles encode values via ",
+      "color",
+      "; optional ",
+      "clustering",
+      " orders rows/columns to reveal structure; ",
+      "dendrograms/gaps make groups explicit",
+      "Use when you want ",
+      "pattern discovery",
+      " (co\u2011variation, clusters, blocks) more than exact numbers."
+    ],
+    "images": []
+  },
+  {
+    "slide": 150,
+    "text": [
+      "Main ",
+      "principle",
+      "Start from an input table of measurements.",
+      "Apply hierarchical clustering to bring \u201clike next to like,\u201d exposing block structure.",
+      "Add gaps according to the cluster tree to emphasize group boundaries.",
+      "Source: https://www.nature.com/articles/nmeth.1902"
+    ],
+    "images": [
+      {
+        "file": "slide-150-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 151,
+    "text": [
+      "When to use a heatmap",
+      "Data structure",
+      ": A rectangular matrix with two categorical axes (e.g., genes \u00d7 samples, proteins \u00d7 conditions, taxa \u00d7 environments), one quantitative value per cell",
+      "Task",
+      ": Reveal patterns, clusters, and co-variation rather than exact numbers; emphasize relative differences across many items.",
+      "Examples",
+      "Clustered g",
+      "ene expression",
+      " (RNA-seq) across conditions or patients",
+      "Presence/absence or frequency of resistance genes across isolates ",
+      "Microbiome",
+      " taxa relative abundances across body sites or time points (after normalization).",
+      "Pairwise ",
+      "protein/genome",
+      " similarity (distance/correlation) matrices"
+    ],
+    "images": []
+  },
+  {
+    "slide": 152,
+    "text": [
+      "When ",
+      "not",
+      " to use a heatmap",
+      "Exact values matter: ",
+      "(e.g., qPCR with CIs): color hides precision \u2192 use tables or dot/box/violin with intervals",
+      "Datasets dominated by outliers: scale compression hides structure \u2192 use robust caps or log/dot plots.",
+      "Too small or too sparse (e.g., 4\u00d75 or mostly zeros): ",
+      "patterns illusory \u2192 use dot plots or simple bars.",
+      "Multiple variables per cell (e.g., log2FC, FDR, coverage): ",
+      "color overloaded \u2192 use faceted panels or volcano/forest plots.",
+      "Examples",
+      "Very small matrices (e.g., 4 pathways \u00d7 5 samples)",
+      "Highly sparse AMR gene presence across isolates (mostly zeros)",
+      "Clinical ordinal scales per patient (e.g., severity I\u2013IV)",
+      "Mixed-unit QC dashboards per sample (reads, GC%, duplication)"
+    ],
+    "images": []
+  },
+  {
+    "slide": 153,
+    "text": [
+      "Example plots",
+      "",
+      "Genome-wide expression (microarrays)",
+      "Yeast genome-wide expression clustered both by genes and samples; this paper popularized the two-way clustered \u201ccluster heat map\u201d and the TreeView convention that dominated genomics for a decade. Highlight: two dendrograms, row-wise standardization, and block structure revealing co-regulated modules.",
+      "Source: 10.1073/pnas.95.25.14863",
+      "Expanded Human Microbiome Project (HMP2)",
+      ", body-wide profiles showing taxa across sites https://doi.org/10.1038/nature23889"
+    ],
+    "images": [
+      {
+        "file": "slide-153-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-153-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 154,
+    "text": [
+      "https://r-graph-gallery.com/vaccination-heatmap.html"
+    ],
+    "images": [
+      {
+        "file": "slide-154-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 155,
+    "text": [
+      "Z-scores",
+      "Why use it in heatmaps",
+      "Makes features comparable by removing baseline and scale, emphasizing patterns across samples.",
+      "Highlights co-regulated modules even when absolute magnitudes differ.",
+      "How to display",
+      "Use a diverging palette centered at 0; fix bounds (e.g., \u00b12 or \u00b13) and show a colorbar.",
+      "State explicitly: \u201crows z-scored,\u201d distance metric, and linkage used.",
+      "Caveats",
+      "Loses absolute level information (not suited when magnitude matters)."
+    ],
+    "images": []
+  },
+  {
+    "slide": 156,
+    "text": [
+      "Z-scores"
+    ],
+    "images": [
+      {
+        "file": "slide-156-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-156-1.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-156-2.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-156-3.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 157,
+    "text": [
+      "Z-scores",
+      "Row mean",
+      "Row standard deviation",
+      "Row z-score for cell ",
+      "i"
+    ],
+    "images": [
+      {
+        "file": "slide-157-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-157-1.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-157-2.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-157-3.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-157-4.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 158,
+    "text": [
+      "Z-scores",
+      "",
+      "mean_before",
+      "sd_before",
+      "mean_after",
+      "sd_after",
+      "Feature 1",
+      "10.0",
+      "0.7071067811865476",
+      "0.0",
+      "0.9999999999999998",
+      "Feature 2",
+      "50.0",
+      "0.7071067811865477",
+      "-3.700743415417188e-17",
+      "1.0",
+      "Feature 3",
+      "90.0",
+      "0.7071067811865469",
+      "9.25185853854297e-18",
+      "0.9999999999999999",
+      "Feature 4",
+      "50.16225764262861",
+      "3.5799344283236114",
+      "-1.6745863954762778e-15",
+      "0.9999999999999998",
+      "Feature 5",
+      "30.59856991902748",
+      "0.7710018028773965",
+      "0.0",
+      "1.0"
+    ],
+    "images": []
+  },
+  {
+    "slide": 159,
+    "text": [
+      "Dendrograms",
+      "",
+      "(optional) standardize rows (z-score) to remove scale effects",
+      "Distance",
+      " (similarity) choice = how you measure how alike two rows/columns are. Think: \u201cwhat does \u2018close\u2019 mean?\u201d",
+      "Linkage choice",
+      " = how you measure distance between clusters during merging. Think: \u201cgiven two groups, what\u2019s their distance?\u201d"
+    ],
+    "images": [
+      {
+        "file": "slide-159-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-159-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 160,
+    "text": [
+      "Distance choices (what \u201csimilar\u201d means)",
+      "",
+      "Euclidean (L2)",
+      "Pros",
+      ": Simple; captures magnitude and pattern; required for Ward.",
+      "Cons",
+      ": Scale-dependent; outlier-sensitive.",
+      "Tip",
+      ": Often z-score rows first if you care about shape more than level.",
+      "Correlation distance (1 \u2212 r)",
+      "Pros: Emphasizes shape (up/down); invariant to linear shift/scale.",
+      "Cons: Loses absolute levels; negative correlation maps to large distance (~2).",
+      "Spearman (1 \u2212 \u03c1)",
+      "Pros: Rank-based; robust to monotone nonlinearities, outliers.",
+      "Cons: Ignores absolute differences; ties can matter.",
+      ""
+    ],
+    "images": []
+  },
+  {
+    "slide": 161,
+    "text": [
+      "Linkage choice",
+      "",
+      "Single linkage = \u201cclosest pair wins.\u201d",
+      "Two clusters are as close as their closest points. It happily connects clusters via thin \u201cbridges\u201d of points \u2192 chaining.",
+      "if you want to show a continuum (trajectory/gradient), block structure often weak.",
+      "Complete linkage = \u201cfarthest pair matters.\u201d",
+      "Two clusters are as close as their farthest points. It avoids chaining and prefers compact, tight clusters; one outlier can keep clusters apart.",
+      "produces clear, compact blocks; boundaries are sharp, but it can split groups if one sample is far",
+      "Ward = \u201ckeep variance small.\u201d",
+      "Merge the pair that causes the smallest increase in within-cluster variance (sum of squares). Tends to form round, balanced, blocky clusters. Requires Euclidean distance.",
+      "gives very blocky, visually clean squares (great for gene-expression)"
+    ],
+    "images": []
+  },
+  {
+    "slide": 162,
+    "text": [
+      "D",
+      "istance choice should match the data type and the biological question",
+      "",
+      "Pattern matters (shape over magnitude) \u2192 use correlation / Spearman / cosine (often with row z-scores).",
+      "Absolute level matters \u2192 use Euclidean/Manhattan (decide whether to z-score).",
+      "Binary presence/absence \u2192 Jaccard.",
+      "Bray\u2013Curtis if you care about relative abundances",
+      ""
+    ],
+    "images": []
+  },
+  {
+    "slide": 163,
+    "text": [
+      "Same data, different order: your distance changes the picture",
+      ""
+    ],
+    "images": [
+      {
+        "file": "slide-163-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-163-1.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-163-2.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-163-3.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-163-4.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 164,
+    "text": [
+      "Main principle",
+      "(a) An example of a input table with measurements (b) Clustering brings like next to like items to reveal patterns in the data. (c) Adding gaps according to the hierarchical cluster tree helps emphasize relationships in the matrix.",
+      "Source: https://www.nature.com/articles/nmeth.1902"
+    ],
+    "images": [
+      {
+        "file": "slide-164-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 165,
+    "text": [
+      "Main principle"
+    ],
+    "images": [
+      {
+        "file": "slide-165-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-165-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 166,
+    "text": [
+      ""
+    ],
+    "images": [
+      {
+        "file": "slide-166-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-166-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 167,
+    "text": [
+      "Which value is larger?",
+      "Source: https://www.displayr.com/the-problem-with-heatmaps/"
+    ],
+    "images": [
+      {
+        "file": "slide-167-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 168,
+    "text": [
+      "Source: https://www.displayr.com/the-problem-with-heatmaps/"
+    ],
+    "images": [
+      {
+        "file": "slide-168-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 169,
+    "text": [
+      "Common pitfalls",
+      "Rainbow palettes introduce false gradients and category boundaries, overemphasize yellows",
+      "Many RNA-seq/microarray figures map high expression to red and low to green, which is unreadable for a substantial fraction of readers with red\u2013green CVD; the scheme also has non-uniform lightness. Nature Methods explicitly advises avoiding red\u2013green"
+    ],
+    "images": [
+      {
+        "file": "slide-169-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-169-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 170,
+    "text": [
+      "Common pitfalls",
+      "In the left figure we use a rainbow colour scale, which is common but can be misleading. An issue is that people sometimes perceive the brightest colour as a peak (the highest value)."
+    ],
+    "images": [
+      {
+        "file": "slide-170-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 171,
+    "text": [
+      "Common pitfalls",
+      "Diverging palette used for strictly positive data (implied false midpoint): ",
+      "Using a diverging map (e.g., blue-white-red) when the variable has no meaningful zero (all values \u22650) implies a mid reference that does not exist; use a sequential map instead."
+    ],
+    "images": [
+      {
+        "file": "slide-171-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 172,
+    "text": [
+      "Common pitfalls",
+      "Inconsistent color ranges across panels (destroyed comparability): ",
+      "When panels auto-scale independently, identical values look different across panels;",
+      "A",
+      "B"
+    ],
+    "images": [
+      {
+        "file": "slide-172-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-172-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 173,
+    "text": [
+      "Common pitfalls",
+      "Smoothing/interpolation that fabricates gradients.",
+      "Heatmaps of discrete matrices should usually show crisp cells; bilinear/cubic interpolation blurs structure and suggests nonexistent transitions",
+      ""
+    ],
+    "images": [
+      {
+        "file": "slide-173-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 174,
+    "text": [
+      "Common pitfalls",
+      "Aspect-ratio distortion (non-square cells). Stretching the matrix (e.g., to fit a layout) distorts block structure and spatial relationships;"
+    ],
+    "images": [
+      {
+        "file": "slide-174-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 175,
+    "text": [
+      "Common pitfalls",
+      "Row-wise Z-scoring used without stating the interpretive trade-off. ",
+      "Per-row Z-score emphasizes patterns but discards absolute magnitudes; comparisons between genes become invalid."
+    ],
+    "images": [
+      {
+        "file": "slide-175-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 176,
+    "text": [
+      "Common pitfalls",
+      "Bad color direction"
+    ],
+    "images": [
+      {
+        "file": "slide-176-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-176-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 177,
+    "text": [
+      "Common pitfalls",
+      "Outliers saturating the scale: ",
+      "A single extreme drives the colormap, flattening the rest; robust limits or clipping should be considered. Practitioner threads highlight the issue and fixes. ",
+      "",
+      ""
+    ],
+    "images": [
+      {
+        "file": "slide-177-0.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 178,
+    "text": [],
+    "images": [
+      {
+        "file": "slide-178-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-178-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 179,
+    "text": [
+      "NA data"
+    ],
+    "images": [
+      {
+        "file": "slide-179-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-179-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 180,
+    "text": [],
+    "images": [
+      {
+        "file": "slide-180-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-180-1.png",
+        "crop": {}
+      }
+    ]
+  },
+  {
+    "slide": 181,
+    "text": [
+      "Circular plots",
+      "10.3389/",
+      "f",
+      "micb.2022.990850"
+    ],
+    "images": [
+      {
+        "file": "slide-181-0.png",
+        "crop": {}
+      },
+      {
+        "file": "slide-181-1.png",
+        "crop": {}
+      }
+    ]
+  }
+]

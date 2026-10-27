@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="750" viewBox="0 0 1100 750">
+<rect width="1100" height="750" fill="white"/>
+<g font-family="Arial, sans-serif" fill="#111">
+<path d="M110 100 V600 H1030" fill="none" stroke="#111"/>
+<path d="M103 600.0 H110" stroke="#111"/><text x="90" y="607.0" text-anchor="end" font-size="22">0</text>
+<path d="M103 350.0 H110" stroke="#111"/><text x="90" y="357.0" text-anchor="end" font-size="22">0.5</text>
+<path d="M103 100.0 H110" stroke="#111"/><text x="90" y="107.0" text-anchor="end" font-size="22">1</text>
+<text transform="translate(130,600) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(130,475.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(130,350.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text transform="translate(130,225.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text x="171" y="635" text-anchor="middle" font-size="22">1</text>
+<text transform="translate(240,600) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(240,550.0) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(240,500.0) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text transform="translate(240,450.0) scale(1,4.794520547945205)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text x="281" y="635" text-anchor="middle" font-size="22">2</text>
+<text transform="translate(350,600) scale(1,0.2054794520547945)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(350,585.0) scale(1,0.2054794520547945)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text transform="translate(350,570.0) scale(1,0.273972602739726)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text transform="translate(350,550.0) scale(1,6.164383561643835)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text x="391" y="635" text-anchor="middle" font-size="22">3</text>
+<text transform="translate(460,600) scale(1,0.136986301369863)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(460,590.0) scale(1,0.2054794520547945)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(460,575.0) scale(1,0.2054794520547945)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text transform="translate(460,560.0) scale(1,6.301369863013699)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text x="501" y="635" text-anchor="middle" font-size="22">4</text>
+<text transform="translate(570,600) scale(1,0.3424657534246575)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(570,575.0) scale(1,0.3424657534246575)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text transform="translate(570,550.0) scale(1,0.3424657534246575)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text transform="translate(570,525.0) scale(1,5.821917808219178)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text x="611" y="635" text-anchor="middle" font-size="22">5</text>
+<text transform="translate(680,600) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(680,550.0) scale(1,1.0273972602739727)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(680,475.0) scale(1,1.0273972602739727)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text transform="translate(680,400.0) scale(1,4.109589041095891)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text x="721" y="635" text-anchor="middle" font-size="22">6</text>
+<text transform="translate(790,600) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(790,550.0) scale(1,0.684931506849315)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text transform="translate(790,500.0) scale(1,2.73972602739726)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(790,300.0) scale(1,2.73972602739726)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text x="831" y="635" text-anchor="middle" font-size="22">7</text>
+<text transform="translate(900,600) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#238b45">A</text>
+<text transform="translate(900,475.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#2171b5">C</text>
+<text transform="translate(900,350.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#a66f00">G</text>
+<text transform="translate(900,225.0) scale(1,1.7123287671232876)" font-family="Arial" font-weight="bold" font-size="100" textLength="82" lengthAdjust="spacingAndGlyphs" fill="#cb181d">T</text>
+<text x="941" y="635" text-anchor="middle" font-size="22">8</text>
+<text x="560" y="690" text-anchor="middle" font-size="25">Position in aligned DNA sequences</text>
+<text transform="translate(35,350) rotate(-90)" text-anchor="middle" font-size="25">Base frequency</text>
+<text x="550" y="55" text-anchor="middle" font-size="23">100 aligned sequences; same counts in both views</text></g></svg>

@@ -1,0 +1,166 @@
+{
+  "groups": [
+    "Control",
+    "Ciprofloxacin",
+    "Tetracyclin",
+    "Vancomycin"
+  ],
+  "labels": {
+    "Control": "Control",
+    "Ciprofloxacin": "Ciprofloxacin",
+    "Tetracyclin": "Tetracyclin",
+    "Vancomycin": "Vancomycin"
+  },
+  "colors": {
+    "Control": "#4D4D4D",
+    "Ciprofloxacin": "#0072B2",
+    "Tetracyclin": "#E69F00",
+    "Vancomycin": "#CC79A7"
+  },
+  "shapes": {
+    "Control": "circle",
+    "Ciprofloxacin": "square",
+    "Tetracyclin": "triangle",
+    "Vancomycin": "diamond"
+  },
+  "sequential": [
+    "#f7fcf5",
+    "#c7e9c0",
+    "#74c476",
+    "#238b45",
+    "#00441b"
+  ],
+  "note_color": "#555555",
+  "font": {
+    "family": "Arial",
+    "fallback": [
+      "Helvetica",
+      "Liberation Sans",
+      "DejaVu Sans"
+    ]
+  },
+  "size_pt": {
+    "panel_letter": 10,
+    "axis_title": 8,
+    "tick": 7,
+    "legend": 7,
+    "note": 6.5,
+    "snp_label": 6.5
+  },
+  "lw_pt": {
+    "axis": 0.5,
+    "line": 1.0,
+    "errorbar": 0.75,
+    "box": 0.5,
+    "median": 1.0,
+    "marker_edge": 0.3,
+    "cell_gap": 0.5
+  },
+  "marker_mm": 1.6,
+  "marker_mm_timecourse": 1.1,
+  "tick_mm": 1.5,
+  "panel_mm": {
+    "width": 54,
+    "height": 52,
+    "margin_left": 12,
+    "margin_bottom": 9,
+    "margin_top": 3,
+    "margin_right": 3
+  },
+  "panel_e_mm": {
+    "margin_left": 15,
+    "margin_bottom": 17.5
+  },
+  "page_mm": {
+    "width": 180,
+    "height": 124,
+    "outer": 3,
+    "legend_height": 5,
+    "legend_gap": 1.5,
+    "gutter_x": 6,
+    "gutter_y": 7
+  },
+  "limits": {
+    "log10_YL44": [
+      9.8,
+      12.0
+    ],
+    "log10_YL32": [
+      4,
+      11
+    ],
+    "log10_I48": [
+      10.2,
+      12.2
+    ],
+    "day": [
+      0,
+      80
+    ],
+    "PC1": [
+      -5,
+      5
+    ],
+    "PC2": [
+      -4,
+      4
+    ],
+    "snp_frequency": [
+      0,
+      1
+    ]
+  },
+  "ticks": {
+    "log10_YL44": [
+      10,
+      10.5,
+      11,
+      11.5,
+      12
+    ],
+    "log10_YL32": [
+      4,
+      6,
+      8,
+      10
+    ],
+    "log10_I48": [
+      10.5,
+      11,
+      11.5,
+      12
+    ],
+    "day": [
+      0,
+      20,
+      40,
+      60,
+      80
+    ],
+    "PC1": [
+      -4,
+      -2,
+      0,
+      2,
+      4
+    ],
+    "PC2": [
+      -4,
+      -2,
+      0,
+      2,
+      4
+    ],
+    "snp_frequency": [
+      0,
+      0.5,
+      1
+    ]
+  },
+  "panel_letter_style": "lower",
+  "panel_b_style": "mean_sd_points",
+  "title_offset_mm": {
+    "y": 8.0,
+    "x": 5.5
+  }
+}

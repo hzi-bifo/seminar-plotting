@@ -1,0 +1,50 @@
+[
+  {
+    "doi": "s41586-025-09113-9",
+    "figure": 2,
+    "file": "published-lemur-2.png",
+    "url": "https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41586-025-09113-9/MediaObjects/41586_2025_9113_Fig2_HTML.png",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "article": "https://www.nature.com/articles/s41586-025-09113-9",
+    "figure_page": "https://www.nature.com/articles/s41586-025-09113-9/figures/2",
+    "changes": "None. Publisher image retained unchanged.",
+    "retrieved": "2026-10-20",
+    "sha256": "0fde8cf6193b7c8f80e8d30ffdd19c9149dd1053f5601a6eb73d1e4e8709dc60"
+  },
+  {
+    "doi": "s41586-025-09113-9",
+    "figure": 3,
+    "file": "published-lemur-3.png",
+    "url": "https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41586-025-09113-9/MediaObjects/41586_2025_9113_Fig3_HTML.png",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "article": "https://www.nature.com/articles/s41586-025-09113-9",
+    "figure_page": "https://www.nature.com/articles/s41586-025-09113-9/figures/3",
+    "changes": "None. Publisher image retained unchanged.",
+    "retrieved": "2026-10-20",
+    "sha256": "d7e6cfa8e4d0e65779f9000959c9c924264a51a9a3dba9771df561cb857ae0d0"
+  },
+  {
+    "doi": "s41586-024-07251-0",
+    "figure": 1,
+    "file": "published-treg-1.png",
+    "url": "https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41586-024-07251-0/MediaObjects/41586_2024_7251_Fig1_HTML.png",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "article": "https://www.nature.com/articles/s41586-024-07251-0",
+    "figure_page": "https://www.nature.com/articles/s41586-024-07251-0/figures/1",
+    "changes": "None. Publisher image retained unchanged.",
+    "retrieved": "2026-10-20",
+    "sha256": "31904ab29fb884b3b8cd13165b4accb8dab7f12c484516e29eb7702f2284ee78"
+  },
+  {
+    "doi": "s41586-024-07251-0",
+    "figure": 2,
+    "file": "published-treg-2.png",
+    "url": "https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41586-024-07251-0/MediaObjects/41586_2024_7251_Fig2_HTML.png",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "article": "https://www.nature.com/articles/s41586-024-07251-0",
+    "figure_page": "https://www.nature.com/articles/s41586-024-07251-0/figures/2",
+    "changes": "None. Publisher image retained unchanged.",
+    "retrieved": "2026-10-20",
+    "sha256": "f93791bf0a08b2d25e26b143c6d5bdf1927fff0d1d4e722f7b6512a631acab7b"
+  }
+]
