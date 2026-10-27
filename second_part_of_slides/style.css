@@ -981,3 +981,9 @@ body { padding-bottom: 74px; }
 .wd-path-example code { font-size:20px; }
 .wd-path-example p { margin:8px 0 0; font-size:18px; }
 @media(max-width:800px){.wd-visual{grid-template-columns:1fr;}.wd-folder-tree{font-size:17px;padding:16px;}}
+/* Override shared disclosure styling for the standalone FAQ control. */
+#app details.server-faq { border:0; background:transparent; border-radius:0; margin:24px 0; }
+#app details.server-faq > summary,
+#app details.server-faq[open] > summary { display:flex; width:fit-content; max-width:100%; gap:14px; padding:14px 22px; background:#234653; color:#fff; border:0; border-radius:10px; font-size:20px; font-weight:650; }
+#app details.server-faq > summary:hover { background:#315d6c; }
+#app details.server-faq > summary:focus-visible { outline:3px solid #b77939; outline-offset:4px; }
