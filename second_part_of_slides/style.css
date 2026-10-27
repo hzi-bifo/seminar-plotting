@@ -940,3 +940,15 @@ body { padding-bottom: 74px; }
 .hands-teaching-flow p { font-size:18px; line-height:1.5; }
 .hands-teaching-flow .hands-file { font-size:14px; overflow-wrap:anywhere; border-top:1px solid #d1dce0; padding-top:16px; }
 @media(max-width:900px){.hands-teaching-flow{grid-template-columns:1fr;}}
+
+.assignment-role-icon { width:48px; height:48px; color:#38699b; margin-bottom:10px; }
+.assignment-visual-cards article:nth-child(2) .assignment-role-icon { color:#8054a7; }
+.assignment-visual-cards article:nth-child(3) .assignment-role-icon { color:#267568; }
+.assignment-visual-cards article:nth-child(1) { background:#eef4fc; }
+.assignment-visual-cards article:nth-child(2) { background:#f4effa; }
+.assignment-visual-cards article:nth-child(3) { background:#edf5f1; }
+.assignment-visual-steps { display:flex; list-style:none; padding:18px 0; gap:18px; margin:16px 0; }
+.assignment-visual-steps li { flex:1; display:flex; align-items:center; gap:10px; position:relative; font-size:16px; }
+.assignment-visual-steps li+li:before { content:'→'; color:#819399; margin-right:8px; }
+.assignment-visual-steps svg { width:36px; height:36px; flex-shrink:0; color:#267568; }
+@media(max-width:800px){.assignment-visual-steps{flex-wrap:wrap;}.assignment-visual-steps li{flex:1 1 140px;}.assignment-visual-steps li+li:before{display:none;}}
