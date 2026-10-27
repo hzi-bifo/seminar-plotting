@@ -149,3 +149,21 @@ const assignmentExisting=Object.fromEntries(day2HeatmapSlides.filter(s=>s.id.sta
 const handsStart=day2HeatmapSlides.findIndex(s=>s.id==='assignment-context');
 const handsOrder=['hands-on','assignment-roadmap','r-server','r-connect','r-find-data','r-copy-files','r-copy-paths','r-working-directory','r-install','r-files',...heatmapDataBasics.map(s=>s[0]),'r-preview','assignment-tables','r-first','r-settings','r-annotation-map','assignment-metadata','r-help'];
 day2HeatmapSlides.splice(handsStart,4,...handsOrder.map(id=>handsBodies[id]||assignmentExisting[id]));
+
+// Shared classroom experiment: compare assistance, preserve scientific meaning.
+day2HeatmapSlides.push(
+ {id:'working-with-ai',title:'Working with AI · explore together',group:'Working with AI',note:'Use the AI tools you already have: Claude, Codex, Gemini or another assistant.',images:[],bullets:[],credit:[],source:[],extra:`
+ <p><strong>You are encouraged to use AI while working on your heatmap.</strong> Work with your assistant to understand the code, try design changes and investigate errors.</p>
+ <div class="hm-checklist"><article><span>1</span><h2>Try a real task</h2><p>Start from your working plot. Ask for one improvement, an explanation of an argument, or help with an error. Run the suggested code and inspect the result.</p></article><article><span>2</span><h2>Compare experiences</h2><p>What worked? What failed? Did the assistant misunderstand the data, use the wrong library or change something you wanted to keep?</p></article><article><span>3</span><h2>Collect good practices</h2><p>Share one useful prompt, one mistake and one check that caught it. Together, turn these examples into advice for the next person.</p></article></div>
+ <p><strong>Small experiment:</strong> try the same question with only your code, then add a plot image and the supplied dataset or a pasted table with column names. Does the answer improve? What is still misunderstood?</p>
+ <p class="day2-note">Record: task → context supplied → suggestion → what you tested → outcome. A suggestion that sounds convincing still needs checking.</p>`},
+ {id:'ai-good-practices',title:'Working with AI · good practices to test',group:'Working with AI',note:'Give useful context, ask open questions and compare every revision with your original.',images:[],bullets:[],credit:[],source:[],extra:`
+ <div class="hands-settings"><section><h2>Give context and check the changes</h2>
+ <ul><li><strong>Keep a baseline:</strong> save your working code and plot. Compare the revised version with both.</li><li><strong>Name the library:</strong> “Use R and ComplexHeatmap.” Include your code and the <a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank" rel="noopener">ComplexHeatmap documentation ↗</a>.</li><li><strong>Explain the data:</strong> what rows, columns, values and NA mean; which question the plot should answer. Try the supplied CSV or a pasted table, and identify it as an excerpt if incomplete.</li><li><strong>State what must stay fixed:</strong> samples, values, NA, transformations and the 0–1 frequency scale. Check that annotations still match sample IDs and that no filtering or scaling was added unexpectedly.</li><li><strong>Run and inspect:</strong> request an explanation of each change. Check warnings, legends and the resulting plot; working code alone is not enough.</li></ul>
+ </section><section><h2>Open questions to try</h2>
+ <p>“What would you improve to make this heatmap easier to interpret? Suggest three changes and explain their trade-offs before changing the code.”</p>
+ <p>“What might a reader misunderstand about this figure? Consider the colour scale, missing values, ordering and annotations.”</p>
+ <p>“Which ordering would help answer [my biological question]? Explain what clustering would reveal and what it might obscure.”</p>
+ <p>“Compare the original and revised code. Did any values, samples, transformations or annotation mappings change unintentionally?”</p>
+ <p><strong>Discuss:</strong> which context helped most, which mistakes recurred, and which checks should everyone use?</p></section></div>`}
+);
