@@ -1117,3 +1117,12 @@ body { padding-bottom: 74px; }
 .icon-request-callout>a:focus-visible { outline:3px solid #b87722; outline-offset:4px; }
 .icon-request-callout>a span { font-size:15px; }
 @media(max-width:800px) { .icon-request-callout { flex-direction:column; align-items:stretch; padding:20px; } }
+
+.icon-request-card { max-width:720px; margin:5vh auto; padding:clamp(24px,5vw,56px); text-align:center; border:1px solid #b4d7cb; border-radius:24px; background:#e6f3ef; box-shadow:0 12px 36px #215e5014; }
+.icon-request-card>img { width:76px; height:76px; margin-bottom:16px; }
+.icon-request-card h2 { font-size:clamp(26px,3vw,38px); margin:8px 0 20px; }
+.icon-request-card p { font-size:22px; line-height:1.5; }
+.icon-request-email { display:inline-flex; flex-direction:column; gap:8px; max-width:100%; padding:18px 24px; margin-top:16px; border-radius:12px; background:#215e50; color:white; text-decoration:none; overflow-wrap:anywhere; }
+.icon-request-email:hover { background:#17473c; }
+.icon-request-email:focus-visible { outline:3px solid #b87722; outline-offset:4px; }
+.icon-request-email span { font-size:17px; }
