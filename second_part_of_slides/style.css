@@ -1081,3 +1081,6 @@ body { padding-bottom: 74px; }
 .filter-logic-controls button { padding:10px 18px; border:1px solid #9fb2ba; border-radius:8px; background:white; }
 .filter-logic-controls button[aria-pressed="true"] { background:#234653; color:white; }
 .filter-venn[data-mode="union"] .venn-region,.filter-venn[data-mode="union"] .venn-overlap { fill:#efc28d; }
+
+.filter-venn .venn-region-label { font-size:12px; }
+.venn-total { text-align:center; font-size:17px; font-weight:650; color:#234653; margin:8px 0; }
