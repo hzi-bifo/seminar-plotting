@@ -930,3 +930,13 @@ body { padding-bottom: 74px; }
 
 .optional-path-fix { background:#f1f2f3; color:#596168; border:1px solid #d9dde0; border-radius:12px; padding:20px; }
 .optional-path-fix .hands-code { background:#e5e8ea; color:#505960; }
+
+.hands-teaching-flow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin:28px 0; }
+.hands-teaching-flow article { background:#f1f6fa; border:1px solid #d7e2e6; border-radius:14px; padding:24px; }
+.hands-teaching-flow article:nth-child(2) { background:#f3eff8; }
+.hands-teaching-flow article:nth-child(3) { background:#edf5f1; }
+.hands-stage { display:inline-block; font-size:16px; font-weight:700; padding:6px 12px; border-radius:20px; background:white; color:#365565; }
+.hands-teaching-flow h2 { font-size:23px; line-height:1.25; margin:20px 0; }
+.hands-teaching-flow p { font-size:18px; line-height:1.5; }
+.hands-teaching-flow .hands-file { font-size:14px; overflow-wrap:anywhere; border-top:1px solid #d1dce0; padding-top:16px; }
+@media(max-width:900px){.hands-teaching-flow{grid-template-columns:1fr;}}
