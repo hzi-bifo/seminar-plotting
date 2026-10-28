@@ -1136,3 +1136,10 @@ body { padding-bottom: 74px; }
 .icon-backdrop-grid span { display:block; font-size:14px; }
 .icon-request-scene .icon-request-card { margin:0; width:100%; box-sizing:border-box; box-shadow:0 18px 60px #12372d30; }
 @media(max-width:800px) { .icon-backdrop-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+
+.inkscape-align-guide { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:36px; align-items:start; }
+.inkscape-align-guide figure { margin:0; }
+.inkscape-align-guide img { display:block; width:100%; max-height:65vh; object-fit:contain; }
+.inkscape-align-guide figcaption { font-size:14px; color:#52636c; margin-top:10px; }
+.inkscape-align-guide h2 { font-size:24px; }
+@media(max-width:800px) { .inkscape-align-guide { grid-template-columns:1fr; } }
