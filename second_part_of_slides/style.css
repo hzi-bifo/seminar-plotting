@@ -1149,3 +1149,8 @@ body { padding-bottom: 74px; }
 .inkscape-tools-guide img { height:440px; max-width:100%; object-fit:contain; }
 .inkscape-tools-guide figcaption { font-size:15px; }
 @media(max-width:600px) { .inkscape-tools-guide { grid-template-columns:65px minmax(0,1fr); gap:18px; } .inkscape-tools-guide img { height:330px; } }
+
+.inkscape-demo-controls { display:flex; flex-wrap:wrap; gap:10px; margin:24px 0; }
+.inkscape-demo-controls button { border:1px solid #b6c8cd; border-radius:8px; padding:10px 14px; background:white; color:#234653; }
+.inkscape-demo-controls button[aria-pressed="true"] { background:#215e50; color:white; border-color:#215e50; }
+.inkscape-demo-controls button:focus-visible { outline:3px solid #c18a46; outline-offset:3px; }

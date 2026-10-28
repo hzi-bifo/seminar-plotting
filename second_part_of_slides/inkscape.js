@@ -14,16 +14,56 @@ function inkscapePage(){
  ['Open a plot, then import another',`<div class="gallery-examples"><section><h2>Open = a document</h2><p>Use <strong>File → Open</strong> for an SVG you want to edit.</p><h2>Import = add to this document</h2><p>Use <strong>File → Import</strong> to place another panel in your layout.</p><p>SVG usually preserves vector objects. PDF import depends on the export and import options; inspect fonts, symbols and clipping.</p><p>A PNG remains one raster image. Its plotted points are not individually editable.</p></section><figure><img src="assets/inkscape-practice.svg" alt="Two simple practice panels with deliberately uneven spacing"><figcaption>Practice figure: simple shapes, labels and two panels.</figcaption><a href="assets/inkscape-practice.svg" download>Download the practice SVG</a></figure></div><p><strong>Try it:</strong> open the practice SVG and save a working copy as <code>figure-layout.svg</code>.</p>`],
  ['Select, group and resize',`<div class="overview-tool-grid"><article><h2>1 · Select</h2><p>Click an object with the Selector. Shift-click to add another object to the selection.</p><p>Click empty canvas to deselect.</p></article><article><h2>2 · Group</h2><p>Use <strong>Object → Group</strong> to keep a panel together.</p><p>Use <strong>Object → Ungroup</strong> only when you need its individual objects. Imported figures can contain nested groups.</p></article><article><h2>3 · Resize</h2><p>Lock the width-to-height ratio in the Selector toolbar before changing the size.</p><p>Move and resize whole panels together. Check whether stroke widths and text have scaled as intended.</p></article></div><p class="wd-ready">Try it: select one practice panel, resize it proportionally, then undo. Keep the data marks in their original relationship to the axes.</p>`],
  ['Align panels · choose the reference first',`<div class="inkscape-align-guide"><figure><img src="assets/inkscape-align-distribute.png" alt="Inkscape Align and Distribute dialog showing Relative to Page, alignment buttons and distribution controls"><figcaption>Your Align and Distribute panel. Hover over a button in Inkscape to see its exact action.</figcaption></figure><section><p>Open <strong>Object → Align and Distribute</strong>, then select your panel groups with the Selector.</p><h2>What does “Relative to” mean?</h2><p><strong>Page:</strong> align against the page. This is what your screenshot currently shows.</p><p><strong>Selection Area:</strong> use the bounds of the selected objects to line them up with each other.</p><p><strong>Last selected:</strong> keep one panel as the reference. Click the moving panel first, then Shift-click the reference panel last.</p><p class="wd-ready"><strong>Try it:</strong> select the two practice panels, choose Selection Area, then hover to find <strong>Align top edges</strong> and click it.</p><p>Leave <strong>Move/align selection as group</strong> off when aligning the panels with each other. Turn it on to move the whole arrangement together, for example to centre it on the page.</p></section></div>`],
- ['Align versus distribute · edges or gaps?',`<p><strong>Align</strong> puts edges on the same line. <strong>Distribute</strong> spaces several objects along a row or column.</p><div class="overview-tool-grid">${[
- ['Before',[[20,55,45],[100,25,70],[230,70,55]],false],
- ['Align top edges',[[20,30,45],[100,30,70],[230,30,55]],true],
- ['Equal horizontal gaps',[[20,30,45],[105,30,70],[215,30,55]],true]
- ].map(([title,rects,line])=>`<article><h2>${title}</h2><svg viewBox="0 0 310 180" role="img" aria-label="${title}">${line?'<path d="M10 30H300" stroke="#8960b5" stroke-width="2" stroke-dasharray="5 4"/>':''}${rects.map(([x,y,w],i)=>`<rect x="${x}" y="${y}" width="${w}" height="85" fill="${['#d8eee7','#e4dbee','#f5dfbc'][i]}" stroke="#234653" stroke-width="2"/><text x="${x+w/2}" y="${y+48}" text-anchor="middle" font-size="20">${['A','B','C'][i]}</text>`).join('')}</svg></article>`).join('')}</div><p><strong>For three or more panels:</strong> place the outside panels, select all panels, then use the distribution button whose tooltip describes equal horizontal gaps.</p><p>Equal gaps and equally spaced centres are different when panels have different widths.</p><p><strong>For two panels:</strong> move one panel to set the desired gap; distribution needs more objects to be useful.</p><p class="assembly-note"><a href="https://inkscape-manuals.readthedocs.io/en/latest/align-and-distribute.html" target="_blank" rel="noopener">Align and Distribute guide ↗</a></p>`],
+ ['Align versus distribute · try different references',`<p>Same three objects, different instructions. Select A first, then B, then C last.</p><div class="inkscape-demo-controls" role="group" aria-label="Alignment examples">${[['selection','Top → Selection Area'],['page','Top → Page'],['first','Top → First selected (A)'],['last','Top → Last selected (C)'],['group','Centre group on page'],['gaps','Equal horizontal gaps'],['centres','Equal horizontal centres']].map(([id,label])=>`<button data-align-example="${id}" aria-pressed="false">${label}</button>`).join('')}</div><div class="gallery-examples"><figure><h2>Before</h2><div id="align-before"></div></figure><figure><h2 id="align-result-title">After</h2><div id="align-after"></div></figure></div><div class="wd-ready" aria-live="polite"><strong id="align-result-label"></strong><p id="align-result-note"></p></div><p class="assembly-note">Illustrative object bounds. Dashed outlines show the original positions; purple guides show the alignment target or spacing measurement.</p>`],
  ['Add panel labels · check the visible plot areas',`<div class="gallery-examples"><figure><img src="assets/inkscape-practice.svg" alt="Practice panels with uneven positions and differently sized A and B labels"></figure><section><h2>Finish the layout</h2><ol><li>Make the panel letters the same font, size and weight.</li><li>Place them consistently at the top left of each panel.</li><li>Check the axes and visible plot areas, not only the outer object boxes.</li><li>Inspect the figure at its intended publication size.</li></ol><p>Long axis labels and legends change the bounds of a panel. Aligned boxes can still leave the plotting areas uneven.</p><p>Use guides for visual alignment. Keep each panel’s data marks and axes together.</p></section></div><p class="wd-ready"><strong>Try it:</strong> align the practice panels, choose a gap, and make A and B consistent. Save a new SVG copy.</p>`],
  ['Save the editable figure and export a copy',`<div class="overview-tool-grid"><article><h2>SVG · keep editing</h2><p>Save your working document as Inkscape SVG. Keep original plot exports alongside it.</p></article><article><h2>PDF · share the figure</h2><p>Save a copy as PDF. Inspect the exported PDF for changed fonts, missing symbols and clipped labels.</p></article><article><h2>PNG · raster preview</h2><p>Use File → Export. Choose the page or selection, then the required pixel dimensions or resolution.</p><p>Check transparency and the intended background.</p></article></div><p class="wd-ready"><strong>Mini task:</strong> export your aligned two-panel figure, reopen it and check readability at its final size.</p><p>Return to R or Python to change data, statistical summaries or axis scales; use Inkscape for the layout.</p><p>${guide}</p>`]
  ];
  inkscapeStep=Math.max(0,Math.min(inkscapeStep,slides.length-1));
  app.innerHTML=`<p class="presentation-kicker">Section 9 · Tools: Inkscape</p><h1>${slides[inkscapeStep][0]}</h1>${slides[inkscapeStep][1]}<nav class="navigation footer-controls"><button id="inkscape-prev" ${inkscapeStep===0?'disabled':''}>Previous</button><span>${inkscapeStep+1} / ${slides.length}</span><button id="inkscape-next" ${inkscapeStep===slides.length-1?'disabled':''}>Next</button></nav>`;
+ bindInkscapeAlignment();
  document.querySelector('#inkscape-prev').onclick=()=>{inkscapeStep--;inkscapePage();window.scrollTo(0,0);};
  document.querySelector('#inkscape-next').onclick=()=>{inkscapeStep++;inkscapePage();window.scrollTo(0,0);};
+}
+
+function bindInkscapeAlignment(){
+ if(!document.querySelector('#align-before'))return;
+ const original=[{x:65,y:105,w:70,h:90},{x:185,y:65,w:125,h:135},{x:375,y:140,w:85,h:60}];
+ const diagram=(objects,guide='',ghost=false)=>`<svg viewBox="0 0 540 290" role="img" aria-label="Three differently sized objects on a page"><rect x="20" y="25" width="500" height="240" fill="white" stroke="#aebec5" stroke-width="2"/><text x="30" y="18" font-size="13" fill="#52636c">Page</text>${ghost?original.map(o=>`<rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" fill="none" stroke="#94a5ad" stroke-dasharray="4 4"/>`).join(''):''}${objects.map((o,i)=>`<rect x="${o.x}" y="${o.y}" width="${o.w}" height="${o.h}" rx="${i===2?20:0}" fill="${['#d8eee7','#e4dbee','#f5dfbc'][i]}" stroke="#234653" stroke-width="2"/><text x="${o.x+o.w/2}" y="${o.y+o.h/2+7}" text-anchor="middle" font-size="22">${['A','B','C'][i]}</text>`).join('')}${guide}</svg>`;
+ const line=(x1,y1,x2,y2)=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#8960b5" stroke-width="2" stroke-dasharray="5 4"/>`;
+ document.querySelector('#align-before').innerHTML=diagram(original);
+ const show=id=>{
+  const objects=original.map(o=>({...o}));let guide='',label='',note='';
+  const modes={
+   selection:[65,'Align top edges · Selection Area','The top of the original selection is B’s top edge. B stays still; A and C move up.'],
+   page:[25,'Align top edges · Page','All three objects move to the page’s top edge. Their horizontal positions stay unchanged.'],
+   first:[105,'Align top edges · First selected','A was selected first, so its top edge is the reference. A stays still; B moves down and C moves up.'],
+   last:[140,'Align top edges · Last selected','C was selected last, so its top edge is the reference. C stays still; A and B move down.']
+  };
+  if(modes[id]){const [y,l,n]=modes[id];objects.forEach(o=>o.y=y);guide=line(30,y,510,y);label=l;note=n+' Move/align selection as group is off.';}
+  else if(id==='group'){
+   objects.forEach(o=>{o.x+=7.5;o.y+=12.5;});
+   guide=line(270,25,270,265)+line(20,145,520,145);
+   label='Centre the whole arrangement · Page';
+   note='Turn Move/align selection as group on, choose Page, then centre on both axes. All objects shift together; their relative positions and gaps stay unchanged.';
+  }else{
+   if(id==='gaps'){
+    const gap=(460-65-70-125-85)/2;
+    objects[1].x=65+70+gap;
+    guide=line(135,235,objects[1].x,235)+line(objects[1].x+125,235,375,235);
+    label='Distribute · equal horizontal gaps';
+    note='Both edge-to-edge gaps become 57.5 units. A and C remain in place; only B moves. The objects keep their original vertical positions.';
+   }else{
+    objects[1].x=(100+417.5)/2-125/2;
+    guide=[100,258.75,417.5].map(x=>line(x,40,x,240)).join('')+line(100,235,417.5,235);
+    label='Distribute · equal horizontal centres';
+    note='Centres are 158.75 units apart, but the gaps differ (61.25 and 53.75 units), because the objects have different widths. A and C remain in place.';
+   }
+  }
+  document.querySelectorAll('[data-align-example]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.alignExample===id)));
+  document.querySelector('#align-after').innerHTML=diagram(objects,guide,true);
+  document.querySelector('#align-result-label').textContent=label;
+  document.querySelector('#align-result-note').textContent=note;
+ };
+ document.querySelectorAll('[data-align-example]').forEach(b=>b.onclick=()=>show(b.dataset.alignExample));
+ show('selection');
 }
