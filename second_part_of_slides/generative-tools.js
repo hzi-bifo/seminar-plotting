@@ -122,7 +122,7 @@ function generativeToolsPage(requestedStep) {
       <p class="generative-comparison-note"><strong>Discuss:</strong> What changed in the colours, shapes, legends, axis ranges and heatmap ordering? What would you still improve?</p>
       <div class="generative-downloads"><a href="${root}/figure_unoptimized.pdf" target="_blank" rel="noopener">Open before PDF ↗</a><a href="${root}/reference/figure_optimized.png" target="_blank" rel="noopener">Open after image ↗</a><a href="${root}/reference/figure_optimized.png" download>Download optimized PNG</a></div>`]
   ];
-  app.innerHTML = `<p class="presentation-kicker">Section 11 · Use generative tools</p><h1>${slides[step][0]}</h1>${slides[step][1]}<nav class="navigation footer-controls"><button id="generative-prev" ${step === 0 ? 'disabled' : ''}>Previous</button><span>${step + 1} / ${slides.length}</span><button id="generative-next" ${step === slides.length - 1 ? 'disabled' : ''}>${step === slides.length - 1 ? 'Finished' : 'Next'}</button></nav>`;
+  app.innerHTML = `<p class="presentation-kicker">Section 12 · Use generative tools</p><h1>${slides[step][0]}</h1>${slides[step][1]}<nav class="navigation footer-controls"><button id="generative-prev" ${step === 0 ? 'disabled' : ''}>Previous</button><span>${step + 1} / ${slides.length}</span><button id="generative-next" ${step === slides.length - 1 ? 'disabled' : ''}>${step === slides.length - 1 ? 'Finished' : 'Next'}</button></nav>`;
   document.querySelector('#generative-prev').onclick = () => { if (step > 0) location.hash = `generative-tools/${step}`; };
   document.querySelector('#generative-next').onclick = () => { if (step < slides.length - 1) location.hash = `generative-tools/${step + 2}`; };
   if (step === 7) {

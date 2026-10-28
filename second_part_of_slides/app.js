@@ -19,20 +19,21 @@ const day3Chapters = [
     ['6','Assemble a multi-panel figure','Combine plots with code or a vector editor.','#section-6'],
     ['7','File formats and resolution','Raster vs vector, zooming, and DPI.','#section-7'],
     ['8','Post-processing tools','Edit layouts, handle fonts, and preserve the evidence.','#section-8'],
+    ['inkscape','Tools: Inkscape','Install the editor, arrange panels, add labels and export a figure.','#inkscape'],
     ['9','Include icons in the plot','Generate, compare and place clear scientific icons.','#section-9'],
     ['10','Submit the manuscript','Embed previews, upload figure files and prepare for revisions.','#section-10'],
     ['11','Use generative tools','Redesign six mismatched panels from the Day 1 and Day 2 data.','#section-11']
   ];
 function day3Overview() {
   current = -1;
-  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><nav class="day2-topics day3-topic-cards" aria-label="Day 3 sections">${day3Chapters.map(([n,title,text,url])=>`<a href="#chapter-${n}"><img src="assets/day3-topics/topic-${n}.svg" alt=""><h2><span class="day2-topic-number">${n}</span>${title}</h2><p>${text}</p></a>`).join('')}</nav>`;
+  app.innerHTML = `<p class="presentation-kicker">Day 3</p><h1>From plot to publication</h1><p class="day2-overview-intro">Choose a topic to explore, improve and assemble scientific figures.</p><nav class="day2-topics day3-topic-cards" aria-label="Day 3 sections">${day3Chapters.map(([n,title,text,url],index)=>`<a href="#chapter-${n}"><img src="assets/day3-topics/topic-${n}.svg" alt=""><h2><span class="day2-topic-number">${index+1}</span>${title}</h2><p>${text}</p></a>`).join('')}</nav>`;
 }
 function sectionPage(n) {
   current = -1;
   const phaseLink = (phase,label) => `<a class="walkthrough-link" href="#card-${cards.findIndex(c=>c.phase===phase)+1}">${label}</a>`;
   const title = {2:'Examples for good figures',3:'Good and bad plots',5:'Improve a figure step by step'}[n];
   const content = n===3 ? `<p>Explore what works, what gets in the way, and how a different design helps.</p><nav class="presentation-sections plot-example-overview" aria-label="Explore good and bad plots">${[[0,'Spot the problem','Look at the starting plot. What would you change?'],[1,'Good plots: simple examples','See how clear labels and thoughtful design help.'],[4,'Biology design comparisons','Compare designs and choose the view that answers the question.']].map(([phase,label,description])=>{const i=cards.findIndex(c=>c.phase===phase);const c=cards[i];return `<a class="walkthrough-preview" href="#card-${i+1}"><div class="starting-preview"><img src="assets/${c.images[0]}" alt="${c.title}: example plot"></div><h2>${label}</h2><p>${description}</p><strong>Explore plots →</strong></a>`;}).join('')}<a class="walkthrough-preview" href="#microbiota-composition"><div class="starting-preview"><img src="assets/microbiota-composition-example.png" alt="Stacked bars comparing microbiota composition without and with E. coli"></div><h2>Microbiota composition</h2><p>Explore the supplied stacked-bar example across samples.</p><strong>Open example →</strong></a></nav>` : n===5 ? `<p>Keep the data fixed. Make one change, compare the result, and inspect the code.</p><nav class="presentation-sections"><a class="walkthrough-preview" href="#consistency"><div class="starting-preview">${consistencyFigure(0)}</div><h2>Consistent multi-panel figures</h2><p>Fonts, spacing, colours, axes, legends and grid lines.</p></a><a class="walkthrough-preview" href="#point-consistency"><div class="starting-preview">${pointFigure(0)}</div><h2>Crowded point plots</h2><p>Overplotting, colour, labels and carefully placed annotations.</p></a><a class="walkthrough-preview" href="#condition-walkthrough"><div class="starting-preview"><img src="assets/condition-step-0.png" alt="Starting point plot by condition"></div><h2>Points, boxes or violins?</h2><p>Compare what each view reveals, and what it hides.</p></a><a class="walkthrough-preview" href="#size-walkthrough"><div class="starting-preview"><img src="assets/size-step-0-v2.png" alt="Starting figure with excessive whitespace"></div><h2>How small can a figure be?</h2><p>Trim whitespace, test smaller sizes, and find the readability limit.</p></a><a class="walkthrough-preview" href="#heatmap-consistency"><div class="starting-preview"><img src="assets/heatmap-step-1.png" alt="Starting heatmap with rainbow colours and mixed ordering"></div><h2>Clearer heatmaps</h2><p>Meaningful colour, sample ordering, colour bins and readable values.</p></a></nav><details><summary>More step-by-step lessons</summary><nav class="sections">${phaseLink(5,'Advanced walkthroughs')}${phaseLink(0,'Guided diagnostic examples')}</nav></details>` : `<p>Select a figure to explore it.</p><nav class="presentation-sections published-overview" aria-label="Good figure examples">${publishedGoodExamples.map(c=>`<a class="walkthrough-preview" href="#card-${cards.indexOf(c)+1}"><div class="starting-preview"><img src="assets/${c.images[0]}" alt="Preview: ${c.title}"></div><h2>${c.title}</h2></a>`).join('')}</nav><details><summary>More examples</summary>${phaseLink(3,'Optional: complex figures')}</details>`;
-  app.innerHTML=`<p class="presentation-kicker">Section ${n} of 11</p><h1>${title}</h1>${content}<nav class="navigation"><a href="${n===2?'#plot-types':`#section-${n-1}`}">← Previous section</a><a href="#home">Overview</a><a class="presentation-next" href="${`#section-${n+1}`}">Next section →</a></nav>`;
+  app.innerHTML=`<p class="presentation-kicker">Section ${n} of 12</p><h1>${title}</h1>${content}<nav class="navigation"><a href="${n===2?'#plot-types':`#section-${n-1}`}">← Previous section</a><a href="#home">Overview</a><a class="presentation-next" href="${`#section-${n+1}`}">Next section →</a></nav>`;
 }
 let heatmapSlide = 0;
 function heatmapPresentation() {
@@ -162,6 +163,7 @@ function end(last = cards.length-1) {
   document.querySelector('#last').onclick = () => go(last);
 }
 function renderRoute() {
+  if(location.hash==='#inkscape'){inkscapePage();window.scrollTo(0,0);return;}
   if(location.hash==='#microbiota-composition'){
     render(cards.findIndex(c=>c.data==='microbial-composition.csv'));
     document.querySelector('#reveal-teaching').click();
@@ -201,6 +203,7 @@ function renderRoute() {
 }
 
 function day3ChapterFor(hash) {
+  if(hash==='#inkscape'||hash==='#chapter-inkscape')return 'inkscape';
   const numbered=hash.match(/^#(?:chapter|section)-(\d+)$/);
   if(numbered)return Number(numbered[1]);
   if(hash.startsWith('#plot-'))return 1;
@@ -214,12 +217,14 @@ function day3ChapterFor(hash) {
 let lastDay3Chapter=null;
 function route() {
   const hash=location.hash, chapter=day3ChapterFor(hash);
-  const opening=hash.match(/^#chapter-(\d+)$/);
-  if(opening && day3Chapters[chapter-1]){
+  const opening=hash.match(/^#chapter-(\d+|inkscape)$/);
+  const chapterIndex=day3Chapters.findIndex(c=>c[0]===String(chapter));
+  if(opening && chapterIndex>=0){
     lastDay3Chapter=chapter;current=-1;
-    const [n,title,text,url]=day3Chapters[chapter-1];
-    app.innerHTML=`<section class="chapter-opening"><img src="assets/day3-topics/topic-${n}.svg" alt=""><p class="presentation-kicker">Day 3 · Chapter ${n} of 11</p><h1>${title}</h1><p>${text}</p><nav class="navigation"><a href="#day3">All Day 3 topics</a><button id="chapter-start">Start chapter →</button></nav></section>`;
+    const [n,title,text,url]=day3Chapters[chapterIndex];
+    app.innerHTML=`<section class="chapter-opening"><img src="assets/day3-topics/topic-${n}.svg" alt=""><p class="presentation-kicker">Day 3 · Chapter ${chapterIndex+1} of ${day3Chapters.length}</p><h1>${title}</h1><p>${text}</p><nav class="navigation"><a href="#day3">All Day 3 topics</a><button id="chapter-start">Start chapter →</button></nav></section>`;
     document.querySelector('#chapter-start').onclick=()=>{
+      if(chapter==='inkscape')inkscapeStep=0;
       if(chapter===6)assemblyStep=0;
       if(chapter===7)formatStep=0;
       if(chapter===8)postStep=0;
@@ -229,7 +234,7 @@ function route() {
     };
     window.scrollTo(0,0);return;
   }
-  if(chapter && chapter!==lastDay3Chapter && (/^#section-/.test(hash)||hash==='#plot-types')){
+  if(chapter && chapter!==lastDay3Chapter && (/^#section-/.test(hash)||hash==='#plot-types'||hash==='#inkscape')){
     location.replace('#chapter-'+chapter);return;
   }
   lastDay3Chapter=chapter;
