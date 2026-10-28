@@ -1154,3 +1154,11 @@ body { padding-bottom: 74px; }
 .inkscape-demo-controls button { border:1px solid #b6c8cd; border-radius:8px; padding:10px 14px; background:white; color:#234653; }
 .inkscape-demo-controls button[aria-pressed="true"] { background:#215e50; color:white; border-color:#215e50; }
 .inkscape-demo-controls button:focus-visible { outline:3px solid #c18a46; outline-offset:3px; }
+
+.hex-pairs { display:flex; justify-content:center; gap:16px; margin:28px 0; }
+.hex-pairs>div { display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 24px; border-radius:12px; background:#edf3f5; }
+.hex-pairs code { font-size:36px; font-weight:bold; }
+.hex-pairs>div:last-child { background:#e6ddf1; }
+.hex-alpha-grid { height:95px; background:conic-gradient(#dbe1e5 25%,white 0 50%,#dbe1e5 0 75%,white 0) 0 0/24px 24px; border:1px solid #c0cbd0; }
+.hex-alpha-grid>div { width:100%; height:100%; }
+@media(max-width:600px) { .hex-pairs { gap:8px; } .hex-pairs>div { padding:12px; } .hex-pairs code { font-size:28px; } }
